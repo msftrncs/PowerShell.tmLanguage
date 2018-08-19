@@ -256,9 +256,9 @@
 	],
 	"repository": {
 		"commentLine": {
-			"begin": "(?<![`\\\\-])#",
+			"begin": "(?<![`\\\\-])(#)#*",
 			"captures": {
-				"0": {
+				"1": {
 					"name": "punctuation.definition.comment.powershell"
 				}
 			},
@@ -411,7 +411,8 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"match": "^(?i:(?:\\s*|#)+(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|EXTERNALHELP|FORWARDHELPCATEGORY|FORWARDHELPTARGETNAME|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|REMOTEHELPRUNSPACE|ROLE|SYNOPSIS))",
+					"comment":"these embedded doc keywords do not support arguements, must be the only thing on the line",
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|ROLE|SYNOPSIS))(?:\\s*$)",
 					"name": "comment.documentation.embedded.powershell"
 				},
 				{
@@ -426,7 +427,8 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"match": "(?i:\\s*(\\.)(PARAMETER|FORWARDHELPTARGETNAME|FORWARDHELPCATEGORY|REMOTEHELPRUNSPACE|EXTERNALHELP)\\s+([a-z0-9-_]+))",
+					"comment":"these embedded doc keywords require arguments though the type required may be inconsistent, they may not all be able to use the same argument match",
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(EXTERNALHELP|FORWARDHELPCATEGORY|FORWARDHELPTARGETNAME|PARAMETER|REMOTEHELPRUNSPACE)\\s+([a-z0-9-_]+))",
 					"name": "comment.documentation.embedded.powershell"
 				}
 			]
