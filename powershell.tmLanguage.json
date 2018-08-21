@@ -102,7 +102,7 @@
 					"include": "#doubleQuotedStringEscapes"
 				},
 				{
-					"include": "#stringInterpolation"
+					"include": "#interpolation"
 				}
 			]
 		},
@@ -147,26 +147,17 @@
 			"begin": "(\\$)(\\()",
 			"beginCaptures": {
 				"1": {
-					"name": "keyword.other.subexpression.powershell"
+					"name": "punctuation.definition.variable.powershell"
 				},
 				"2": {
 					"name": "punctuation.section.group.begin.powershell"
 				}
 			},
 			"comment": "TODO: move to repo; make recursive.",
-			"end": "(\\))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "\\)",
 			"endCaptures": {
-				"1": {
+				"0": {
 					"name": "punctuation.section.group.end.powershell"
-				},
-				"2": {
-					"name": "variable.other.member.powershell"
-				},
-				"4": {
-					"name": "punctuation.definition.comment.powershell"
-				},
-				"3": {
-					"name": "comment.line.powershell"
 				}
 			},
 			"name": "meta.group.complex.subexpression.powershell",
@@ -177,7 +168,7 @@
 			]
 		},
 		{
-			"match": "(\\b(([\\p{L}0-9_\\.!%^&+=][\\p{L}0-9_\\.!@#%^&+=-]*)\\.(?i:exe|com|cmd|bat))\\b)",
+			"match": "(\\b(([A-Za-z0-9\\-_\\.]+)\\.(?i:exe|com|cmd|bat))\\b)",
 			"name": "support.function.powershell"
 		},
 		{
@@ -265,9 +256,9 @@
 	],
 	"repository": {
 		"commentLine": {
-			"begin": "(?<![`\\\\\\p{L}0-9_*\\[\\]/.?=:~!$^%+-])(#)#*",
+			"begin": "(?<![`\\\\-])#",
 			"captures": {
-				"1": {
+				"0": {
 					"name": "punctuation.definition.comment.powershell"
 				}
 			},
@@ -292,19 +283,10 @@
 					"name": "support.function.attribute.powershell"
 				}
 			},
-			"end": "(\\])((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\])",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.bracket.end.powershell"
-				},
-				"2": {
-					"name": "variable.other.member.powershell"
-				},
-				"4": {
-					"name": "punctuation.definition.comment.powershell"
-				},
-				"3": {
-					"name": "comment.line.powershell"
 				}
 			},
 			"name": "meta.attribute.powershell",
@@ -325,6 +307,9 @@
 					"patterns": [
 						{
 							"include": "#variable"
+						},
+						{
+							"include": "#variableNoProperty"
 						},
 						{
 							"include": "#hashtable"
@@ -426,7 +411,7 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|EXTERNALHELP|FORWARDHELPCATEGORY|FORWARDHELPTARGETNAME|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|REMOTEHELPRUNSPACE|ROLE|SYNOPSIS))(?:\\s*$)",
+					"match": "^(?i:(?:\\s*|#)+(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|EXTERNALHELP|FORWARDHELPCATEGORY|FORWARDHELPTARGETNAME|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|REMOTEHELPRUNSPACE|ROLE|SYNOPSIS))",
 					"name": "comment.documentation.embedded.powershell"
 				},
 				{
@@ -441,7 +426,7 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(PARAMETER|FORWARDHELPTARGETNAME|FORWARDHELPCATEGORY|REMOTEHELPRUNSPACE|EXTERNALHELP)\\s+([a-z0-9-_]+))",
+					"match": "(?i:\\s*(\\.)(PARAMETER|FORWARDHELPTARGETNAME|FORWARDHELPCATEGORY|REMOTEHELPRUNSPACE|EXTERNALHELP)\\s+([a-z0-9-_]+))",
 					"name": "comment.documentation.embedded.powershell"
 				}
 			]
@@ -488,101 +473,7 @@
 					"name": "punctuation.section.group.begin.powershell"
 				}
 			},
-			"name": "interpolated.simple.source.powershell",
-			"end": "(\\))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
-			"endCaptures": {
-				"1": {
-					"name": "punctuation.section.group.end.powershell"
-				},
-				"2": {
-					"name": "variable.other.member.powershell"
-				},
-				"4": {
-					"name": "punctuation.definition.comment.powershell"
-				},
-				"3": {
-					"name": "comment.line.powershell"
-				}
-			},
-			"patterns": [
-				{
-					"include": "$self"
-				},
-				{
-					"include": "#interpolation"
-				}
-			]
-		},
-		"interpolation": {
-			"begin": "(\\$)(\\()",
-			"beginCaptures": {
-				"1": {
-					"name": "keyword.other.subexpression.powershell"
-				},
-				"2": {
-					"name": "punctuation.section.group.begin.powershell"
-				}
-			},
-			"name": "interpolated.complex.source.powershell",
-			"end": "(\\))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
-			"endCaptures": {
-				"1": {
-					"name": "punctuation.section.group.end.powershell"
-				},
-				"2": {
-					"name": "variable.other.member.powershell"
-				},
-				"4": {
-					"name": "punctuation.definition.comment.powershell"
-				},
-				"3": {
-					"name": "comment.line.powershell"
-				}
-			},
-			"patterns": [
-				{
-					"include": "$self"
-				},
-				{
-					"include": "#commands"
-				},
-				{
-					"include": "#variable"
-				},
-				{
-					"include": "#interpolatedStringContent"
-				},
-				{
-					"include": "#function"
-				},
-				{
-					"include": "#attribute"
-				},
-				{
-					"include": "#type"
-				},
-				{
-					"include": "#hashtable"
-				},
-				{
-					"include": "#doubleQuotedString"
-				},
-				{
-					"include": "#scriptblock"
-				}
-			]
-		},
-		"stringInterpolation": {
-			"begin": "(\\$)(\\()",
-			"beginCaptures": {
-				"1": {
-					"name": "keyword.other.subexpression.powershell"
-				},
-				"2": {
-					"name": "punctuation.section.group.begin.powershell"
-				}
-			},
-			"name": "interpolated.complex.source.powershell",
+			"contentName": "interpolated.simple.source.powershell",
 			"end": "\\)",
 			"endCaptures": {
 				"0": {
@@ -591,37 +482,42 @@
 			},
 			"patterns": [
 				{
+					"include": "$self"
+				},
+				{
 					"include": "#interpolation"
 				},
+				{
+					"include": "#interpolatedStringContent"
+				}
+			]
+		},
+		"interpolation": {
+			"begin": "(\\$)(\\()",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.definition.variable.powershell"
+				},
+				"2": {
+					"name": "punctuation.section.group.begin.powershell"
+				}
+			},
+			"contentName": "interpolated.complex.source.powershell",
+			"end": "\\)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.section.group.end.powershell"
+				}
+			},
+			"patterns": [
 				{
 					"include": "$self"
 				},
 				{
-					"include": "#commands"
-				},
-				{
-					"include": "#variable"
+					"include": "#interpolation"
 				},
 				{
 					"include": "#interpolatedStringContent"
-				},
-				{
-					"include": "#function"
-				},
-				{
-					"include": "#attribute"
-				},
-				{
-					"include": "#type"
-				},
-				{
-					"include": "#hashtable"
-				},
-				{
-					"include": "#doubleQuotedString"
-				},
-				{
-					"include": "#scriptblock"
 				}
 			]
 		},
@@ -733,24 +629,15 @@
 					"name": "punctuation.section.bracket.begin.powershell"
 				}
 			},
-			"end": "(\\])((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "\\]",
 			"endCaptures": {
-				"1": {
+				"0": {
 					"name": "punctuation.section.bracket.end.powershell"
-				},
-				"2": {
-					"name": "variable.other.member.powershell"
-				},
-				"4": {
-					"name": "punctuation.definition.comment.powershell"
-				},
-				"3": {
-					"name": "comment.line.powershell"
 				}
 			},
 			"patterns": [
 				{
-					"match": "(?!\\d+|\\.)(?:[\\p{L}\\p{N}.`])+",
+					"match": "(?!\\d+|\\.)(?:\\p{L}|\\p{N}|\\.)+",
 					"name": "storage.type.powershell"
 				},
 				{
@@ -762,142 +649,140 @@
 			"patterns": [
 				{
 					"captures": {
-						"1": {
+						"0": {
 							"name": "constant.language.powershell"
 						},
-						"2": {
+						"1": {
 							"name": "punctuation.definition.variable.powershell"
-						},
-						"5": {
-							"name": "punctuation.definition.comment.powershell"
-						},
-						"4": {
-							"name": "comment.line.powershell"
 						}
 					},
 					"comment": "These are special constants.",
-					"match": "((\\$)(?i:(False|Null|True))\\b)((#).*$\\n?)?"
+					"match": "(\\$)(?i:(False|Null|True))\\b"
 				},
 				{
 					"captures": {
-						"1": {
+						"0": {
 							"name": "support.constant.variable.powershell"
 						},
-						"2": {
+						"1": {
 							"name": "punctuation.definition.variable.powershell"
 						},
-						"4": {
+						"3": {
 							"name": "variable.other.member.powershell"
-						},
-						"6": {
-							"name": "punctuation.definition.comment.powershell"
-						},
-						"5": {
-							"name": "comment.line.powershell"
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "((\\$)(?i:(Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
+					"match": "(\\$)(?i:(Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?\\b"
 				},
 				{
 					"captures": {
-						"1": {
+						"0": {
 							"name": "support.constant.automatic.powershell"
 						},
-						"2": {
+						"1": {
 							"name": "punctuation.definition.variable.powershell"
 						},
-						"4": {
+						"3": {
 							"name": "variable.other.member.powershell"
-						},
-						"6": {
-							"name": "punctuation.definition.comment.powershell"
-						},
-						"5": {
-							"name": "comment.line.powershell"
 						}
 					},
 					"comment": "Automatic variables are not constants, but they are read-only. In monokai (default) color schema support.variable doesn't have color, so we use constant.",
-					"match": "((\\$)(?i:((?:[$^?])|(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "(\\$)(?i:(\\$|\\^|\\?|_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?\\b"
 				},
 				{
 					"captures": {
-						"1": {
+						"0": {
 							"name": "variable.language.powershell"
 						},
-						"2": {
+						"1": {
 							"name": "punctuation.definition.variable.powershell"
 						},
-						"4": {
+						"3": {
 							"name": "variable.other.member.powershell"
-						},
-						"6": {
-							"name": "punctuation.definition.comment.powershell"
-						},
-						"5": {
-							"name": "comment.line.powershell"
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "((\\$)(?i:(ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
+					"match": "(\\$)(?i:(ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?\\b"
 				},
 				{
 					"captures": {
-						"1": {
+						"0": {
 							"name": "variable.other.readwrite.powershell"
 						},
-						"2": {
+						"1": {
 							"name": "punctuation.definition.variable.powershell"
 						},
-						"3": {
+						"2": {
 							"name": "storage.modifier.scope.powershell"
 						},
 						"4": {
-							"name": "support.variable.drive.powershell"
-						},
-						"6": {
 							"name": "variable.other.member.powershell"
-						},
-						"8": {
-							"name": "punctuation.definition.comment.powershell"
-						},
-						"7": {
-							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$|@)(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:))?((?:\\p{L}|\\d|[_?])+))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "(?i:(\\$|@)(global|local|private|script|using|workflow):((?:\\p{L}|\\d|_)+))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?"
 				},
 				{
 					"captures": {
-						"1": {
+						"0": {
 							"name": "variable.other.readwrite.powershell"
 						},
-						"2": {
+						"1": {
 							"name": "punctuation.definition.variable.powershell"
 						},
-						"3": {
+						"2": {
 							"name": "punctuation.section.braces.begin.powershell"
 						},
-						"4": {
+						"3": {
 							"name": "storage.modifier.scope.powershell"
 						},
 						"5": {
-							"name": "support.variable.drive.powershell"
-						},
-						"7": {
 							"name": "punctuation.section.braces.end.powershell"
 						},
-						"8": {
+						"6": {
 							"name": "variable.other.member.powershell"
-						},
-						"10": {
-							"name": "punctuation.definition.comment.powershell"
-						},
-						"9": {
-							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(\\{)(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:))?([^}`]|`{|`})*(\\}))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "(?i:(\\$)(\\{)(global|local|private|script|using|workflow):([^}]*[^}`])(\\}))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?"
+				},
+				{
+					"captures": {
+						"0": {
+							"name": "variable.other.readwrite.powershell"
+						},
+						"1": {
+							"name": "punctuation.definition.variable.powershell"
+						},
+						"2": {
+							"name": "support.variable.drive.powershell"
+						},
+						"4": {
+							"name": "variable.other.member.powershell"
+						}
+					},
+					"match": "(?i:(\\$|@)((?:\\p{L}|\\d|_)+:)?((?:\\p{L}|\\d|_)+))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?"
+				},
+				{
+					"captures": {
+						"0": {
+							"name": "variable.other.readwrite.powershell"
+						},
+						"1": {
+							"name": "punctuation.definition.variable.powershell"
+						},
+						"2": {
+							"name": "punctuation.section.braces.begin.powershell"
+						},
+						"3": {
+							"name": "support.variable.drive.powershell"
+						},
+						"5": {
+							"name": "punctuation.section.braces.end.powershell"
+						},
+						"6": {
+							"name": "variable.other.member.powershell"
+						}
+					},
+					"match": "(?i:(\\$)(\\{)((?:\\p{L}|\\d|_)+:)?([^}]*[^}`])(\\}))((?:\\.(?:\\p{L}|\\d|_)+)*\\b)?"
 				}
 			]
 		},
@@ -959,6 +844,9 @@
 						},
 						"1": {
 							"name": "punctuation.definition.variable.powershell"
+						},
+						"3": {
+							"name": "variable.other.member.powershell"
 						}
 					},
 					"comment": "These are the other built-in constants.",
@@ -971,10 +859,13 @@
 						},
 						"1": {
 							"name": "punctuation.definition.variable.powershell"
+						},
+						"3": {
+							"name": "variable.other.member.powershell"
 						}
 					},
 					"comment": "Automatic variables are not constants, but they are read-only...",
-					"match": "(\\$)(?i:((?:[$^?])|(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b))"
+					"match": "(\\$)(?i:(\\$|\\^|\\?|_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This))\\b"
 				},
 				{
 					"captures": {
@@ -983,6 +874,9 @@
 						},
 						"1": {
 							"name": "punctuation.definition.variable.powershell"
+						},
+						"3": {
+							"name": "variable.other.member.powershell"
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
@@ -999,11 +893,11 @@
 						"2": {
 							"name": "storage.modifier.scope.powershell"
 						},
-						"3": {
-							"name": "support.variable.drive.powershell"
+						"4": {
+							"name": "variable.other.member.powershell"
 						}
 					},
-					"match": "(?i:(\\$)(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|[_?])+:))?((?:\\p{L}|\\d|_)+))"
+					"match": "(?i:(\\$|@)(global|local|private|script|using|workflow):((?:\\p{L}|\\d|_)+))"
 				},
 				{
 					"captures": {
@@ -1014,19 +908,53 @@
 							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "punctuation.section.braces.begin.powershell"
-						},
-						"3": {
 							"name": "storage.modifier.scope.powershell"
 						},
 						"4": {
-							"name": "support.variable.drive.powershell"
+							"name": "keyword.other.powershell"
 						},
-						"6": {
-							"name": "punctuation.section.braces.end.powershell"
+						"5": {
+							"name": "variable.other.member.powershell"
 						}
 					},
-					"match": "(?i:(\\$)(\\{)(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:))?([^}`]|`{|`})*(\\}))"
+					"match": "(?i:(\\$)(\\{)(global|local|private|script|using|workflow):([^}]*[^}`])(\\}))"
+				},
+				{
+					"captures": {
+						"0": {
+							"name": "variable.other.readwrite.powershell"
+						},
+						"1": {
+							"name": "punctuation.definition.variable.powershell"
+						},
+						"2": {
+							"name": "support.variable.drive.powershell"
+						},
+						"4": {
+							"name": "variable.other.member.powershell"
+						}
+					},
+					"match": "(?i:(\\$)((?:\\p{L}|\\d|_)+:)?((?:\\p{L}|\\d|_)+))"
+				},
+				{
+					"captures": {
+						"0": {
+							"name": "variable.other.readwrite.powershell"
+						},
+						"1": {
+							"name": "punctuation.definition.variable.powershell"
+						},
+						"2": {
+							"name": "punctuation.section.braces.begin"
+						},
+						"3": {
+							"name": "support.variable.drive.powershell"
+						},
+						"5": {
+							"name": "punctuation.section.braces.end"
+						}
+					},
+					"match": "(?i:(\\$)(\\{)((?:\\p{L}|\\d|_)+:)?([^}]*[^}`])(\\}))"
 				}
 			]
 		},
@@ -1096,10 +1024,13 @@
 					"include": "#variableNoProperty"
 				},
 				{
+					"include": "#variable"
+				},
+				{
 					"include": "#doubleQuotedStringEscapes"
 				},
 				{
-					"include": "#stringInterpolation"
+					"include": "#interpolation"
 				},
 				{
 					"match": "`\\s*$",
