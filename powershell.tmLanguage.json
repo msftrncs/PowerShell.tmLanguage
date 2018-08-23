@@ -4,7 +4,7 @@
 		"If you want to provide a fix or improvement, please create a pull request against the original repository.",
 		"Once accepted there, we are happy to receive an update request."
 	],
-	"version": "CUSTOM -  NOT FROM PowerShell/EditorSyntax",
+	"version": "https://github.com/PowerShell/EditorSyntax/commit/472c9447da4e3160bef211d5e1a0c2dee3cce497",
 	"name": "PowerShell",
 	"scopeName": "source.powershell",
 	"patterns": [
@@ -747,7 +747,7 @@
 						}
 					},
 					"comment": "These are special constants.",
-					"match": "((\\$)(?i:(False|Null|True))\\b)((#).*$\\n?)?"
+					"match": "((\\$)(?i:(:?(?:False|Null|True)))\\b)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -768,7 +768,7 @@
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "((\\$)(?i:(Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
+					"match": "((\\$)(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -789,7 +789,7 @@
 						}
 					},
 					"comment": "Automatic variables are not constants, but they are read-only. In monokai (default) color schema support.variable doesn't have color, so we use constant.",
-					"match": "((\\$)(?i:((?:[$^?])|(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "((\\$)(?i:((?:[$^?])|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -810,7 +810,7 @@
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "((\\$)(?i:(ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
+					"match": "((\\$)(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -836,7 +836,7 @@
 							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$|@)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:)|:)(?!:))?+((?:\\p{L}|\\d|[_?])+))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "((?i:(\\$|@)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?])+))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -868,7 +868,7 @@
 							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow):|((?:[^`{}]|`[`{}]?)+:)|:)(?!:))?+([^`{}]|`[`{}]?)+(\\}))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow):|((?:[^`{}:]|`[`{}]?)+:|:)))?+([^`{}]|`[`{}]?)+(\\}))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
 				}
 			]
 		},
