@@ -200,7 +200,7 @@
 			"name": "keyword.operator.comparison.powershell"
 		},
 		{
-			"match": "(?<!\\w)-(?i:join|split)(?!\\p{L})|!",
+			"match": "was (?<!\\w)-(?i:join|split)(?!\\p{L})|!",
 			"name": "keyword.operator.unary.powershell"
 		},
 		{
@@ -360,7 +360,7 @@
 			"patterns": [
 				{
 					"comment": "Verb-Noun pattern:",
-					"match": "(?:(\\p{L}|\\d|_|-|\\\\|\\:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)\\-.+?(?:\\.(?i:exe|cmd|bat|ps1))?\\b",
+					"match": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)\\-.+?(?:\\.(?i:exe|cmd|bat|ps1))?\\b",
 					"name": "support.function.powershell"
 				},
 				{
@@ -836,7 +836,25 @@
 							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$|@)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "((?i:(\\$)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "variable.other.readwrite.powershell"
+						},
+						"2": {
+							"name": "punctuation.definition.variable.powershell"
+						},
+						"3": {
+							"name": "storage.modifier.scope.powershell"
+						},
+						"4": {
+							"name": "support.variable.drive.powershell"
+						}
+					},
+					"comment": "splatting cannot have members and certain characters following, including no line comment",
+					"match": "((?i:(\\@)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))++)))(?![~`!@#$%^*<>\\]\\\\/+-])"
 				},
 				{
 					"captures": {
