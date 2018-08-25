@@ -196,23 +196,23 @@
 			"name": "keyword.operator.comparison.powershell"
 		},
 		{
-			"match": "(?:(?<!\\w)|\\G)-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
+			"match": "(?:(?<!\\w|!)|\\G)-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
 			"name": "keyword.operator.comparison.powershell"
 		},
 		{
-			"match": "(?:\\A|(?<!\\w))-(?i:join|split)(?!\\p{L})",
+			"match": "(?:(?<!\\w|!)|\\G)-(?i:join|split)(?!\\p{L})",
 			"name": "keyword.operator.unary.powershell"
 		},
 		{
-			"match": "(?:(?<!\\w)|\\G)-(?i:and|or|not|xor)(?!\\p{L})|!",
+			"match": "(?:(?<!\\w|!)|\\G)-(?i:and|or|not|xor)(?!\\p{L})|!",
 			"name": "keyword.operator.logical.powershell"
 		},
 		{
-			"match": "(?:(?<!\\w)|\\G)-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
+			"match": "(?:(?<!\\w|!)|\\G)-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
 			"name": "keyword.operator.bitwise.powershell"
 		},
 		{
-			"match": "(?:(?<!\\w)|\\G)-(?i:f)(?!\\p{L})",
+			"match": "(?:(?<!\\w|!)|\\G)-(?i:f)(?!\\p{L})",
 			"name": "keyword.operator.string-format.powershell"
 		},
 		{
@@ -220,11 +220,11 @@
 			"name": "keyword.operator.assignment.powershell"
 		},
 		{
-			"match": "\\|{2}|&{2}|;",
+			"match": "\\|\\||&&|;",
 			"name": "punctuation.terminator.statement.powershell"
 		},
 		{
-			"match": "&|(?<!\\w)\\.(?= )|`|,|\\|",
+			"match": "&|(?<!\\w|!)\\.(?= )|`|,|\\|",
 			"name": "keyword.operator.other.powershell"
 		},
 		{
@@ -294,31 +294,31 @@
 					},
 					"patterns": [
 						{
-							"include": "#variable"
+							"comment": "#variable"
 						},
 						{
-							"include": "#hashtable"
+							"comment": "#hashtable"
 						},
 						{
-							"include": "#scriptblock"
+							"comment": "#scriptblock"
 						},
 						{
-							"include": "#doubleQuotedStringEscapes"
+							"comment": "#doubleQuotedStringEscapes"
 						},
 						{
-							"include": "#doubleQuotedString"
+							"comment": "#doubleQuotedString"
 						},
 						{
-							"include": "#type"
+							"comment": "#type"
 						},
 						{
-							"include": "#numericConstant"
+							"comment": "#numericConstant"
 						},
 						{
-							"include": "#doubleQuotedString"
+							"comment": "#doubleQuotedString"
 						},
 						{
-							"comment": "$self"
+							"include": "$self"
 						},
 						{
 							"match": "(?i)\\b(mandatory|valuefrompipeline|valuefrompipelinebypropertyname|valuefromremainingarguments|position|parametersetname|defaultparametersetname|supportsshouldprocess|supportspaging|positionalbinding|helpuri|confirmimpact|helpmessage)\\b(?:\\s+)?(=)?",
