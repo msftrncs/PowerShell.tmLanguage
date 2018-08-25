@@ -67,7 +67,7 @@
 		},
 		{
 			"comment": "Needed to parse stuff correctly in 'argument mode'. (See about_parsing.)",
-			"include": "#doubleQuotedStringEscapes"
+			"include": "#argumentModeEscapes"
 		},
 		{
 			"begin": "(?<!')'",
@@ -91,7 +91,7 @@
 			]
 		},
 		{
-			"begin": "\\@(?:\"|\\x{201C}|\\x{201D})(?=$)",
+			"begin": "\\@(?:\"|\\x{201C}|\\x{201D})(?=\\s*$)",
 			"end": "^(?:\"|\\x{201C}|\\x{201D})@",
 			"name": "string.quoted.double.heredoc.powershell",
 			"patterns": [
@@ -107,7 +107,7 @@
 			]
 		},
 		{
-			"begin": "\\@'(?=$)",
+			"begin": "\\@'(?=\\s*$)",
 			"end": "^'@",
 			"name": "string.quoted.single.heredoc.powershell"
 		},
@@ -218,7 +218,7 @@
 			"name": "punctuation.terminator.statement.powershell"
 		},
 		{
-			"match": "&|(?<!\\w|!)\\.(?= )|`|,|\\|",
+			"match": "&|(?<!\\w|!)\\.(?= )|,|\\|",
 			"name": "keyword.operator.other.powershell"
 		},
 		{
@@ -243,6 +243,22 @@
 				},
 				{
 					"include": "#RequiresDirective"
+				}
+			]
+		},
+		"argumentModeEscapes": {
+			"patterns": [
+				{
+					"match": "`(?:['0abnfrvt\"\\x{201C}\\x{201D}$`]|(?=$))",
+					"name": "constant.character.escape.powershell"
+				},
+				{
+					"match": "`",
+					"name": "invalid.character.escape.powershell"
+				},
+				{
+					"match": "(?:\"|\\x{201C}|\\x{201D})(?:\"|\\x{201C}|\\x{201D})",
+					"name": "constant.character.escape.powershell"
 				}
 			]
 		},
@@ -413,8 +429,12 @@
 		"doubleQuotedStringEscapes": {
 			"patterns": [
 				{
-					"match": "`[0abnfrvt\"\\x{201C}\\x{201D}'$`]",
+					"match": "`(?:[0abnfrvt\"\\x{201C}\\x{201D}$`]|(?=$))",
 					"name": "constant.character.escape.powershell"
+				},
+				{
+					"match": "`",
+					"name": "invalid.character.escape.powershell"
 				},
 				{
 					"match": "(?:\"|\\x{201C}|\\x{201D})(?:\"|\\x{201C}|\\x{201D})",
@@ -425,8 +445,12 @@
 		"doubleQuotedHereStringEscapes": {
 			"patterns": [
 				{
-					"match": "`[0abnfrvt\"\\x{201C}\\x{201D}'$`]",
+					"match": "`(?:[0abnfrvt\"\\x{201C}\\x{201D}'$`]|(?=$))",
 					"name": "constant.character.escape.powershell"
+				},
+				{
+					"match": "`",
+					"name": "invalid.character.escape.powershell"
 				}
 			]
 		},
@@ -1072,7 +1096,7 @@
 			]
 		},
 		"doubleQuotedString": {
-			"begin": "(?<!`)(?:\"|\\x{201C}|\\x{201D})",
+			"begin": "(?:\"|\\x{201C}|\\x{201D})",
 			"beginCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.begin.powershell"
