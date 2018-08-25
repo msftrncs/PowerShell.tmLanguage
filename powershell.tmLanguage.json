@@ -91,15 +91,15 @@
 			]
 		},
 		{
-			"begin": "\\@\"(?=$)",
-			"end": "^\"@",
+			"begin": "\\@(?:\"|\\x{201C}|\\x{201D})(?=$)",
+			"end": "^(?:\"|\\x{201C}|\\x{201D})@",
 			"name": "string.quoted.double.heredoc.powershell",
 			"patterns": [
 				{
 					"include": "#variableNoProperty"
 				},
 				{
-					"include": "#doubleQuotedStringEscapes"
+					"include": "#doubleQuotedHereStringEscapes"
 				},
 				{
 					"include": "#stringInterpolation"
@@ -109,13 +109,7 @@
 		{
 			"begin": "\\@'(?=$)",
 			"end": "^'@",
-			"name": "string.quoted.single.heredoc.powershell",
-			"patterns": [
-				{
-					"match": "''",
-					"name": "constant.character.escape.powershell"
-				}
-			]
+			"name": "string.quoted.single.heredoc.powershell"
 		},
 		{
 			"include": "#numericConstant"
@@ -360,7 +354,7 @@
 			"patterns": [
 				{
 					"comment": "Verb-Noun pattern:",
-					"match": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)\\-.+?(?:\\.(?i:exe|cmd|bat|ps1))?\\b",
+					"match": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-.+?(?:\\.(?i:exe|cmd|bat|ps1))?\\b",
 					"name": "support.function.powershell"
 				},
 				{
@@ -419,11 +413,19 @@
 		"doubleQuotedStringEscapes": {
 			"patterns": [
 				{
-					"match": "`[0abnfrvt\"'$`]",
+					"match": "`[0abnfrvt\"\\x{201C}\\x{201D}'$`]",
 					"name": "constant.character.escape.powershell"
 				},
 				{
-					"match": "\"\"",
+					"match": "(?:\"|\\x{201C}|\\x{201D})(?:\"|\\x{201C}|\\x{201D})",
+					"name": "constant.character.escape.powershell"
+				}
+			]
+		},
+		"doubleQuotedHereStringEscapes": {
+			"patterns": [
+				{
+					"match": "`[0abnfrvt\"\\x{201C}\\x{201D}'$`]",
 					"name": "constant.character.escape.powershell"
 				}
 			]
@@ -1058,7 +1060,7 @@
 							"name": "keyword.operator.assignment.powershell"
 						}
 					},
-					"match": "\\b((?:\\'|\\\")?)(\\w+)((?:\\'|\\\")?)(?:\\s+)?(=)(?:\\s+)?",
+					"comment": "\\b((?:\\'|(?:\"|\\x{201C}|\\x{201D}))?)(\\w+)((?:\\'|(?:\"|\\x{201C}|\\x{201D}))?)(?:\\s+)?(=)(?:\\s+)?",
 					"name": "meta.hashtable.assignment.powershell"
 				},
 				{
@@ -1070,13 +1072,13 @@
 			]
 		},
 		"doubleQuotedString": {
-			"begin": "(?<!(?<!`)\")\"",
+			"begin": "(?<!`)(?:\"|\\x{201C}|\\x{201D})",
 			"beginCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.begin.powershell"
 				}
 			},
-			"end": "\"(?!\")",
+			"end": "(?:\"|\\x{201C}|\\x{201D})(?!\"|\\x{201C}|\\x{201D})",
 			"endCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.end.powershell"
@@ -1085,7 +1087,7 @@
 			"name": "string.quoted.double.powershell",
 			"patterns": [
 				{
-					"match": "(?i)\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,64}\\b"
+					"comment": "(?i)\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,64}\\b"
 				},
 				{
 					"include": "#variableNoProperty"
