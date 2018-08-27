@@ -159,11 +159,26 @@
 					"name": "keyword.control.powershell"
 				}
 			},
-			"end": "$",
+			"end": "$|\\|",
 			"patterns": [
 				{
-					"match": ".+",
+					"match": "[^\"\\x{201C}\\x{201D}]+?",
 					"name": "string.unquoted.powershell"
+				},
+				{
+					"begin": "(?:\"|\\x{201C}|\\x{201D})",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.powershell"
+						}
+					},
+					"end": "(?:\"|\\x{201C}|\\x{201D})(?!\"|\\x{201C}|\\x{201D})|$",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.powershell"
+						}
+					},
+					"name": "string.quoted.double.powershell"
 				}
 			],
 			"comment": "This should be moved to the repository at some point."
