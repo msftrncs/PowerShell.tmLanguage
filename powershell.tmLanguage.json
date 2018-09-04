@@ -145,11 +145,11 @@
 			"name": "support.function.powershell"
 		},
 		{
-			"match": "(?<!\\w|-|\\.)((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|while)|%|\\?)(?!\\w)",
+			"match": "(?<!\\w|-|\\.)((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|while)\\b(?![\\/.-]))",
 			"name": "keyword.control.powershell"
 		},
 		{
-			"match": "(?<!\\w|-|[^\\)]\\.)((?i:(foreach|where)(?!-object))|%|\\?)(?!\\w)",
+			"match": "(?<!\\w|-|[^\\)]\\.)((?i:(foreach|where)\\b(?![\\/.-])))",
 			"name": "keyword.control.powershell"
 		},
 		{
@@ -225,7 +225,7 @@
 			"name": "keyword.operator.string-format.powershell"
 		},
 		{
-			"match": "[+%*/-]?=|[+/*%-]",
+			"match": "[+%*/-]?=|[+/*%-](?!\\p{L})",
 			"name": "keyword.operator.assignment.powershell"
 		},
 		{
@@ -233,12 +233,12 @@
 			"name": "punctuation.terminator.statement.powershell"
 		},
 		{
-			"match": "&|(?<!\\w|!)\\.(?= )|,|\\|",
+			"match": "&|(?<!\\w|!)(?<!\\.)\\.(?=\\s)|,|\\|",
 			"name": "keyword.operator.other.powershell"
 		},
 		{
 			"comment": "This is very imprecise, is there a syntax for 'must come after...' ",
-			"match": "(?<!\\s|^)\\.\\.(?=\\-?\\d|\\(|\\$)",
+			"match": "(?<!^)\\s*\\.\\.\\s*(?=\\-?\\d|\\(|\\$)",
 			"name": "keyword.operator.range.powershell"
 		}
 	],
@@ -444,7 +444,7 @@
 		"doubleQuotedStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[0abnfrvt\"\\x{201C}\\x{201D}$`]|(?=$))",
+					"match": "`(?:[0abnfrvt\\s\"\\x{201C}\\x{201D}$`]|(?=$))",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -460,7 +460,7 @@
 		"doubleQuotedHereStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[0abnfrvt\"\\x{201C}\\x{201D}'$`]|(?=$))",
+					"match": "`(?:[0abnfrvt\\s\"\\x{201C}\\x{201D}'$`]|(?=$))",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -739,6 +739,7 @@
 			]
 		},
 		"type": {
+			"comment": "This is used by both type and index references",
 			"begin": "\\[",
 			"beginCaptures": {
 				"0": {
@@ -762,8 +763,13 @@
 			},
 			"patterns": [
 				{
-					"match": "(?!\\d+|\\.)(?:[\\p{L}\\p{N}.`])+",
-					"name": "storage.type.powershell"
+					"match": "(?!\\d+|\\.)(?:[\\p{L}\\p{N}.]|(``)|`)+",
+					"name": "storage.type.powershell",
+					"captures": {
+						"1": {
+							"name": "constant.character.escape.powershell"
+						}
+					}
 				},
 				{
 					"include": "$self"
