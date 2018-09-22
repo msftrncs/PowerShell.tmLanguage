@@ -127,18 +127,21 @@
 					"name": "punctuation.section.group.begin.powershell"
 				}
 			},
-			"end": "(\\))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\))(?:(\\.|::)((?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.group.end.powershell"
 				},
 				"2": {
-					"name": "variable.other.member.powershell"
-				},
-				"4": {
-					"name": "punctuation.definition.comment.powershell"
+					"name": "punctuation.accessor.powershell"
 				},
 				"3": {
+					"name": "variable.other.member.powershell"
+				},
+				"5": {
+					"name": "punctuation.definition.comment.powershell"
+				},
+				"4": {
 					"name": "comment.line.powershell"
 				}
 			},
@@ -225,7 +228,7 @@
 					"name": "keyword.operator.comparison.powershell"
 				},
 				{
-					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:join|split)(?!\\p{L})|--|\\+\\+",
+					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:join|[ic]?split)(?!\\p{L})|--|\\+\\+",
 					"name": "keyword.operator.unary.powershell"
 				},
 				{
@@ -303,19 +306,10 @@
 					"name": "support.function.attribute.powershell"
 				}
 			},
-			"end": "(\\])((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "\\]",
 			"endCaptures": {
-				"1": {
+				"0": {
 					"name": "punctuation.section.bracket.end.powershell"
-				},
-				"2": {
-					"name": "variable.other.member.powershell"
-				},
-				"4": {
-					"name": "punctuation.definition.comment.powershell"
-				},
-				"3": {
-					"name": "comment.line.powershell"
 				}
 			},
 			"name": "meta.attribute.powershell",
@@ -767,11 +761,11 @@
 				"1": {
 					"name": "punctuation.section.bracket.end.powershell"
 				},
-				"3": {
-					"name": "variable.other.member.powershell"
-				},
 				"2": {
 					"name": "punctuation.accessor.powershell"
+				},
+				"3": {
+					"name": "variable.other.member.powershell"
 				},
 				"5": {
 					"name": "punctuation.definition.comment.powershell"
