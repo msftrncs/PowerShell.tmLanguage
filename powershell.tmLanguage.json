@@ -127,10 +127,19 @@
 					"name": "punctuation.section.group.begin.powershell"
 				}
 			},
-			"end": "\\)",
+			"end": "(\\))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
-				"0": {
+				"1": {
 					"name": "punctuation.section.group.end.powershell"
+				},
+				"2": {
+					"name": "variable.other.member.powershell"
+				},
+				"4": {
+					"name": "punctuation.definition.comment.powershell"
+				},
+				"3": {
+					"name": "comment.line.powershell"
 				}
 			},
 			"name": "meta.group.array-expression.powershell",
@@ -1100,10 +1109,19 @@
 					"name": "punctuation.section.braces.begin.powershell"
 				}
 			},
-			"end": "(\\})",
+			"end": "(\\})((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.braces.end.powershell"
+				},
+				"2": {
+					"name": "variable.other.member.powershell"
+				},
+				"4": {
+					"name": "punctuation.definition.comment.powershell"
+				},
+				"3": {
+					"name": "comment.line.powershell"
 				}
 			},
 			"name": "meta.hashtable.powershell",
