@@ -66,6 +66,9 @@
 			"include": "#scriptblock"
 		},
 		{
+			"include": "#operators"
+		},
+		{
 			"comment": "Needed to parse stuff correctly in 'argument mode'. (See about_parsing.)",
 			"include": "#argumentModeEscapes"
 		},
@@ -198,51 +201,55 @@
 				}
 			},
 			"comment": "capture should be entity.name.type, but it doesn't provide a good color in the default schema.",
-			"match": "(?<!\\w|-)((?i:class)|%|\\?)(?:\\s)+((?:\\p{L}|\\d|_|-|)+)\\b"
-		},
-		{
-			"match": "(?:(?<!\\w)|\\G)-(?i:is(?:not)?|as)(?!\\p{L})",
-			"name": "keyword.operator.comparison.powershell"
-		},
-		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
-			"name": "keyword.operator.comparison.powershell"
-		},
-		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:join|split)(?!\\p{L})",
-			"name": "keyword.operator.unary.powershell"
-		},
-		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:and|or|not|xor)(?!\\p{L})|!",
-			"name": "keyword.operator.logical.powershell"
-		},
-		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
-			"name": "keyword.operator.bitwise.powershell"
-		},
-		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:f)(?!\\p{L})",
-			"name": "keyword.operator.string-format.powershell"
-		},
-		{
-			"match": "[+%*/-]?=|[+/*%-](?!\\p{L})",
-			"name": "keyword.operator.assignment.powershell"
-		},
-		{
-			"match": "\\|\\||&&|;",
-			"name": "punctuation.terminator.statement.powershell"
-		},
-		{
-			"match": "&|(?<!\\w|!)(?<!\\.)\\.(?=\\s)|,|\\|",
-			"name": "keyword.operator.other.powershell"
-		},
-		{
-			"comment": "This is very imprecise, is there a syntax for 'must come after...' ",
-			"match": "(?<!^)\\s*\\.\\.\\s*(?=\\-?\\d|\\(|\\$)",
-			"name": "keyword.operator.range.powershell"
+			"match": "(?<!\\p{L}|-)((?i:class))(?:\\s)+((?:\\p{L}|\\d|_|-|)+)\\b"
 		}
 	],
 	"repository": {
+		"operators": {
+			"patterns": [
+				{
+					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:is(?:not)?|as)(?!\\p{L})",
+					"name": "keyword.operator.comparison.powershell"
+				},
+				{
+					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
+					"name": "keyword.operator.comparison.powershell"
+				},
+				{
+					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:join|split)(?!\\p{L})|--|\\+\\+",
+					"name": "keyword.operator.unary.powershell"
+				},
+				{
+					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:and|or|not|xor)(?!\\p{L})|!",
+					"name": "keyword.operator.logical.powershell"
+				},
+				{
+					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
+					"name": "keyword.operator.bitwise.powershell"
+				},
+				{
+					"match": "(?:\\G|(?<!\\p{L}|!))-(?i:f)(?!\\p{L})",
+					"name": "keyword.operator.string-format.powershell"
+				},
+				{
+					"match": "[+%*/-]?=|[+/*%]|-(?!\\p{L}|-%)",
+					"name": "keyword.operator.assignment.powershell"
+				},
+				{
+					"match": "\\|\\||&&|;",
+					"name": "punctuation.terminator.statement.powershell"
+				},
+				{
+					"match": "&|(?<!\\p{L}|!)(?<!\\.)\\.(?=\\s)|,|\\|",
+					"name": "keyword.operator.other.powershell"
+				},
+				{
+					"comment": "This is very imprecise, is there a syntax for 'must come after...' ",
+					"match": "(?<!^)\\s*\\.\\.\\s*(?=\\-?\\d|\\(|\\$)",
+					"name": "keyword.operator.range.powershell"
+				}
+			]
+		},
 		"commentLine": {
 			"begin": "(?<![`\\\\\\p{L}0-9_*\\[\\]/.?=:~!$^%+-])(#)#*",
 			"captures": {
@@ -746,18 +753,21 @@
 					"name": "punctuation.section.bracket.begin.powershell"
 				}
 			},
-			"end": "(\\])((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\])(?:(\\.|::)((?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.bracket.end.powershell"
 				},
-				"2": {
+				"3": {
 					"name": "variable.other.member.powershell"
 				},
-				"4": {
+				"2": {
+					"name": "punctuation.accessor.powershell"
+				},
+				"5": {
 					"name": "punctuation.definition.comment.powershell"
 				},
-				"3": {
+				"4": {
 					"name": "comment.line.powershell"
 				}
 			},
@@ -883,7 +893,15 @@
 							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"begin": "((?i:(\\$)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?",
+					"patterns":[
+						{
+							"include": "#operators"
+						}
+					],
+					"name": "meta.test",
+					"end": "(?!\\G-)",
+					"applyEndPatternLast": 1
 				},
 				{
 					"captures": {
