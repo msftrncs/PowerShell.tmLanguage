@@ -70,13 +70,14 @@
 			"include": "#argumentModeEscapes"
 		},
 		{
-			"begin": "(?<!')'",
+			"begin": "['\\x{2018}-\\x{201B}]",
 			"beginCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.begin.powershell"
 				}
 			},
-			"end": "'(?!')",
+			"end": "['\\x{2018}-\\x{201B}]",
+			"applyEndPatternLast": true,
 			"endCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.end.powershell"
@@ -85,14 +86,14 @@
 			"name": "string.quoted.single.powershell",
 			"patterns": [
 				{
-					"match": "''",
+					"match": "['\\x{2018}-\\x{201B}]{2}",
 					"name": "constant.character.escape.powershell"
 				}
 			]
 		},
 		{
-			"begin": "\\@(?:\"|\\x{201C}|\\x{201D})(?=\\s*$)",
-			"end": "^(?:\"|\\x{201C}|\\x{201D})@",
+			"begin": "\\@(?:[\"\\x{201C}-\\x{201E}])(?=\\s*$)",
+			"end": "^(?:[\"\\x{201C}-\\x{201E}])@",
 			"name": "string.quoted.double.heredoc.powershell",
 			"patterns": [
 				{
@@ -107,8 +108,8 @@
 			]
 		},
 		{
-			"begin": "\\@'(?=\\s*$)",
-			"end": "^'@",
+			"begin": "\\@['\\x{2018}-\\x{201B}](?=\\s*$)",
+			"end": "^['\\x{2018}-\\x{201B}]@",
 			"name": "string.quoted.single.heredoc.powershell"
 		},
 		{
@@ -171,17 +172,18 @@
 			"end": "$|\\|",
 			"patterns": [
 				{
-					"match": "[^\"\\x{201C}\\x{201D}]+?",
+					"match": "[^\"\\x{201C}-\\x{201E}]+?",
 					"name": "string.unquoted.powershell"
 				},
 				{
-					"begin": "(?:\"|\\x{201C}|\\x{201D})",
+					"begin": "(?:[\"\\x{201C}-\\x{201E}])",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.powershell"
 						}
 					},
-					"end": "(?:\"|\\x{201C}|\\x{201D})(?!\"|\\x{201C}|\\x{201D})|$",
+					"end": "(?:[\"\\x{201C}-\\x{201E}])|$",
+					"applyEndPatternLast": true,
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.end.powershell"
@@ -273,7 +275,7 @@
 		"argumentModeEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:['0abnfrvt\"\\x{201C}\\x{201D}$`]|(?=$))",
+					"match": "`(?:['\\x{2018}-\\x{201B}0abnfrvt\"\\x{201C}-\\x{201E}$`]|(?=$))",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -281,7 +283,7 @@
 					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"match": "(?:\"|\\x{201C}|\\x{201D})(?:\"|\\x{201C}|\\x{201D})",
+					"match": "(?:[\"\\x{201C}-\\x{201E}]){2}",
 					"name": "constant.character.escape.powershell"
 				}
 			]
@@ -366,13 +368,14 @@
 							}
 						},
 						{
-							"begin": "(?<!')'",
+							"begin": "['\\x{2018}-\\x{201B}]",
 							"beginCaptures": {
 								"0": {
 									"name": "punctuation.definition.string.begin.powershell"
 								}
 							},
-							"end": "'(?!')",
+							"end": "['\\x{2018}-\\x{201B}]",
+							"applyEndPatternLast": true,
 							"endCaptures": {
 								"0": {
 									"name": "punctuation.definition.string.end.powershell"
@@ -381,7 +384,7 @@
 							"name": "string.quoted.single.powershell",
 							"patterns": [
 								{
-									"match": "''",
+									"match": "['\\x{2018}-\\x{201B}]{2}",
 									"name": "constant.character.escape.powershell"
 								}
 							]
@@ -453,7 +456,7 @@
 		"doubleQuotedStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[0abnfrvt\\s\"\\x{201C}\\x{201D}$`]|(?=$))",
+					"match": "`(?:[0abnfrvt\\s\"\\x{201C}-\\x{201E}$`]|(?=$))",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -461,7 +464,7 @@
 					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"match": "(?:\"|\\x{201C}|\\x{201D})(?:\"|\\x{201C}|\\x{201D})",
+					"match": "(?:[\"\\x{201C}-\\x{201E}]){2}",
 					"name": "constant.character.escape.powershell"
 				}
 			]
@@ -469,7 +472,7 @@
 		"doubleQuotedHereStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[0abnfrvt\\s\"\\x{201C}\\x{201D}'$`]|(?=$))",
+					"match": "`(?:[0abnfrvt\\s\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$`]|(?=$))",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -921,7 +924,7 @@
 							"name": "punctuation.definition.variable.powershell"
 						},
 						"3": {
-							"name": "punctuation.section.braces.begin.powershell"
+							"name": "punctuation.definition.variable.braces.begin.powershell"
 						},
 						"4": {
 							"name": "storage.modifier.scope.powershell"
@@ -930,7 +933,7 @@
 							"name": "support.variable.drive.powershell"
 						},
 						"7": {
-							"name": "punctuation.section.braces.end.powershell"
+							"name": "punctuation.definition.variable.braces.end.powershell"
 						},
 						"8": {
 							"name": "variable.other.member.powershell"
@@ -1135,13 +1138,14 @@
 			]
 		},
 		"doubleQuotedString": {
-			"begin": "(?:\"|\\x{201C}|\\x{201D})",
+			"begin": "(?:[\"\\x{201C}-\\x{201E}])",
 			"beginCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.begin.powershell"
 				}
 			},
-			"end": "(?:\"|\\x{201C}|\\x{201D})(?!\"|\\x{201C}|\\x{201D})",
+			"end": "(?:[\"\\x{201C}-\\x{201E}])",
+			"applyEndPatternLast": true,
 			"endCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.end.powershell"
