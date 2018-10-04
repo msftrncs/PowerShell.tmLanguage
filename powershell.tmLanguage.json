@@ -66,20 +66,18 @@
 			"include": "#scriptblock"
 		},
 		{
-			"include": "#operators"
-		},
-		{
 			"comment": "Needed to parse stuff correctly in 'argument mode'. (See about_parsing.)",
 			"include": "#argumentModeEscapes"
 		},
 		{
-			"begin": "(?<!')'",
+			"begin": "'|\\x{2018}|\\x{2019}",
 			"beginCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.begin.powershell"
 				}
 			},
-			"end": "'(?!')",
+			"end": "'|\\x{2018}|\\x{2019}",
+			"applyEndPatternLast": true,
 			"endCaptures": {
 				"0": {
 					"name": "punctuation.definition.string.end.powershell"
@@ -88,7 +86,7 @@
 			"name": "string.quoted.single.powershell",
 			"patterns": [
 				{
-					"match": "''",
+					"match": "(?:'|\\x{2018}|\\x{2019}){2}",
 					"name": "constant.character.escape.powershell"
 				}
 			]
@@ -110,8 +108,8 @@
 			]
 		},
 		{
-			"begin": "\\@'(?=\\s*$)",
-			"end": "^'@",
+			"begin": "\\@(?:'|\\x{2018}|\\x{2019})(?=\\s*$)",
+			"end": "^(?:'|\\x{2018}|\\x{2019})@",
 			"name": "string.quoted.single.heredoc.powershell"
 		},
 		{
@@ -187,7 +185,8 @@
 							"name": "punctuation.definition.string.begin.powershell"
 						}
 					},
-					"end": "(?:\"|\\x{201C}|\\x{201D})(?!\"|\\x{201C}|\\x{201D})|$",
+					"end": "(?:\"|\\x{201C}|\\x{201D})|$",
+					"applyEndPatternLast": true,
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.end.powershell"
@@ -197,6 +196,9 @@
 				}
 			],
 			"comment": "This should be moved to the repository at some point."
+		},
+		{
+			"include": "#operators"
 		},
 		{
 			"comment": "This should only be relevant inside a class but will require a rework of how classes are matched. This is a temp fix.",
@@ -297,7 +299,7 @@
 			]
 		},
 		"attribute": {
-			"begin": "(\\[)\\s*\\b(?i)(cmdletbinding|alias|outputtype|parameter|validatenotnull|validatenotnullorempty|validatecount|validateset|allownull|allowemptycollection|allowemptystring|validatescript|validaterange|validatepattern|validatelength)\\b",
+			"begin": "(\\[)\\s*\\b(?i)(cmdletbinding|alias|outputtype|parameter|validatenotnull|validatenotnullorempty|validatecount|validateset|allownull|allowemptycollection|allowemptystring|validatescript|validaterange|validatepattern|validatelength|SupportsWildcards|PSDefaultValue)\\b",
 			"beginCaptures": {
 				"1": {
 					"name": "punctuation.section.bracket.begin.powershell"
@@ -462,7 +464,7 @@
 					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"match": "(?:\"|\\x{201C}|\\x{201D})(?:\"|\\x{201C}|\\x{201D})",
+					"match": "(?:\"|\\x{201C}|\\x{201D}){2}",
 					"name": "constant.character.escape.powershell"
 				}
 			]
@@ -777,7 +779,7 @@
 			"patterns": [
 				{
 					"match": "(?!\\d+|\\.)(?:[\\p{L}\\p{N}.]|(``)|`)+",
-					"name": "storage.type.powershell",
+					"name": "entity.name.type.powershell",
 					"captures": {
 						"1": {
 							"name": "constant.character.escape.powershell"
@@ -903,7 +905,7 @@
 						}
 					],
 					"name": "meta.test",
-					"end": "(?!\\G-)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": 1
 				},
 				{
