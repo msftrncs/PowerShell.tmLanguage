@@ -1112,22 +1112,8 @@
 			"name": "meta.hashtable.powershell",
 			"patterns": [
 				{
-					"captures": {
-						"1": {
-							"name": "punctuation.definition.string.begin.powershell"
-						},
-						"2": {
-							"name": "variable.other.readwrite.powershell"
-						},
-						"3": {
-							"name": "punctuation.definition.string.end.powershell"
-						},
-						"4": {
-							"name": "keyword.operator.assignment.powershell"
-						}
-					},
-					"comment": "\\b((?:\\'|(?:\"|\\x{201C}|\\x{201D}))?)(\\w+)((?:\\'|(?:\"|\\x{201C}|\\x{201D}))?)(?:\\s+)?(=)(?:\\s+)?",
-					"name": "meta.hashtable.assignment.powershell"
+					"match": "\\b(\\w+)(?=\\s*=)",
+					"name": "variable.other.member.powershell"
 				},
 				{
 					"comment": "#scriptblock"
