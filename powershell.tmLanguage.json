@@ -205,10 +205,9 @@
 					"name": "storage.type.powershell"
 				},
 				"2": {
-					"name": "entity.name.function"
+					"name": "entity.name.class.powershell"
 				}
 			},
-			"comment": "capture should be entity.name.type, but it doesn't provide a good color in the default schema.",
 			"match": "(?<!\\w|-)((?i:class)|%|\\?)(?:\\s)+((?:\\p{L}|\\d|_|-|)+)\\b"
 		},
 		{
@@ -234,6 +233,10 @@
 		{
 			"match": "(?:(?<!\\w|!)|\\G)-(?i:f)(?!\\p{L})",
 			"name": "keyword.operator.string-format.powershell"
+		},
+		{
+			"match": "(?:(?<!\\w|!)|\\G)-\\p{L}\\w*",
+			"name": "entity.name.parameter.powershell"
 		},
 		{
 			"match": "[+%*/-]?=|[+/*%-](?!\\p{L})",
@@ -758,25 +761,36 @@
 					"name": "punctuation.section.bracket.begin.powershell"
 				}
 			},
-			"end": "(\\])((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\])(?:(?:(\\.|::)((?:\\p{L}|\\d|_)+))*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.bracket.end.powershell"
 				},
-				"2": {
+				"3": {
 					"name": "variable.other.member.powershell"
 				},
-				"4": {
+				"2": {
+					"name": "punctuation.accessor.powershell"
+				},
+				"5": {
 					"name": "punctuation.definition.comment.powershell"
 				},
-				"3": {
+				"4": {
 					"name": "comment.line.powershell"
 				}
 			},
 			"patterns": [
 				{
+					"match": "\\G(?i:string|pscustomobject|hashtable|ordered|single|double|decimal|byte|boolean|char|valuetype|datetime|array)",
+					"name": "support.type.powershell"
+				},
+				{
+					"match": "\\G(?i:regex|xml)",
+					"name": "support.class.powershell"
+				},
+				{
 					"match": "(?!\\d+|\\.)(?:[\\p{L}\\p{N}.]|(``)|`)+",
-					"name": "storage.type.powershell",
+					"name": "entity.name.type.powershell",
 					"captures": {
 						"1": {
 							"name": "constant.character.escape.powershell"
