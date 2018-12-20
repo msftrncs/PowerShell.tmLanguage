@@ -169,7 +169,7 @@
 					"name": "keyword.control.powershell"
 				}
 			},
-			"end": "$|\\|",
+			"end": "$|(?=\\|)",
 			"patterns": [
 				{
 					"match": "[^\"\\x{201C}-\\x{201E}]+?",
@@ -792,12 +792,16 @@
 					"name": "punctuation.section.bracket.end.powershell"
 				},
 				{
-					"match": "(?i:string|pscustomobject|hashtable|ordered|single|float|double|decimal|s?byte|boolean|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?=\\]|\\[])",
+					"match": "(?i:type|string|pscustomobject|hashtable|ordered|single|float|double|decimal|s?byte|boolean|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?=\\]|\\[])",
 					"name": "support.type.powershell"
 				},
 				{
 					"match": "(?i:regex|xml)(?=\\]|\\[])",
 					"name": "support.class.powershell"
+				},
+				{
+					"match": "(?i:ref)(?=\\])",
+					"name": "storage.modifier.powershell"
 				},
 				{
 					"match": "(?:[\\p{L}_]\\w*\\.?)+(?:`\\d+)?",
@@ -825,6 +829,17 @@
 					}
 				},
 				{
+					"match": "\\G(\\.|::)([\\p{L}_]\\w*)(?=\\()",
+					"captures": {
+						"1": {
+							"name": "punctuation.accessor.powershell"
+						},
+						"2": {
+							"name": "variable.other.object.property.powershell"
+						}
+					}
+				},
+				{
 					"begin": "\\G(\\.|::)([\\p{L}_]\\w*)",
 					"end": "(?!\\G)",
 					"beginCaptures": {
@@ -832,7 +847,7 @@
 							"name": "punctuation.accessor.powershell"
 						},
 						"2": {
-							"name": "variable.other.member.powershell"
+							"name": "variable.other.property.powershell"
 						}
 					},
 					"patterns": [
@@ -869,7 +884,7 @@
 				{
 					"captures": {
 						"1": {
-							"name": "support.constant.variable.powershell"
+							"name": "variable.language.builtin.powershell"
 						},
 						"2": {
 							"name": "punctuation.definition.variable.powershell"
@@ -890,7 +905,7 @@
 				{
 					"captures": {
 						"1": {
-							"name": "support.variable.automatic.powershell"
+							"name": "variable.language.builtin.powershell"
 						},
 						"2": {
 							"name": "punctuation.definition.variable.powershell"
@@ -1061,20 +1076,19 @@
 				{
 					"captures": {
 						"0": {
-							"name": "support.constant.variable.powershell"
+							"name": "variable.language.builtin.powershell"
 						},
 						"1": {
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
 					"name": "meta.embedded.interpolated.powershell",
-					"comment": "These are the other built-in constants.",
 					"match": "(\\$)(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)))\\b"
 				},
 				{
 					"captures": {
 						"0": {
-							"name": "support.variable.automatic.powershell"
+							"name": "variable.language.builtin.powershell"
 						},
 						"1": {
 							"name": "punctuation.definition.variable.powershell"
@@ -1087,7 +1101,7 @@
 				{
 					"captures": {
 						"0": {
-							"name": "variable.language.powershell"
+							"name": "variable.language.builtin.powershell"
 						},
 						"1": {
 							"name": "punctuation.definition.variable.powershell"
