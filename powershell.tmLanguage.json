@@ -208,18 +208,61 @@
 					"name": "entity.name.class.powershell"
 				}
 			},
-			"match": "(?<!\\w|-)((?i:class)|%|\\?)(?:\\s)+((?:\\p{L}|\\d|_|-|)+)\\b"
+			"match": "(?<!\\w|-)((?i:class))(?:\\s)+([\\p{L}_]\\w*)\\b"
 		},
 		{
-			"captures": {
+			"begin": "(?<!\\w|-)((?i:enum))(?=\\s)",
+			"beginCaptures": {
 				"1": {
 					"name": "storage.type.powershell"
-				},
-				"2": {
-					"name": "entity.name.type.powershell"
 				}
 			},
-			"match": "(?<!\\w|-)((?i:enum)|%|\\?)(?:\\s)+((?:\\p{L}|\\d|_|-|)+)\\b"
+			"end": "(?=.)|(?<=})",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"match": "(?<!})\\s+"
+				},
+				{
+					"begin": "\\b([\\p{L}_]\\w*)\\b",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.type.powershell"
+						}
+					},
+					"end": "(?=.)|(?<=})",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"match": "(?<!})\\s+"
+						},
+						{
+							"begin": "{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.enumeration.powershell",
+							"patterns": [
+								{
+									"match": "\\b(\\w+)(?=\\s*=)",
+									"name": "variable.other.property.powershell"
+								},
+								{
+									"include": "$self"
+								}
+							]
+						}
+					]
+				}
+			]
 		},
 		{
 			"match": "(?:(?<!\\w)|\\G)-(?i:is(?:not)?|as)(?!\\p{L})",
@@ -303,7 +346,7 @@
 			]
 		},
 		"attribute": {
-			"begin": "(\\[)\\s*\\b(?i)(cmdletbinding|alias|outputtype|parameter|validatenotnull|validatenotnullorempty|validatecount|validateset|allownull|allowemptycollection|allowemptystring|supportswildcards|validatescript|validaterange|validatepattern|validatelength)\\b",
+			"begin": "(\\[)\\s*\\b(?i)(cmdletbinding|alias|flags|outputtype|parameter|validatenotnull|validatenotnullorempty|validatecount|validateset|allownull|allowemptycollection|allowemptystring|supportswildcards|validatescript|validaterange|validatepattern|validatelength)\\b",
 			"beginCaptures": {
 				"1": {
 					"name": "punctuation.section.bracket.begin.powershell"
@@ -803,8 +846,8 @@
 					"name": "punctuation.section.bracket.end.powershell"
 				},
 				{
-					"match": "(?i:type|string|pscustomobject|hashtable|ordered|single|float|double|decimal|s?byte|boolean|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long|flags\\(\\))(?=\\]|\\[])",
-					"name": "support.type.powershell"
+					"match": "(?i:type|void|string|pscustomobject|hashtable|ordered|single|float|double|decimal|s?byte|boolean|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?=\\]|\\[])",
+					"name": "support.type.primitive.powershell"
 				},
 				{
 					"match": "(?i:regex|xml)(?=\\]|\\[])",
@@ -840,18 +883,28 @@
 					}
 				},
 				{
-					"match": "\\G(\\.|::)([\\p{L}_]\\w*)(?=\\()",
-					"captures": {
+					"begin": "\\G(\\.|::)([\\p{L}_]\\w*)(?=\\.)(?!\\.\\.)",
+					"end": "(?!\\G)",
+					"beginCaptures": {
 						"1": {
 							"name": "punctuation.accessor.powershell"
 						},
 						"2": {
 							"name": "variable.other.object.property.powershell"
 						}
-					}
+					},
+					"patterns": [
+						{
+							"include": "#commentLine",
+							"comment": "needs to include block comments too"
+						},
+						{
+							"include": "#members"
+						}
+					]
 				},
 				{
-					"begin": "\\G(\\.|::)([\\p{L}_]\\w*)",
+					"begin": "\\G(\\.|::)([\\p{L}_]\\w*)(?!\\.)",
 					"end": "(?!\\G)",
 					"beginCaptures": {
 						"1": {
@@ -1195,7 +1248,7 @@
 			"patterns": [
 				{
 					"match": "\\b(\\w+)(?=\\s*=)",
-					"name": "variable.other.member.powershell"
+					"name": "variable.other.property.powershell"
 				},
 				{
 					"comment": "#scriptblock"
