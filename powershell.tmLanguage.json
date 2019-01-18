@@ -125,7 +125,7 @@
 					"name": "punctuation.section.group.begin.powershell"
 				}
 			},
-			"end": "(\\))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.group.end.powershell"
@@ -355,7 +355,7 @@
 					"name": "support.function.attribute.powershell"
 				}
 			},
-			"end": "(\\])((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\])((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.bracket.end.powershell"
@@ -569,7 +569,7 @@
 				}
 			},
 			"name": "interpolated.simple.source.powershell",
-			"end": "(\\))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.group.end.powershell"
@@ -604,7 +604,7 @@
 				}
 			},
 			"name": "meta.group.complex.subexpression.powershell",
-			"end": "(\\))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.group.end.powershell"
@@ -794,7 +794,7 @@
 					"name": "punctuation.section.braces.begin.powershell"
 				}
 			},
-			"end": "(})((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(})((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.braces.end.powershell"
@@ -964,7 +964,7 @@
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "((\\$)(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
+					"match": "((\\$)(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?\\b)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -984,7 +984,7 @@
 							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((\\$)(?i:((?:[$^?])|:\\?|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "((\\$)(?i:((?:[$^?])|:\\?|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -1005,7 +1005,7 @@
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "((\\$)(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?\\b)((#).*$\\n?)?"
+					"match": "((\\$)(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?\\b)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -1031,7 +1031,7 @@
 							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "((?i:(\\$)(?:(?:(global|local|private|script|using|workflow):|((?:[\\p{L}_]\\w*):|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?)((#).*$\\n?)?"
 				},
 				{
 					"captures": {
@@ -1049,7 +1049,7 @@
 						}
 					},
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "((?i:(\\@)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))++)))(?![~`!@#$%^*<>\\]\\\\/+-])"
+					"match": "((?i:(\\@)(?:(?:(global|local|private|script|using|workflow):|((?:[\\p{L}_]\\w*):|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))++)))(?![~`!@#$%^*<>\\]\\\\/+-])"
 				},
 				{
 					"captures": {
@@ -1081,7 +1081,7 @@
 							"name": "comment.line.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow):|((?:[^`{}:]|`[`{}]?)+:|:)))?+([^`{}]|`[`{}]?)+(\\}))((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?)((#).*$\\n?)?"
+					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow):|((?:[^`{}:]|`[`{}]?)+:|:)))?+([^`{}]|`[`{}]?)+(\\}))((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?)((#).*$\\n?)?"
 				}
 			]
 		},
@@ -1191,7 +1191,7 @@
 						}
 					},
 					"name": "meta.embedded.interpolated.powershell",
-					"match": "(?i:(\\$)(?:(?:(global|local|private|script|using|workflow):|((?:\\p{L}|\\d|_)+:|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))"
+					"match": "(?i:(\\$)(?:(?:(global|local|private|script|using|workflow):|((?:[\\p{L}_]\\w*):|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+))"
 				},
 				{
 					"captures": {
@@ -1229,7 +1229,7 @@
 					"name": "punctuation.section.braces.begin.powershell"
 				}
 			},
-			"end": "(\\})((?:(?:\\.|::)(?:\\p{L}|\\d|_)+)*\\b)?((#).*$\\n?)?",
+			"end": "(\\})((?:(?:\\.|::)(?:[\\p{L}_]\\w*))*\\b)?((#).*$\\n?)?",
 			"endCaptures": {
 				"1": {
 					"name": "punctuation.section.braces.end.powershell"
