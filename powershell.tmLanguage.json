@@ -211,6 +211,17 @@
 			"match": "(?<!\\w|-)((?i:class)|%|\\?)(?:\\s)+((?:\\p{L}|\\d|_|-|)+)\\b"
 		},
 		{
+			"captures": {
+				"1": {
+					"name": "storage.type.powershell"
+				},
+				"2": {
+					"name": "entity.name.type.powershell"
+				}
+			},
+			"match": "(?<!\\w|-)((?i:enum)|%|\\?)(?:\\s)+((?:\\p{L}|\\d|_|-|)+)\\b"
+		},
+		{
 			"match": "(?:(?<!\\w)|\\G)-(?i:is(?:not)?|as)(?!\\p{L})",
 			"name": "keyword.operator.comparison.powershell"
 		},
@@ -792,7 +803,7 @@
 					"name": "punctuation.section.bracket.end.powershell"
 				},
 				{
-					"match": "(?i:type|string|pscustomobject|hashtable|ordered|single|float|double|decimal|s?byte|boolean|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?=\\]|\\[])",
+					"match": "(?i:type|string|pscustomobject|hashtable|ordered|single|float|double|decimal|s?byte|boolean|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long|flags\\(\\))(?=\\]|\\[])",
 					"name": "support.type.powershell"
 				},
 				{
