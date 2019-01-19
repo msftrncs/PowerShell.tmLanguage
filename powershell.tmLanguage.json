@@ -248,7 +248,6 @@
 							"name": "meta.class.powershell",
 							"patterns": [
 								{
-									"comment": "This should only be relevant inside a class but will require a rework of how classes are matched. This is a temp fix.",
 									"match": "(?<!\\w)((?i:hidden|static))(?!\\w)",
 									"name": "storage.modifier.powershell"
 								},
