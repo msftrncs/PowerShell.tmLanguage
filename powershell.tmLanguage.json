@@ -178,31 +178,25 @@
 			"comment": "This should be moved to the repository at some point."
 		},
 		{
-			"begin": "(?<!\\w|-)((?i:class))(?=\\s)",
+			"begin": "(?<![\\w-])((?i:class))(?=\\s)",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.other.class.powershell"
 				}
 			},
-			"end": "(?=.)|(?<=})",
+			"end": "(?=[^\\s])|(?<=})",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"match": "\\s+"
-				},
-				{
-					"begin": "\\b([\\p{L}_]\\w*)\\b",
+					"begin": "(?<![\\w-])([\\p{L}_]\\w*)",
 					"beginCaptures": {
 						"1": {
 							"name": "entity.name.type.class.powershell"
 						}
 					},
-					"end": "(?=.)|(?<=})",
+					"end": "(?=[^\\s])|(?<=})",
 					"applyEndPatternLast": true,
 					"patterns": [
-						{
-							"match": "\\s+"
-						},
 						{
 							"begin": ":",
 							"beginCaptures": {
@@ -210,19 +204,92 @@
 									"name": "punctuation.separator.colon.powershell"
 								}
 							},
-							"end": "(?=[;{\\n])",
+							"end": "(?=[^\\s:])|(?<=})",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"match": "(?<![;{])\\s+"
-								},
-								{
-									"match": ",",
-									"name": "punctuation.separator.comma.powershell"
-								},
-								{
-									"match": "\\b[\\p{L}_][\\w\\.]*\\b",
-									"name": "storage.type.powershell"
+									"begin": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)",
+									"beginCaptures": {
+										"0": {
+											"patterns": [
+												{
+													"include": "#type_keywords"
+												},
+												{
+													"match": "[^\\.]+",
+													"name": "entity.other.inherited-class.powershell"
+												},
+												{
+													"match": "\\.",
+													"name": "punctuation.accessor.powershell.powershell"
+												}
+											]
+										}
+									},
+									"end": "(?=[^\\s])|(?<=})",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"begin": ",",
+											"beginCaptures": {
+												"0": {
+													"name": "punctuation.separator.comma.powershell"
+												}
+											},
+											"end": "(?=[^\\s:])|(?<=})",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"begin": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)",
+													"beginCaptures": {
+														"0": {
+															"patterns": [
+																{
+																	"include": "#type_keywords"
+																},
+																{
+																	"match": "[^\\.]+",
+																	"name": "entity.other.inherited-class.powershell"
+																},
+																{
+																	"match": "\\.",
+																	"name": "punctuation.accessor.powershell.powershell"
+																}
+															]
+														}
+													},
+													"end": "(?=[^\\s])|(?<=})",
+													"applyEndPatternLast": true,
+													"patterns": [
+														{
+															"include": "#commentBlock"
+														},
+														{
+															"include": "#commentLine"
+														},
+														{
+															"match": "(?<!})[^\\s{},]+"
+														}
+													]
+												},
+												{
+													"include": "#commentBlock"
+												},
+												{
+													"include": "#commentLine"
+												}
+											]
+										},
+										{
+											"include": "#commentBlock"
+										},
+										{
+											"include": "#commentLine"
+										},
+										{
+											"match": "(?<!})[^\\s{},]+"
+										}
+									]
 								},
 								{
 									"include": "#commentBlock"
@@ -233,72 +300,78 @@
 							]
 						},
 						{
-							"begin": "{",
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						},
+						{
+							"match": "(?<!})[^\\s{}:]+"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.end.powershell"
+						}
+					},
+					"name": "meta.class.powershell",
+					"patterns": [
+						{
+							"match": "(?<![\\w-])((?i:hidden|static))(?=\\s)",
+							"name": "storage.modifier.powershell"
+						},
+						{
+							"begin": "(?<![\\w-])([\\p{L}_]\\w*)(?=\\s*\\()",
 							"beginCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.begin.powershell"
+								"1": {
+									"name": "entity.name.function.powershell"
 								}
 							},
-							"end": "}",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.end.powershell"
-								}
-							},
-							"name": "meta.class.powershell",
+							"end": "(?<=[;}])",
+							"name": "meta.method.powershell",
 							"patterns": [
 								{
-									"match": "(?<!\\w)((?i:hidden|static))(?!\\w)",
-									"name": "storage.modifier.powershell"
-								},
-								{
-									"begin": "\\b([\\p{L}_]\\w*)(?=\\s*\\()",
+									"begin": ":",
 									"beginCaptures": {
-										"1": {
-											"name": "entity.name.function.powershell"
+										"0": {
+											"name": "punctuation.separator.colon.powershell"
 										}
 									},
-									"end": "(?<=[;}])",
-									"name": "meta.method.powershell",
+									"end": "(?=[;{])",
 									"patterns": [
 										{
-											"begin": ":",
+											"comment": "(?<![;{])\\s+"
+										},
+										{
+											"begin": "(?i:base)",
 											"beginCaptures": {
 												"0": {
-													"name": "punctuation.separator.colon.powershell"
+													"name": "variable.language.super.powershell"
 												}
 											},
 											"end": "(?=[;{])",
 											"patterns": [
 												{
-													"match": "(?<![;{])\\s+"
+													"comment": "(?<![;{])\\s+"
 												},
 												{
-													"begin": "(?i:base)",
-													"beginCaptures": {
-														"0": {
-															"name": "variable.language.super.powershell"
-														}
-													},
-													"end": "(?=[;{])",
-													"patterns": [
-														{
-															"match": "(?<![;{])\\s+"
-														},
-														{
-															"include": "#invocationParameterSet"
-														}
-													]
+													"include": "#invocationParameterSet"
 												}
 											]
-										},
-										{
-											"include": "#invocationParameterSet"
-										},
-										{
-											"include": "$self"
 										}
 									]
+								},
+								{
+									"include": "#invocationParameterSet"
 								},
 								{
 									"include": "$self"
@@ -306,10 +379,7 @@
 							]
 						},
 						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "$self"
 						}
 					]
 				},
@@ -322,31 +392,25 @@
 			]
 		},
 		{
-			"begin": "(?<!\\w|-)((?i:enum))(?=\\s)",
+			"begin": "(?<![\\w-])((?i:enum))(?=\\s)",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.other.enum.powershell"
 				}
 			},
-			"end": "(?=.)|(?<=})",
+			"end": "(?=[^\\s])|(?<=})",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"match": "\\s+"
-				},
-				{
-					"begin": "\\b([\\p{L}_]\\w*)\\b",
+					"begin": "(?<![\\w-])([\\p{L}_]\\w*)",
 					"beginCaptures": {
 						"1": {
 							"name": "entity.name.type.enum.powershell"
 						}
 					},
-					"end": "(?=.)|(?<=})",
+					"end": "(?=[^\\s])|(?<=})",
 					"applyEndPatternLast": true,
 					"patterns": [
-						{
-							"match": "\\s+"
-						},
 						{
 							"comment": "optional user specified type, PowerShell Core >= 6.2.0",
 							"begin": ":",
@@ -355,15 +419,11 @@
 									"name": "punctuation.separator.colon.powershell"
 								}
 							},
-							"end": "(?=.)|(?<=})",
-							"test": "(?=[;{\\n])",
+							"end": "(?=[^\\s:])|(?<=})",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"match": "\\s+"
-								},
-								{
-									"begin": "\\b[\\p{L}_]\\w*\\b",
+									"begin": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)",
 									"beginCaptures": {
 										"0": {
 											"patterns": [
@@ -371,20 +431,27 @@
 													"include": "#type_keywords"
 												},
 												{
-													"match": ".*",
-													"name": "entity.name.type.enum.powershell"
+													"match": "[^\\.]+",
+													"name": "entity.other.inherited-class.powershell"
+												},
+												{
+													"match": "\\.",
+													"name": "punctuation.accessor.powershell.powershell"
 												}
 											]
 										}
 									},
-									"end": "(?=.)|(?<=})",
+									"end": "(?=[^\\s])|(?<=})",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
-											"include": "#enum_inside"
+											"include": "#commentBlock"
 										},
 										{
-											"match": "[^{}]+"
+											"include": "#commentLine"
+										},
+										{
+											"match": "(?<!})[^\\s{}]+"
 										}
 									]
 								},
@@ -397,10 +464,47 @@
 							]
 						},
 						{
-							"include": "#enum_inside"
+							"include": "#commentBlock"
 						},
 						{
-							"match": "[^{}:]+"
+							"include": "#commentLine"
+						},
+						{
+							"match": "(?<!})[^\\s{}:]+"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.end.powershell"
+						}
+					},
+					"name": "meta.enumeration.powershell",
+					"patterns": [
+						{
+							"begin": "(?<![\\w-])([\\p{L}_]\\w*)",
+							"beginCaptures": {
+								"1": {
+									"name": "entity.name.variable.enum-member.powershell"
+								}
+							},
+							"end": "(?=[;}\\n])",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"include": "$self"
 						}
 					]
 				},
@@ -494,50 +598,6 @@
 				},
 				{
 					"include": "#RequiresDirective"
-				}
-			]
-		},
-		"enum_inside": {
-			"patterns": [
-				{
-					"begin": "{",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.begin.powershell"
-						}
-					},
-					"end": "}",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.end.powershell"
-						}
-					},
-					"name": "meta.enumeration.powershell",
-					"patterns": [
-						{
-							"begin": "\\b([\\p{L}_]\\w*)\\b",
-							"beginCaptures": {
-								"1": {
-									"name": "entity.name.variable.enum-member.powershell"
-								}
-							},
-							"end": "(?=[;}\\n])",
-							"patterns": [
-								{
-									"include": "$self"
-								}
-							]
-						},
-						{
-							"include": "$self"
-						}
-					]
-				},
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
 				}
 			]
 		},
@@ -696,34 +756,31 @@
 			]
 		},
 		"function": {
-			"begin": "(?<!\\w|-)((?i:function|filter|configuration|workflow))(?=\\s)",
+			"begin": "(?<![\\w-])((?i:function|filter|configuration|workflow))(?=\\s)",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.other.function.powershell"
 				}
 			},
-			"end": "(?=.)|(?<=})",
+			"end": "(?=[//s])|(?<=})",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"match": "(?<!})\\s+"
-				},
-				{
-					"begin": "\\b(?:(global|local|script|private):)?([\\p{L}_][\\w\\.-]*)\\b",
+					"begin": "(?<![\\w-])(?:(global|local|script|private)(:))?([\\p{L}:_][\\w:\\.-]*)",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
 						},
 						"2": {
+							"name": "punctuation.separator.colon.powershell"
+						},
+						"3": {
 							"name": "entity.name.function.powershell"
 						}
 					},
-					"end": "(?=.)|(?<=})",
+					"end": "(?=[//s])|(?<=})",
 					"applyEndPatternLast": true,
 					"patterns": [
-						{
-							"match": "(?<!})\\s+"
-						},
 						{
 							"begin": "{",
 							"beginCaptures": {
@@ -752,6 +809,9 @@
 						},
 						{
 							"include": "#commentLine"
+						},
+						{
+							"match": "(?<!})[^\\s{}()]+"
 						}
 					]
 				},
@@ -1072,23 +1132,15 @@
 					"name": "punctuation.section.bracket.end.powershell"
 				},
 				{
-					"comment": "(?i:type|void|string|(?:ps(?:custom)?)?object|hashtable|single|float|double|decimal|s?byte|bool(?:ean)?|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?=\\]|\\[])",
-					"name": "keyword.type.powershell"
-				},
-				{
-					"comment": "(?i:regex|xml)(?=\\]|\\[])",
-					"name": "support.class.powershell"
+					"include": "#type_keywords"
 				},
 				{
 					"match": "(?i:ref)(?=\\])",
 					"name": "storage.modifier.powershell"
 				},
 				{
-					"match": "(?:[\\p{L}_]\\w*\\.?)+(?:`\\d+)?",
+					"match": "([\\p{L}_]\\w*(?:\\.\\g<1>?)?)(?:`\\d+)?",
 					"name": "storage.type.powershell"
-				},
-				{
-					"include": "#type_keywords"
 				},
 				{
 					"include": "#type"
