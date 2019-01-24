@@ -499,14 +499,37 @@
 							"end": "(?=[;}\\n])",
 							"patterns": [
 								{
-									"include": "$self"
+									"begin": "=",
+									"beginCaptures": {
+										"0": {
+											"name": "keyword.operator.assignment.enum-member.powershell"
+										}
+									},
+									"end": "(?=[;}\\n])",
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"include": "#argumentModeEscapes"
+								},
+								{
+									"include": "#commentBlock"
+								},
+								{
+									"include": "#commentLine"
 								}
 							]
 						},
 						{
-							"include": "$self"
+							"match": "[^;\\s][^;]+"
 						}
 					]
+				},
+				{
+					"include": "#argumentModeEscapes"
 				},
 				{
 					"include": "#commentBlock"
@@ -517,49 +540,179 @@
 			]
 		},
 		{
-			"match": "(?:(?<!\\w)|\\G)-(?i:is(?:not)?|as)(?!\\p{L})",
-			"name": "keyword.operator.comparison.powershell"
+			"begin": "(?:(?<!\\w)|\\G)-(?i:is(?:not)?|as)(?!\\p{L})",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.comparison.type.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
-			"name": "keyword.operator.comparison.powershell"
+			"begin": "(?:(?<!\\w|!)|\\G)-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.comparison.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:join|split)(?!\\p{L})",
-			"name": "keyword.operator.unary.powershell"
+			"begin": "(?:(?<!\\w|!)|\\G)-(?i:join|split)(?!\\p{L})",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.unary.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:and|or|not|xor)(?!\\p{L})|!",
-			"name": "keyword.operator.logical.powershell"
+			"begin": "(?:(?<!\\w|!)|\\G)-(?i:and|or|not|xor)(?!\\p{L})|!",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.logical.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
-			"name": "keyword.operator.bitwise.powershell"
+			"begin": "(?:(?<!\\w|!)|\\G)-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.bitwise.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
-			"match": "(?:(?<!\\w|!)|\\G)-(?i:f)(?!\\p{L})",
-			"name": "keyword.operator.string-format.powershell"
+			"begin": "(?:(?<!\\w|!)|\\G)-(?i:f)(?!\\p{L})",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.string-format.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
 			"match": "(?:(?<!\\w|!)|\\G)-\\p{L}\\w*",
 			"name": "entity.name.parameter.powershell"
 		},
 		{
-			"match": "[+%*/-]?=|[+/*%-](?!\\p{L})",
-			"name": "keyword.operator.assignment.powershell"
+			"match": "\\+\\+|--",
+			"name": "keyword.operator.unary.powershell"
+		},
+		{
+			"begin": "[+%*/-]?=|[+/*%-](?!\\p{L})",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.assignment.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
 			"match": "\\|\\||&&|;",
 			"name": "punctuation.terminator.statement.powershell"
 		},
 		{
-			"match": "&|(?<!\\w|!)(?<!\\.)\\.(?=\\s)|,|\\|",
-			"name": "keyword.operator.other.powershell"
+			"begin": "&|(?<!\\w|!)(?<!\\.)\\.(?=\\s)|,|\\|",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.operator.other.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		},
 		{
 			"comment": "the range operator is only available after an operand (binary operator)",
-			"match": "(?<!^)\\s*\\.\\.",
-			"name": "keyword.operator.range.powershell"
+			"begin": "(?<!^)\\s*(\\.\\.)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.operator.range.powershell"
+				}
+			},
+			"end": "(?!\\s)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				}
+			]
 		}
 	],
 	"repository": {
@@ -590,7 +743,12 @@
 					"name": "punctuation.definition.comment.powershell"
 				}
 			},
-			"end": "$",
+			"end": "$(?=(\\n)?)",
+			"endCaptures":{
+				"1":{
+					"name": "comment.line.powershell"
+				}
+			},
 			"name": "comment.line.powershell",
 			"patterns": [
 				{
@@ -610,10 +768,6 @@
 				{
 					"match": "`",
 					"name": "invalid.character.escape.powershell"
-				},
-				{
-					"match": "(?:[\"\\x{201C}-\\x{201E}]){2}",
-					"name": "constant.character.escape.powershell"
 				}
 			]
 		},
@@ -766,7 +920,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?<![\\w-])(?:(global|local|script|private)(:))?([\\p{L}:_][\\w:\\.-]*)",
+					"begin": "(?<![\\w-])(?:(global|local|script|private)(:))?([\\p{L}:_\\\\/\\[\\]`-][[`\\\\\\w*\\[\\]/.?<>=:~!@#$^%+-]]*)",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -1114,11 +1268,14 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "](?=\\.|::)",
+					"begin": "](?=(\\.|::))",
 					"end": "(?!\\G)",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.section.bracket.end.powershell"
+						},
+						"1":{
+							"name": "punctuation.accessor.powershell"
 						}
 					},
 					"patterns": [
@@ -1132,15 +1289,28 @@
 					"name": "punctuation.section.bracket.end.powershell"
 				},
 				{
-					"include": "#type_keywords"
-				},
-				{
 					"match": "(?i:ref)(?=\\])",
 					"name": "storage.modifier.powershell"
 				},
 				{
-					"match": "([\\p{L}_]\\w*(?:\\.\\g<1>?)?)(?:`\\d+)?",
-					"name": "storage.type.powershell"
+					"match": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)(?:`\\d+)?",
+					"captures": {
+						"0": {
+							"patterns": [
+								{
+									"include": "#type_keywords"
+								},
+								{
+									"match": "[^\\.]+",
+									"name": "entity.other.inherited-class.powershell"
+								},
+								{
+									"match": "\\.",
+									"name": "punctuation.accessor.powershell.powershell"
+								}
+							]
+						}
+					}
 				},
 				{
 					"include": "#type"
@@ -1151,13 +1321,14 @@
 			]
 		},
 		"type_keywords": {
+			"comment": "primitive types and base classes often used",
 			"patterns": [
 				{
-					"match": "\\b(?i:type|void|string|(?:ps(?:custom)?)?object|hashtable|single|float|double|decimal|s?byte|bool(?:ean)?|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)\\b",
+					"match": "(?<![\\w-])(?i:type|void|string|(?:ps(?:custom)?)?object|hashtable|single|float|double|decimal|s?byte|bool(?:ean)?|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?!\\w)",
 					"name": "keyword.type.powershell"
 				},
 				{
-					"match": "\\b(?i:regex|xml)\\b",
+					"match": "(?<![\\w-])(?i:system|math|text|convert|regex|xml)(?!\\w)",
 					"name": "support.class.powershell"
 				}
 			]
@@ -1167,7 +1338,7 @@
 				{
 					"match": "\\G(\\.|::)([\\p{L}_]\\w*)(?=\\()",
 					"captures": {
-						"1": {
+						"10": {
 							"name": "punctuation.accessor.powershell"
 						},
 						"2": {
