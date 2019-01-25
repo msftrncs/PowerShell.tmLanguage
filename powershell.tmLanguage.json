@@ -1315,7 +1315,7 @@
 			"comment": "primitive types and base classes often used",
 			"patterns": [
 				{
-					"match": "(?<![\\w-])(?i:type|void|string|(?:ps(?:custom)?)?object|hashtable|single|float|double|decimal|s?byte|bool(?:ean)?|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?!\\w)",
+					"match": "(?<![\\w-])(?i:type|void|switch|(?:ps(?:custom)?)?object|hashtable|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|valuetype|datetime|array|u?int(?:32|16|64)|int|long)(?!\\w)",
 					"name": "keyword.type.powershell"
 				},
 				{
