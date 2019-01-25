@@ -221,7 +221,7 @@
 												},
 												{
 													"match": "\\.",
-													"name": "punctuation.accessor.powershell.powershell"
+													"name": "punctuation.accessor.type.powershell"
 												}
 											]
 										}
@@ -253,7 +253,7 @@
 																},
 																{
 																	"match": "\\.",
-																	"name": "punctuation.accessor.powershell.powershell"
+																	"name": "punctuation.accessor.type.powershell"
 																}
 															]
 														}
@@ -432,11 +432,11 @@
 												},
 												{
 													"match": "[^\\.]+",
-													"name": "entity.other.inherited-class.powershell"
+													"name": "storage.type.powershell"
 												},
 												{
 													"match": "\\.",
-													"name": "punctuation.accessor.powershell.powershell"
+													"name": "punctuation.accessor.type.powershell"
 												}
 											]
 										}
@@ -1264,7 +1264,7 @@
 					"name": "punctuation.section.bracket.begin.powershell"
 				}
 			},
-			"end": "(?<=])(?!\\.(?!\\.)|::)|(?=[^\\p{L}\\]\\s])|(?=\\s(?<=\\w))",
+			"end": "(?<=])(?!\\.(?!\\.)|::)|(?=[^\\p{L}\\[\\]\\s])|(?=\\s(?<=\\w))",
 			"applyEndPatternLast": false,
 			"patterns": [
 				{
@@ -1293,7 +1293,7 @@
 					"name": "storage.modifier.powershell"
 				},
 				{
-					"begin": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)(?:`\\d+)?",
+					"begin": "((?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<2>?)?)(?:`+\\d+)?(?:\\++\\g<1>)?)",
 					"beginCaptures": {
 						"0": {
 							"patterns": [
@@ -1301,12 +1301,16 @@
 									"include": "#type_keywords"
 								},
 								{
-									"match": "[^\\.]+",
+									"match": "[^\\.+]+",
 									"name": "storage.type.powershell"
 								},
 								{
 									"match": "\\.",
-									"name": "punctuation.accessor.powershell.powershell"
+									"name": "punctuation.accessor.type.powershell.powershell"
+								},
+								{
+									"match": "\\+",
+									"name": "keyword.operator.type.powershell"
 								}
 							]
 						}
@@ -1324,7 +1328,7 @@
 							"include": "#commentLine"
 						},
 						{
-							"match": "(?<!])[^\\s\\]]+"
+							"match": "(?<!])[^\\s\\[\\]+]+"
 						}
 					]
 				},
@@ -1335,6 +1339,9 @@
 					"include": "$self"
 				}
 			]
+		},
+		"typeAdditive": {
+
 		},
 		"type_keywords": {
 			"comment": "primitive types and base classes often used",
