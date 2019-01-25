@@ -1,0 +1,1 @@
+convertto-plist.ps1 "powershell.tmlanguage.json" >'out\PowerShellSyntax.tmLanguage'
