@@ -75,7 +75,7 @@
 			]
 		},
 		{
-			"begin": "\\@(?:[\"\\x{201C}-\\x{201E}])(?=\\s*$)",
+			"begin": "@(?:[\"\\x{201C}-\\x{201E}])(?=\\s*$)",
 			"end": "^(?:[\"\\x{201C}-\\x{201E}])@",
 			"name": "string.quoted.double.heredoc.powershell",
 			"patterns": [
@@ -91,7 +91,7 @@
 			]
 		},
 		{
-			"begin": "\\@['\\x{2018}-\\x{201B}](?=\\s*$)",
+			"begin": "@['\\x{2018}-\\x{201B}](?=\\s*$)",
 			"end": "^['\\x{2018}-\\x{201B}]@",
 			"name": "string.quoted.single.heredoc.powershell"
 		},
@@ -1149,7 +1149,19 @@
 		"numericConstant": {
 			"patterns": [
 				{
-					"captures": {
+					"beginCaptures": {
+						"1": {
+							"name": "constant.numeric.integer.powershell"
+						},
+						"3": {
+							"name": "keyword.other.powershell"
+						}
+					},
+					"begin": "(?:(?<!\\w)|\\G)([-+]?(?:[0-9]+(?i:(?![ed\\.])|(?:\\.[0-9]*)?((?:(?i:e)[-+]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?)\\b",
+					"end": "\\G"
+				},
+				{
+					"beginCaptures": {
 						"1": {
 							"name": "constant.numeric.hex.powershell"
 						},
@@ -1157,73 +1169,31 @@
 							"name": "keyword.other.powershell"
 						}
 					},
-					"match": "(?<!\\w)([-+]?0(?:x|X)[0-9a-fA-F_]+(?:U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?)((?i:[kmgtp]b)?)\\b"
+					"begin": "(?:(?<!\\w)|\\G)([-+]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?)\\b",
+					"end": "\\G"
 				},
 				{
-					"captures": {
+					"beginCaptures": {
 						"1": {
-							"name": "constant.numeric.integer.powershell"
+							"name": "constant.numeric.decimal.powershell"
 						},
 						"2": {
 							"name": "keyword.other.powershell"
 						}
 					},
-					"match": "(?<!\\w)([-+]?(?:[0-9_]+)?\\.[0-9_]+(?:(?:e|E)[0-9]+)?(?:F|f|D|d|M|m)?)((?i:[kmgtp]b)?)\\b"
+					"begin": "(?:(?<!\\w)|\\G)([-+]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[-+]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?)\\b",
+					"end": "\\G"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "constant.numeric.octal.powershell"
+							"name": "constant.numeric.binary.powershell"
 						},
 						"2": {
 							"name": "keyword.other.powershell"
 						}
 					},
-					"match": "(?<!\\w)([-+]?0(?:b|B)[01_]+(?:U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?)((?i:[kmgtp]b)?)\\b"
-				},
-				{
-					"captures": {
-						"1": {
-							"name": "constant.numeric.integer.powershell"
-						},
-						"2": {
-							"name": "keyword.other.powershell"
-						}
-					},
-					"match": "(?<!\\w)([-+]?[0-9_]+(?:e|E)(?:[0-9_])?+(?:F|f|D|d|M|m)?)((?i:[kmgtp]b)?)\\b"
-				},
-				{
-					"captures": {
-						"1": {
-							"name": "constant.numeric.integer.powershell"
-						},
-						"2": {
-							"name": "keyword.other.powershell"
-						}
-					},
-					"match": "(?<!\\w)([-+]?[0-9_]+\\.(?:e|E)(?:[0-9_])?+(?:F|f|D|d|M|m)?)((?i:[kmgtp]b)?)\\b"
-				},
-				{
-					"captures": {
-						"1": {
-							"name": "constant.numeric.integer.powershell"
-						},
-						"2": {
-							"name": "keyword.other.powershell"
-						}
-					},
-					"match": "(?<!\\w)([-+]?[0-9_]+[\\.]?(?:F|f|D|d|M|m))((?i:[kmgtp]b)?)\\b"
-				},
-				{
-					"captures": {
-						"1": {
-							"name": "constant.numeric.integer.powershell"
-						},
-						"2": {
-							"name": "keyword.other.powershell"
-						}
-					},
-					"match": "(?<!\\w)([-+]?[0-9_]+[\\.]?(?:U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?)((?i:[kmgtp]b)?)\\b"
+					"comment": "(?:(?<!\\w)|\\G)([-+]?0(?i:b[01_]+l?))((?i:[kmgtp]b)?)(?!\\w)"
 				}
 			]
 		},
@@ -1340,9 +1310,7 @@
 				}
 			]
 		},
-		"typeAdditive": {
-
-		},
+		"typeAdditive": {},
 		"type_keywords": {
 			"comment": "primitive types and base classes often used",
 			"patterns": [
