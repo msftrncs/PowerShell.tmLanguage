@@ -7,6 +7,15 @@
 	"version": "altered from https://github.com/PowerShell/EditorSyntax/commit/472c9447da4e3160bef211d5e1a0c2dee3cce497",
 	"name": "PowerShell",
 	"scopeName": "source.powershell",
+	"injections": {
+		"L:punctuation.accessor.powershell": {
+			"patterns": [
+				{
+					"include": "#accessors"
+				}
+			]
+		}
+	},
 	"patterns": [
 		{
 			"include": "#commentBlock"
@@ -1234,33 +1243,69 @@
 					"name": "punctuation.section.bracket.begin.powershell"
 				}
 			},
-			"end": "(?<=])(?!\\.(?!\\.)|::)|(?=[^\\p{L}\\[\\]\\s])|(?=\\s(?<=\\w))",
-			"applyEndPatternLast": false,
-			"patterns": [
-				{
-					"begin": "](?=\\.(?!\\.)|::)",
-					"end": "(?!\\G(?=\\.(?!\\.)|::))",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.bracket.end.powershell"
-						}
-					},
-					"patterns": [
-						{
-							"include": "#members"
-						}
-					]
+			"waste": "(?<=])(?!\\.(?!\\.)|::)|(?=[^\\p{L}\\[\\]\\s])|(?=\\s(?<=\\w))",
+			"end": "(])(?=(\\.(?!\\.)|::))|(?>[^\\s\\p{L},])",
+			"endCaptures": {
+				"2": {
+					"name": "punctuation.accessor.powershell"
 				},
+				"1": {
+					"name": "punctuation.section.bracket.end.powershell"
+				}
+			},
+			"applyEndPatternLast": false,
+			"contentName": "meta.type-reference.powershell",
+			"patterns": [
 				{
 					"match": "\\s+"
 				},
 				{
-					"match": "]",
+					"comment": "]",
 					"name": "punctuation.section.bracket.end.powershell"
 				},
 				{
 					"match": "(?i:ref)(?=\\])",
 					"name": "storage.modifier.powershell"
+				},
+				{
+					"include": "#type_SubType"
+				},
+				{
+					"comment": "$self"
+				}
+			]
+		},
+		"type_SubType": {
+			"patterns": [
+				{
+					"begin": "(\\[)",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.bracket.begin.powershell"
+						}
+					},
+					"end": "(])|(?>[^\\s\\p{L},])",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.bracket.end.powershell"
+						}
+					},
+					"applyEndPatternLast": true,
+					"contentName": "meta.type-reference.powershell",
+					"patterns": [
+						{
+							"include": "#type_SubType"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						},
+						{
+							"match": "(?<!])[^\\s\\[\\]+]+"
+						}
+					]
 				},
 				{
 					"begin": "((?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<2>?)?)(?:`+\\d+)?(?:\\++\\g<1>)?)",
@@ -1289,7 +1334,7 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#type"
+							"include": "#type_SubType"
 						},
 						{
 							"include": "#commentBlock"
@@ -1301,16 +1346,9 @@
 							"match": "(?<!])[^\\s\\[\\]+]+"
 						}
 					]
-				},
-				{
-					"include": "#type"
-				},
-				{
-					"include": "$self"
 				}
 			]
 		},
-		"typeAdditive": {},
 		"type_keywords": {
 			"comment": "primitive types and base classes often used",
 			"patterns": [
@@ -1324,27 +1362,41 @@
 				}
 			]
 		},
+		"accessors": {
+			"begin": "(\\.|::)",
+			"end": "(?>[^\\s\\p{L}])",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentLine"
+				},
+				{
+					"include": "#commentblock"
+				},
+				{
+					"include": "#members"
+				}
+			]
+		},
 		"members": {
 			"patterns": [
 				{
-					"match": "\\G(\\.|::)([\\p{L}_]\\w*)(?=\\()",
+					"match": "[\\p{L}_]\\w*(?=\\()",
 					"captures": {
 						"0": {
-							"name": "punctuation.accessor.powershell"
-						},
-						"2": {
 							"name": "variable.function.powershell"
 						}
 					}
 				},
 				{
-					"begin": "\\G(\\.|::)([\\p{L}_]\\w*)(?=\\.(?!\\.)|::)",
-					"end": "(?!\\G(?=\\.(?!\\.)|::))",
+					"begin": "([\\p{L}_]\\w*)(?=(\\.(?!\\.)|::))",
+					"end": "(?>[^\\s\\p{L}])",
+					"applyEndPatternLast": true,
 					"beginCaptures": {
-						"1": {
+						"2": {
 							"name": "punctuation.accessor.powershell"
 						},
-						"2": {
+						"1": {
 							"name": "variable.other.object.property.powershell"
 						}
 					},
@@ -1361,13 +1413,10 @@
 					]
 				},
 				{
-					"begin": "\\G(\\.|::)([\\p{L}_]\\w*)",
+					"begin": "[\\p{L}_]\\w*",
 					"end": "(?!.\\G)",
 					"beginCaptures": {
-						"1": {
-							"name": "punctuation.accessor.powershell"
-						},
-						"2": {
+						"0": {
 							"name": "variable.other.property.powershell"
 						}
 					}
