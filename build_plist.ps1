@@ -1,6 +1,6 @@
 # convertto-plist.ps1 "powershell.tmlanguage.json" >'out\PowerShellSyntax.tmLanguage'
 # create output folder if it doesn't exist
-if (-not (Test-Path 'out\')) {new-item -type Directory 'out' >$null}
+if (-not (Test-Path 'out\')) {New-Item -type Directory 'out' >$null}
 
 # from here on, we're converting the PowerShell.tmLanguage.JSON file to PLIST with hardcoded conversion requirements
 # start by reading in the file through ConvertFrom-JSON

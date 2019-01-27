@@ -1220,7 +1220,7 @@
 						}
 					},
 					"applyEndPatternLast": true,
-					"Name": "meta.type-reference.powershell",
+					"name": "meta.type-reference.powershell",
 					"patterns": [
 						{
 							"match": "(?i:ref)(?=\\])",
@@ -1273,7 +1273,7 @@
 						}
 					},
 					"applyEndPatternLast": true,
-					"comment:contentName": "meta.type-reference.powershell",
+					"contentName": "meta.type-reference.powershell",
 					"patterns": [
 						{
 							"include": "#type_SubType"
@@ -1592,25 +1592,28 @@
 							"name": "storage.modifier.scope.powershell"
 						},
 						"5": {
+							"name": "punctuation.separator.colon.powershell"
+						},
+						"6": {
 							"name": "support.variable.drive.powershell"
 						},
-						"7": {
+						"8": {
 							"name": "punctuation.definition.variable.braces.end.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow):|((?:[^`{}:]|`[`{}]?+)+:|:)))?+([^`{}]|`[`{}]?+)+(\\})))"
+					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow)(:)|((?:[^`{}:]|`[`{}]?+)+:|:)))?+([^`{}]|`[`{}]?+)+(\\})))"
 				}
 			]
 		},
 		"variable": {
 			"patterns": [
 				{
-					"begin": "(?=\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?)+:|:))?+([^`{}]|`[`{}]?)+(\\})))",
+					"begin": "(?=\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\})))",
 					"end": "(?!.\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?)+:|:))?+([^`{}]|`[`{}]?)+(\\}))(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\}))(?=\\.(?!\\.)|::|\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -1632,7 +1635,7 @@
 							]
 						},
 						{
-							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?)+:|:))?+([^`{}]|`[`{}]?)+(\\}))",
+							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\}))",
 							"end": "(?!.\\G)",
 							"applyEndPatternLast": true,
 							"captures": {
