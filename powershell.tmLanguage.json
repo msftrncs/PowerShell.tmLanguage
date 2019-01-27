@@ -1273,7 +1273,7 @@
 						}
 					},
 					"applyEndPatternLast": true,
-					"contentName": "meta.type-reference.powershell",
+					"name": "meta.type-reference.powershell",
 					"patterns": [
 						{
 							"include": "#type_SubType"
@@ -1341,7 +1341,7 @@
 		"accessors": {
 			"patterns": [
 				{
-					"begin": "\\G(?:\\.(?!\\.)|::)",
+					"begin": "\\G(?:\\.(?!\\.)|(?<!:)::)",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.accessor.powershell"
