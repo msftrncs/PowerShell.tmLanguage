@@ -15,5 +15,5 @@ $grammer_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json
     $grammer_json.psobject.Properties['repository'].Name = $grammer_json.psobject.Properties['repository'].Value
     $grammer_json.psobject.Properties['scopeName'].Name  = $grammer_json.psobject.Properties['scopeName'].Value
     uuid                                                 = 'f8f5ffb0-503e-11df-9879-0800200c9a66'
-} | ConvertTo-Plist -Indent "`t" <#-StateEncodingAs 'UTF8'#> |
+} | ConvertTo-Plist -Indent "`t" -StateEncodingAs 'UTF-8' |
     Set-Content 'out\PowerShellSyntax.tmLanguage' -Encoding 'UTF8'
