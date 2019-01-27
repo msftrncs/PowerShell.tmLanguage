@@ -7,17 +7,8 @@
 	"version": "altered from https://github.com/PowerShell/EditorSyntax/commit/472c9447da4e3160bef211d5e1a0c2dee3cce497",
 	"name": "PowerShell",
 	"scopeName": "source.powershell",
-	"injections": {
-		"L:punctuation.accessor.powershell": {
 			"patterns": [
 				{
-					"include": "#accessors"
-				}
-			]
-		}
-	},
-	"patterns": [
-		{
 			"include": "#commentBlock"
 		},
 		{
@@ -99,12 +90,6 @@
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
 						},
 						{
 							"match": "[^\\s\\W]+"
@@ -1051,12 +1036,6 @@
 							"include": "#accessors"
 						},
 						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
 							"match": "[^\\s\\W]+"
 						}
 					]
@@ -1098,12 +1077,6 @@
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
 						},
 						{
 							"match": "[^\\s\\W]+"
@@ -1221,12 +1194,6 @@
 							"include": "#accessors"
 						},
 						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
 							"match": "[^\\s\\W]+"
 						}
 					]
@@ -1284,12 +1251,6 @@
 							"include": "#type"
 						},
 						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
 							"match": "[^\\s\\W]+"
 						}
 					]
@@ -1316,12 +1277,6 @@
 					"patterns": [
 						{
 							"include": "#type_SubType"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
 						},
 						{
 							"match": "(?<!])[^\\s\\[\\]+]+"
@@ -1358,16 +1313,16 @@
 							"include": "#type_SubType"
 						},
 						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
 							"match": "(?<!])[^\\s\\[\\]+]+"
 						}
 					]
-				}
+				},
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+		}
 			]
 		},
 		"type_keywords": {
@@ -1406,6 +1361,23 @@
 						},
 						{
 							"match": "[^\\s\\W]+"
+						},
+						{
+							"comment": "consume spaces and comments and line ends until the next token appears",
+							"begin": "\\G(?<=\\.|::)(?!\\S)",
+							"end": "(?=.)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"match": "\\s+"
+								},
+								{
+									"include": "#commentLine"
+								},
+								{
+									"include": "#commentBlock"
+								}
+							]
 						}
 					]
 				},
@@ -1443,18 +1415,18 @@
 									"include": "#accessors"
 								},
 								{
-									"include": "#commentLine"
-								},
-								{
-									"include": "#commentBlock"
-								},
-								{
 									"match": "[^\\s\\W]+"
 								}
 							]
 						}
 					]
-				}
+				},
+				{
+					"include": "#commentLine"
+				},
+				{
+					"include": "#commentBlock"
+		}
 			]
 		},
 		"members": {
@@ -1483,12 +1455,6 @@
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
 						},
 						{
 							"match": "[^\\s\\W]+"
@@ -1632,7 +1598,7 @@
 							"name": "punctuation.definition.variable.braces.end.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow):|((?:[^`{}:]|`[`{}]?)+:|:)))?+([^`{}]|`[`{}]?)+(\\})))"
+					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow):|((?:[^`{}:]|`[`{}]?+)+:|:)))?+([^`{}]|`[`{}]?+)+(\\})))"
 				}
 			]
 		},
@@ -1659,12 +1625,6 @@
 							"patterns": [
 								{
 									"include": "#accessors"
-								},
-								{
-									"include": "#commentLine"
-								},
-								{
-									"include": "#commentBlock"
 								},
 								{
 									"match": "[^\\s\\W]+"
@@ -1795,12 +1755,6 @@
 							"include": "#accessors"
 						},
 						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
 							"match": "[^\\s\\W]+"
 						}
 					]
@@ -1889,12 +1843,6 @@
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
 						},
 						{
 							"match": "[^\\s\\W]+"
