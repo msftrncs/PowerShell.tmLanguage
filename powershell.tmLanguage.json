@@ -46,13 +46,6 @@
 			"include": "#scriptblock"
 		},
 		{
-			"comment": "Needed to parse stuff correctly in 'argument mode'. (See about_parsing.)",
-			"include": "#argumentModeEscapes"
-		},
-		{
-			"include": "#quotedStrings_Members"
-		},
-		{
 			"include": "#numericConstant"
 		},
 		{
@@ -689,6 +682,9 @@
 			]
 		},
 		{
+			"include": "#quotedStrings_Members"
+		},
+		{
 			"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
 			"begin": "(?=[^\\s])",
 			"end": "(?=[(){}|;&\\s])",
@@ -699,6 +695,10 @@
 					"include": "#unquotedStrings_text"
 				}
 			]
+		},
+		{
+			"comment": "Needed to parse stuff correctly in 'argument mode'. (See about_parsing.)",
+			"include": "#argumentModeEscapes"
 		}
 	],
 	"repository": {
