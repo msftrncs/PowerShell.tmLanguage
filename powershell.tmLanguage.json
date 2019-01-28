@@ -7,8 +7,8 @@
 	"version": "altered from https://github.com/PowerShell/EditorSyntax/commit/472c9447da4e3160bef211d5e1a0c2dee3cce497",
 	"name": "PowerShell",
 	"scopeName": "source.powershell",
-			"patterns": [
-				{
+	"patterns": [
+		{
 			"include": "#commentBlock"
 		},
 		{
@@ -748,7 +748,7 @@
 		"argumentModeEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:['\\x{2018}-\\x{201B}0abnfrvt\"\\x{201C}-\\x{201E}$`\\n])",
+					"match": "`(?:['0abnfrvt\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}$`\\n])",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -870,7 +870,7 @@
 		"doubleQuotedStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[0abnfrvt\\s\"\\x{201C}-\\x{201E}$`]|(?=$))",
+					"match": "`(?:[`0abnfrvt\\s\"\\x{201C}-\\x{201E}$])",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -886,7 +886,7 @@
 		"doubleQuotedHereStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[0abnfrvt\\s\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$`]|(?=$))",
+					"match": "`(?:[`0abnfrvt\\s\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$])",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -906,7 +906,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?<![\\w-])(?:(global|local|script|private)(:))?(?:(?=[\\p{L}:_\\\\/\\[\\]`-])|(?<=:)(?=[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}]))",
+					"begin": "(?<![\\w-])(?:(global|local|script|private)(:))?(?:(?=[\\p{L}:_\\\\/\\[\\]-]|`(?!\\s))|(?<=:)(?=[`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}]))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -969,6 +969,10 @@
 							]
 						}
 					]
+				},
+				{
+					"match": "`\\s",
+					"name": "invalid.character.escape.powershell"
 				},
 				{
 					"include": "#commentBlock"
@@ -1322,7 +1326,7 @@
 				},
 				{
 					"include": "#commentLine"
-		}
+				}
 			]
 		},
 		"type_keywords": {
@@ -1426,7 +1430,7 @@
 				},
 				{
 					"include": "#commentBlock"
-		}
+				}
 			]
 		},
 		"members": {
@@ -1856,6 +1860,13 @@
 		},
 		"unquotedStrings_text": {
 			"patterns": [
+				{
+					"match": "`\\s",
+					"name": "constant.character.escape.powershell"
+				},
+				{
+					"include": "#argumentModeEscapes"
+				},
 				{
 					"begin": "['\\x{2018}-\\x{201B}]",
 					"end": "['\\x{2018}-\\x{201B}]",

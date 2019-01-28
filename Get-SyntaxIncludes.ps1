@@ -1,14 +1,15 @@
+# FYI, this script does not handle tmLanguage syntaxes that possess sub-repositories, at this time.
 function getincludes ($grammer) {
 
     function getincludes_recurse($ruleset) {
 
-        # iterate through the rule set and capture the possible scope names
+        # iterate through the rule set and capture the possible includes
         switch ($ruleset.psobject.Properties) {
             {$_.Name -cin 'include' } {
                 $_.value
                 continue
             }
-            {$_.Name -cin "patterns"} {
+            {$_.Name -cin 'patterns'} {
                 foreach ($rule in $_.Value) {
                     getincludes_recurse $rule
                 }
@@ -23,13 +24,13 @@ function getincludes ($grammer) {
         }
     }
 
-    # build a hashtable/PSCustomObject containing a list of scope names used 
+    # build a hashtable/PSCustomObject containing a list of includes used 
     # in each repository item, $self and $base
-    foreach ($rule in $grammer_json."repository".PSObject.Properties) {
+    foreach ($rule in $grammer_json.'repository'.PSObject.Properties) {
         @{ $rule.Name = @( getincludes_recurse $rule.Value ) }
     }
     , @{ '$self' = @( 
-            foreach ($rule in $grammer_json."patterns") {
+            foreach ($rule in $grammer_json.'patterns') {
                 getincludes_recurse $rule
             }
         )
