@@ -401,13 +401,17 @@
 					"name": "meta.enumeration.powershell",
 					"patterns": [
 						{
+							"match": ";",
+							"name": "punctuation.terminator.statement.powershell"
+						},
+						{
 							"begin": "(?<![\\w-])([\\p{L}_]\\w*)",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.variable.enum-member.powershell"
 								}
 							},
-							"end": "(?=[;}\\n])",
+							"end": "(?<=;)|(?=[}\\n])",
 							"patterns": [
 								{
 									"begin": "=",
@@ -416,7 +420,7 @@
 											"name": "keyword.operator.assignment.enum-member.powershell"
 										}
 									},
-									"end": "(?=[;}\\n])",
+									"end": "(?<=;)|(?=[}\\n])",
 									"patterns": [
 										{
 											"include": "$self"
@@ -709,27 +713,20 @@
 									"include": "#invocationParameterSet"
 								},
 								{
-									"include": "#commentBlock"
+									"include": "#notCode"
 								},
 								{
-									"include": "#commentLine"
+									"comment": "#commentLine"
 								},
 								{
-									"match": "(?<!})[^\\s{}()]+"
+									"comment": "(?<!})[^\\s{}()]+"
 								}
 							]
 						}
 					]
 				},
 				{
-					"match": "`\\s",
-					"name": "invalid.character.escape.powershell"
-				},
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
+					"include": "#notCode"
 				}
 			]
 		},
@@ -1704,6 +1701,57 @@
 				}
 			]
 		},
+		"unquotedStrings_text_interpolatedString": {
+			"comment": "!!!!!!!!!!!!!!!!!!WIP!!!",
+			"patterns": [
+				{
+					"match": "`\\s",
+					"name": "constant.character.escape.powershell"
+				},
+				{
+					"include": "#argumentModeEscapes"
+				},
+				{
+					"begin": "['\\x{2018}-\\x{201B}]",
+					"end": "['\\x{2018}-\\x{201B}]",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"match": "['\\x{2018}-\\x{201B}]{2}",
+							"name": "constant.character.escape.powershell"
+						}
+					]
+				},
+				{
+					"begin": "[\"\\x{201C}-\\x{201E}]",
+					"end": "[\"\\x{201C}-\\x{201E}]",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#doubleQuotedStringEscapes"
+						},
+						{
+							"begin": "\\$\\(",
+							"end": "\\)",
+							"patterns": [
+								{
+									"include": "#unquotedStrings_text"
+								}
+							]
+						}
+					]
+				},
+				{
+					"begin": "\\$\\(",
+					"end": "\\)",
+					"patterns": [
+						{
+							"include": "#unquotedStrings_text"
+						}
+					]
+				}
+			]
+		},
 		"operators": {
 			"patterns": [
 				{
@@ -1924,7 +1972,7 @@
 				},
 				{
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
-					"begin": "(?=[^\\s])(?!`\\s|[\\[(){}|,;&])",
+					"begin": "(?=[^\\s])(?!`\\s|[\\[(){}|,;&$@])",
 					"end": "(?=[(){}|,;&\\s])",
 					"applyEndPatternLast": false,
 					"contentName": "unquoted.text.powershell",
