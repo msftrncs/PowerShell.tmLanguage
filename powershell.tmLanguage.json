@@ -223,6 +223,10 @@
 													"applyEndPatternLast": true,
 													"patterns": [
 														{
+															"match": "`\\s",
+															"name": "invalid.character.escape.powershell"
+														},
+														{
 															"include": "#commentBlock"
 														},
 														{
@@ -234,12 +238,20 @@
 													]
 												},
 												{
+													"match": "`\\s",
+													"name": "invalid.character.escape.powershell"
+												},
+												{
 													"include": "#commentBlock"
 												},
 												{
 													"include": "#commentLine"
 												}
 											]
+										},
+										{
+											"match": "`\\s",
+											"name": "invalid.character.escape.powershell"
 										},
 										{
 											"include": "#commentBlock"
@@ -253,12 +265,20 @@
 									]
 								},
 								{
+									"match": "`\\s",
+									"name": "invalid.character.escape.powershell"
+								},
+								{
 									"include": "#commentBlock"
 								},
 								{
 									"include": "#commentLine"
 								}
 							]
+						},
+						{
+							"match": "`\\s",
+							"name": "invalid.character.escape.powershell"
 						},
 						{
 							"include": "#commentBlock"
@@ -270,6 +290,10 @@
 							"match": "(?<!})[^\\s{}:]+"
 						}
 					]
+				},
+				{
+					"match": "`\\s",
+					"name": "invalid.character.escape.powershell"
 				},
 				{
 					"begin": "{",
@@ -507,186 +531,14 @@
 			]
 		},
 		{
-			"begin": "(?:(?<!\\w)|\\G)-(?i:is(?:not)?|as)(?!\\p{L})",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.comparison.type.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"begin": "(?:(?<!\\w|!)|\\G)-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.comparison.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"begin": "(?:(?<!\\w|!)|\\G)-(?i:join|split)(?!\\p{L})",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.unary.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"begin": "(?:(?<!\\w|!)|\\G)-(?i:and|or|not|xor)(?!\\p{L})|!",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.logical.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"begin": "(?:(?<!\\w|!)|\\G)-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.bitwise.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"begin": "(?:(?<!\\w|!)|\\G)-(?i:f)(?!\\p{L})",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.string-format.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"match": "(?:(?<!\\w|!)|\\G)-\\p{L}\\w*",
-			"name": "entity.name.parameter.powershell"
-		},
-		{
-			"match": "\\+\\+|--",
-			"name": "keyword.operator.unary.powershell"
-		},
-		{
-			"begin": "[+%*/-]?=|[+/*%-](?!\\p{L})",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.assignment.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"match": "\\|\\||&&|;",
-			"name": "punctuation.terminator.statement.powershell"
-		},
-		{
-			"begin": "&|(?<!\\w|!)(?<!\\.)\\.(?=\\s)|,|\\|",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.other.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
-		},
-		{
-			"comment": "the range operator is only available after an operand (binary operator)",
-			"begin": "(?<!^)\\s*(\\.\\.)",
-			"beginCaptures": {
-				"1": {
-					"name": "keyword.operator.range.powershell"
-				}
-			},
-			"end": "(?!\\s)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				}
-			]
+			"include": "#operators"
 		},
 		{
 			"include": "#quotedStrings_Members"
 		},
 		{
 			"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
-			"begin": "(?=[^\\s])",
+			"begin": "(?=[^\\s])(?!`\\s)",
 			"end": "(?=[(){}|;&\\s])",
 			"applyEndPatternLast": true,
 			"contentName": "unquoted.text.powershell",
@@ -748,7 +600,7 @@
 		"argumentModeEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:['0abnfrvt\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}$`\\n])",
+					"match": "`(?:[`0abefnrtv\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$\\n])",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -870,7 +722,7 @@
 		"doubleQuotedStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[`0abnfrvt\\s\"\\x{201C}-\\x{201E}$])",
+					"match": "`(?:[`0abefnrtv\"\\x{201C}-\\x{201E}$])",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -886,7 +738,7 @@
 		"doubleQuotedHereStringEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[`0abnfrvt\\s\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$])",
+					"match": "`(?:[`0abefnrtv\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$])",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -1124,8 +976,20 @@
 							"name": "keyword.other.powershell"
 						}
 					},
-					"begin": "(?:(?<!\\w)|\\G)([-+]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))|(?:\\.[0-9]*)?((?:(?i:e)[-+]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?)\\b",
-					"end": "\\G"
+					"begin": "(?:(?<!\\w)|\\G)([-+]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))|(?:\\.[0-9]*)?((?:(?i:e)[-+]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?)(?!\\w)",
+					"end": "(?!.\\G)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
 				},
 				{
 					"beginCaptures": {
@@ -1136,8 +1000,20 @@
 							"name": "keyword.other.powershell"
 						}
 					},
-					"begin": "(?:(?<!\\w)|\\G)([-+]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?)\\b",
-					"end": "\\G"
+					"begin": "(?:(?<!\\w)|\\G)([-+]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?)(?!\\w)",
+					"end": "(?!.\\G)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
 				},
 				{
 					"beginCaptures": {
@@ -1148,8 +1024,20 @@
 							"name": "keyword.other.powershell"
 						}
 					},
-					"begin": "(?:(?<!\\w)|\\G)([-+]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[-+]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?)\\b",
-					"end": "\\G"
+					"begin": "(?:(?<!\\w)|\\G)([-+]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[-+]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?)(?!\\w)",
+					"end": "(?!.\\G)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
 				},
 				{
 					"captures": {
@@ -1903,6 +1791,212 @@
 					"patterns": [
 						{
 							"include": "#unquotedStrings_text"
+						}
+					]
+				}
+			]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"begin": "(?:(?<!\\w)|\\G)-(?i:is(?:not)?|as)(?!\\p{L})",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.comparison.type.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"begin": "(?:(?<!\\w|!)|\\G)-(?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.comparison.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"begin": "(?:(?<!\\w|!)|\\G)-(?i:join|split)(?!\\p{L})",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.unary.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"begin": "(?:(?<!\\w|!)|\\G)-(?i:and|or|not|xor)(?!\\p{L})|!",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.logical.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"begin": "(?:(?<!\\w|!)|\\G)-(?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.bitwise.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"begin": "(?:(?<!\\w|!)|\\G)-(?i:f)(?!\\p{L})",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.string-format.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"match": "\\+\\+|--",
+					"name": "keyword.operator.unary.powershell"
+				},
+				{
+					"match": "(?:(?<!\\w|!)|\\G)-\\p{L}\\w*",
+					"name": "entity.name.parameter.powershell"
+				},
+				{
+					"begin": "[+%*/-]?=|[+/*%-](?!\\p{L})",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.assignment.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"match": "\\|\\||&&|;",
+					"name": "punctuation.terminator.statement.powershell"
+				},
+				{
+					"begin": "&|(?<!\\w|!)(?<!\\.)\\.(?=\\s)|,|\\|",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.other.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"comment": "the range operator is only available after an operand (binary operator)",
+					"begin": "(?<!^)\\s*(\\.\\.)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.range.powershell"
+						}
+					},
+					"end": "(?!\\s)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
 						}
 					]
 				}
