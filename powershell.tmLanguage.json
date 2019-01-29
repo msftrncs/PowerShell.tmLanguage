@@ -671,7 +671,7 @@
 					"patterns": [
 						{
 							"begin": "\\G",
-							"end": "(?=[(){}|;&\\s])",
+							"end": "(?=[(){}|,;&\\s])",
 							"applyEndPatternLast": false,
 							"contentName": "entity.name.function.powershell",
 							"patterns": [
@@ -1924,9 +1924,9 @@
 				},
 				{
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
-					"begin": "(?=[^\\s])(?!`\\s|[({\\[;&|])",
+					"begin": "(?=[^\\s])(?!`\\s|[\\[(){}|,;&])",
 					"end": "(?=[(){}|,;&\\s])",
-					"applyEndPatternLast": true,
+					"applyEndPatternLast": false,
 					"contentName": "unquoted.text.powershell",
 					"patterns": [
 						{
