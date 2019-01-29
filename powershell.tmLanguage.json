@@ -9,17 +9,11 @@
 	"scopeName": "source.powershell",
 	"patterns": [
 		{
-			"include": "#commentBlock"
-		},
-		{
 			"match": "[2-6]>&1|>>|>|<<|<|>|>\\||[1-6]>|[1-6]>>",
 			"name": "keyword.operator.redirection.powershell"
 		},
 		{
 			"include": "#commands"
-		},
-		{
-			"include": "#commentLine"
 		},
 		{
 			"include": "#variable"
@@ -223,77 +217,29 @@
 													"applyEndPatternLast": true,
 													"patterns": [
 														{
-															"match": "`\\s",
-															"name": "invalid.character.escape.powershell"
-														},
-														{
-															"include": "#commentBlock"
-														},
-														{
-															"include": "#commentLine"
-														},
-														{
-															"match": "(?<!})[^\\s{},]+"
+															"include": "#notCode"
 														}
 													]
 												},
 												{
-													"match": "`\\s",
-													"name": "invalid.character.escape.powershell"
-												},
-												{
-													"include": "#commentBlock"
-												},
-												{
-													"include": "#commentLine"
+													"include": "#notCode"
 												}
 											]
 										},
 										{
-											"match": "`\\s",
-											"name": "invalid.character.escape.powershell"
-										},
-										{
-											"include": "#commentBlock"
-										},
-										{
-											"include": "#commentLine"
-										},
-										{
-											"match": "(?<!})[^\\s{},]+"
+											"include": "#notCode"
 										}
 									]
 								},
 								{
-									"match": "`\\s",
-									"name": "invalid.character.escape.powershell"
-								},
-								{
-									"include": "#commentBlock"
-								},
-								{
-									"include": "#commentLine"
+									"include": "#notCode"
 								}
 							]
 						},
 						{
-							"match": "`\\s",
-							"name": "invalid.character.escape.powershell"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
-							"match": "(?<!})[^\\s{}:]+"
+							"include": "#notCode"
 						}
 					]
-				},
-				{
-					"match": "`\\s",
-					"name": "invalid.character.escape.powershell"
 				},
 				{
 					"begin": "{",
@@ -334,9 +280,6 @@
 									"end": "(?=[;{])",
 									"patterns": [
 										{
-											"comment": "(?<![;{])\\s+"
-										},
-										{
 											"begin": "(?i:base)",
 											"beginCaptures": {
 												"0": {
@@ -345,9 +288,6 @@
 											},
 											"end": "(?=[;{])",
 											"patterns": [
-												{
-													"comment": "(?<![;{])\\s+"
-												},
 												{
 													"include": "#invocationParameterSet"
 												}
@@ -369,10 +309,7 @@
 					]
 				},
 				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
+					"include": "#notCode"
 				}
 			]
 		},
@@ -430,32 +367,17 @@
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
-											"include": "#commentBlock"
-										},
-										{
-											"include": "#commentLine"
-										},
-										{
-											"match": "(?<!})[^\\s{}]+"
+											"include": "#notCode"
 										}
 									]
 								},
 								{
-									"include": "#commentBlock"
-								},
-								{
-									"include": "#commentLine"
+									"include": "#notCode"
 								}
 							]
 						},
 						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
-							"match": "(?<!})[^\\s{}:]+"
+							"include": "#notCode"
 						}
 					]
 				},
@@ -498,35 +420,17 @@
 									]
 								},
 								{
-									"include": "#argumentModeEscapes"
-								},
-								{
-									"include": "#commentBlock"
-								},
-								{
-									"include": "#commentLine"
+									"include": "#notCode"
 								}
 							]
 						},
 						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
-						},
-						{
-							"match": "[^;\\s][^;]+"
+							"include": "#notCode"
 						}
 					]
 				},
 				{
-					"include": "#argumentModeEscapes"
-				},
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
+					"include": "#notCode"
 				}
 			]
 		},
@@ -537,16 +441,7 @@
 			"include": "#quotedStrings_Members"
 		},
 		{
-			"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
-			"begin": "(?=[^\\s])(?!`\\s)",
-			"end": "(?=[(){}|;&\\s])",
-			"applyEndPatternLast": true,
-			"contentName": "unquoted.text.powershell",
-			"patterns": [
-				{
-					"include": "#unquotedStrings_text"
-				}
-			]
+			"include": "#notCode"
 		},
 		{
 			"comment": "Needed to parse stuff correctly in 'argument mode'. (See about_parsing.)",
@@ -1252,7 +1147,7 @@
 							"include": "#commentBlock"
 						},
 						{
-							"match": "[^\\s\\W]+"
+							"include": "[^\\s\\W]+"
 						},
 						{
 							"comment": "consume spaces and comments and line ends until the next token appears",
@@ -1369,7 +1264,7 @@
 							"include": "#commentBlock"
 						},
 						{
-							"match": "[^\\s\\W]+"
+							"include": "[^\\s\\W]+"
 						}
 					]
 				},
@@ -1997,6 +1892,32 @@
 						},
 						{
 							"include": "#commentLine"
+						}
+					]
+				}
+			]
+		},
+		"notCode": {
+			"patterns": [
+				{
+					"match": "`\\s",
+					"name": "invalid.character.escape.powershell"
+				},
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				},
+				{
+					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
+					"begin": "(?=[^\\s])(?!`\\s|[({\\[;&|])",
+					"end": "(?=[(){}|;&\\s])",
+					"applyEndPatternLast": true,
+					"contentName": "unquoted.text.powershell",
+					"patterns": [
+						{
+							"include": "#unquotedStrings_text"
 						}
 					]
 				}
