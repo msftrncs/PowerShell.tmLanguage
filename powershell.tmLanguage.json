@@ -9,8 +9,12 @@
 	"scopeName": "source.powershell",
 	"patterns": [
 		{
-			"match": "[2-6]>&1|>>|>|<<|<|>|>\\||[1-6]>|[1-6]>>",
+			"match": "[2-6]>&1|[1-6]?>>?",
 			"name": "keyword.operator.redirection.powershell"
+		},
+		{
+			"match": "<(?!#)",
+			"name": "invalid.reserved.powershell"
 		},
 		{
 			"include": "#commands"
@@ -749,7 +753,16 @@
 					"name": "punctuation.separator.comma.powershell"
 				},
 				{
-					"include": "$self"
+					"include": "#variableNoProperty"
+				},
+				{
+					"include": "#attribute"
+				},
+				{
+					"include": "#type"
+				},
+				{
+					"include": "#notCode"
 				}
 			]
 		},
@@ -1912,7 +1925,7 @@
 				{
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
 					"begin": "(?=[^\\s])(?!`\\s|[({\\[;&|])",
-					"end": "(?=[(){}|;&\\s])",
+					"end": "(?=[(){}|,;&\\s])",
 					"applyEndPatternLast": true,
 					"contentName": "unquoted.text.powershell",
 					"patterns": [
