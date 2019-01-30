@@ -167,7 +167,7 @@
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)",
+									"begin": "(?<![\\w-])(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
 									"beginCaptures": {
 										"0": {
 											"patterns": [
@@ -199,7 +199,7 @@
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
-													"begin": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)",
+													"begin": "(?<![\\w-])(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
 													"beginCaptures": {
 														"0": {
 															"patterns": [
@@ -349,7 +349,7 @@
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "(?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<1>?)?)",
+									"begin": "(?<![\\w-])(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
 									"beginCaptures": {
 										"0": {
 											"patterns": [
@@ -1351,81 +1351,162 @@
 				{
 					"captures": {
 						"1": {
-							"name": "variable.other.readwrite.powershell"
-						},
-						"2": {
 							"name": "punctuation.definition.variable.powershell"
 						},
-						"3": {
-							"name": "storage.modifier.scope.powershell"
-						},
-						"4": {
-							"name": "punctuation.separator.colon.powershell"
-						},
-						"5": {
-							"name": "support.variable.drive.powershell"
+						"2": {
+							"patterns": [
+								{
+									"include": "#variable_scopeOrDrive"
+								}
+							]
 						}
 					},
-					"match": "((?i:(\\$)(?:(?:(global|local|private|script|using|workflow)(:)|((?:[\\p{L}_]\\w*):|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))+)))"
+					"match": "(?:(\\$)(?:((?:[\\p{L}_]\\w*):|:)(?!:))?+((?:[\\p{L}\\d_?]|:(?!:))+))",
+					"name": "variable.other.readwrite.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "variable.other.readwrite.powershell"
-						},
-						"2": {
 							"name": "punctuation.definition.variable.powershell"
 						},
-						"3": {
-							"name": "storage.modifier.scope.powershell"
-						},
-						"4": {
-							"name": "punctuation.separator.colon.powershell"
-						},
-						"5": {
-							"name": "support.variable.drive.powershell"
+						"2": {
+							"patterns": [
+								{
+									"include": "#variable_scopeOrDrive"
+								}
+							]
 						}
 					},
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "((?i:(\\@)(?:(?:(global|local|private|script|using|workflow)(:)|((?:[\\p{L}_]\\w*):|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))++)))(?![~`!@#$%^*<>\\]\\\\/+-])"
-				},
+					"match": "(?:(\\@)(?:(?:((?:[\\p{L}_]\\w*):|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))++))(?![~`!@#$%^*<>\\]\\\\/+-])",
+					"name": "variable.other.readwrite.powershell"
+				}
+			]
+		},
+		"variable_scopeOrDrive": {
+			"patterns": [
 				{
+					"match": "((?i:global|local|private|script|using|workflow))(`)?(:)",
 					"captures": {
 						"1": {
-							"name": "variable.other.readwrite.powershell"
-						},
-						"2": {
-							"name": "punctuation.definition.variable.powershell"
-						},
-						"3": {
-							"name": "punctuation.definition.variable.braces.begin.powershell"
-						},
-						"4": {
 							"name": "storage.modifier.scope.powershell"
 						},
-						"5": {
+						"2": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"3": {
 							"name": "punctuation.separator.colon.powershell"
+						}
+					}
+				},
+				{
+					"match": "(?i:(alias|Cert|Env|Function|HKCU|HKLM|Variable|WSMan))(`)?(:)",
+					"captures": {
+						"1": {
+							"name": "keyword.type.drive:powershell"
 						},
-						"6": {
-							"name": "support.variable.drive.powershell"
+						"2": {
+							"name": "invalid.character.escape.powershell"
 						},
-						"8": {
+						"3": {
+							"name": "punctuation.separator.colon.powershell"
+						}
+					}
+				},
+				{
+					"comment": "Unknown drive",
+					"begin": "(?=.)",
+					"end": ":",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.separator.colon.powershell"
+						}
+					},
+					"name": "storage.type.drive.powershell",
+					"patterns": [
+						{
+							"match": "`(?:[`0abefnrtv{}\\n])",
+							"name": "constant.character.escape.powershell"
+						}
+					]
+				}
+			]
+		},
+		"variable_bracketed": {
+			"comment": "base rule not account for line breaks: \\$\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\})",
+			"begin": "(?=\\$\\{)",
+			"end": "(?!.\\G)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "(\\$)(\\{)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.variable.powershell"
+						},
+						"2": {
+							"name": "punctuation.definition.variable.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
 							"name": "punctuation.definition.variable.braces.end.powershell"
 						}
 					},
-					"match": "((?i:(\\$)(\\{)(?:(?:(global|local|private|script|using|workflow)(:)|((?:[^`{}:]|`[`{}]?+)+:|:)))?+([^`{}]|`[`{}]?+)+(\\})))"
+					"name": "variable.other.readwrite.powershell",
+					"patterns": [
+						{
+							"comment": "this captures up to the first colon, and then matches up the capture",
+							"match": "\\G(?:(?:[^`{}:]|`[`{}]?+)+:|:)",
+							"captures": {
+								"0": {
+									"patterns": [
+										{
+											"include": "#variable_scopeOrDrive"
+										}
+									]
+								}
+							}
+						},
+						{
+							"match": "`(?:[`0abefnrtv{}\\n])",
+							"name": "constant.character.escape.powershell"
+						},
+						{
+							"match": "`",
+							"name": "invalid.character.escape.powershell"
+						},
+						{
+							"match": "{",
+							"name": "invalid.character.powershell"
+						}
+					]
+				},
+				{
+					"begin": "(?<=})(?=\\.(?!\\.)|::|\\[)",
+					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#accessors"
+						},
+						{
+							"match": "[^\\s\\W]+"
+						}
+					]
 				}
 			]
 		},
 		"variable": {
 			"patterns": [
 				{
-					"begin": "(?=\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\})))",
+					"begin": "(?=\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{))",
 					"end": "(?!.\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\}))(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+)(?=\\.(?!\\.)|::|\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -1447,7 +1528,7 @@
 							]
 						},
 						{
-							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\}))",
+							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+)",
 							"end": "(?!.\\G)",
 							"applyEndPatternLast": true,
 							"captures": {
@@ -1459,6 +1540,9 @@
 									]
 								}
 							}
+						},
+						{
+							"include": "#variable_bracketed"
 						}
 					]
 				},
@@ -1514,7 +1598,7 @@
 			]
 		},
 		"variableNoProperty": {
-			"match": "(\\$)((?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?)+:|:))?+([^`{}]|`[`{}]?)+(\\}))",
+			"match": "(\\$)((?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:[\\p{L}\\d_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?)+:|:))?+([^`{}]|`[`{}]?)+(\\}))",
 			"captures": {
 				"0": {
 					"patterns": [
@@ -1669,7 +1753,7 @@
 		"unquotedStrings_text": {
 			"patterns": [
 				{
-					"match": "`\\s",
+					"match": "`(?!\\n)\\s",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -1720,7 +1804,7 @@
 			"comment": "!!!!!!!!!!!!!!!!!!WIP!!!",
 			"patterns": [
 				{
-					"match": "`\\s",
+					"match": "`(?!\\n)\\s",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -1904,7 +1988,7 @@
 					"name": "entity.name.parameter.powershell"
 				},
 				{
-					"begin": "[+%*/\\x{2013}-\\x{2015}-]?=|[+/*%\\x{2013}-\\x{2015}-](?!\\p{L})",
+					"begin": "[+%*/\\x{2013}-\\x{2015}-]=?|=",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.assignment.powershell"
@@ -1925,11 +2009,18 @@
 					]
 				},
 				{
+					"comment": "|| and && conditional terminators are reserved",
 					"match": "\\|\\||&&|;",
 					"name": "punctuation.terminator.statement.powershell"
 				},
 				{
-					"begin": "&|(?<!\\w|!)(?<!\\.)\\.(?=\\s)|,|\\|",
+					"comment": "",
+					"match": "[,|]",
+					"name": "punctuation.separator.powershell"
+				},
+				{
+					"comment": "(dot) source operator, requires trailing space",
+					"begin": "&|\\.(?=\\*?[\\s,;&|{}\\(\\)]|$\\[p{L}:?_{])",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.other.powershell"
@@ -1976,7 +2067,7 @@
 		"notCode": {
 			"patterns": [
 				{
-					"match": "`\\s",
+					"match": "`(?!\\n)\\s",
 					"name": "invalid.character.escape.powershell"
 				},
 				{
