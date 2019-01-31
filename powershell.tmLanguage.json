@@ -14,7 +14,7 @@
 		},
 		{
 			"match": "<(?!#)",
-			"name": "invalid.reserved.powershell"
+			"name": "invalid.reserved.redirection.powershell"
 		},
 		{
 			"include": "#commands"
@@ -27,9 +27,6 @@
 		},
 		{
 			"include": "#function"
-		},
-		{
-			"include": "#attribute"
 		},
 		{
 			"include": "#UsingDirective"
@@ -507,27 +504,22 @@
 					"name": "constant.character.escape.powershell"
 				},
 				{
+					"include": "#unicodeEscape"
+				},
+{
 					"match": "`",
 					"name": "invalid.character.escape.powershell"
 				}
 			]
 		},
 		"attribute": {
-			"begin": "(\\[)\\s*\\b(?i)(cmdletbinding|alias|flags|ordered|outputtype|parameter|validatenotnull|validatenotnullorempty|validatecount|validateset|allownull|allowemptycollection|allowemptystring|supportswildcards|validatescript|validaterange|validatepattern|validatelength)\\b",
+			"begin": "(?i:(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards)(?=\\())|ordered)",
 			"beginCaptures": {
-				"1": {
-					"name": "punctuation.section.bracket.begin.powershell"
-				},
-				"2": {
+				"0": {
 					"name": "support.function.attribute.powershell"
 				}
 			},
-			"end": "\\]",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.section.bracket.end.powershell"
-				}
-			},
+			"end": "(?!\\G\\()",
 			"name": "meta.attribute.powershell",
 			"patterns": [
 				{
@@ -545,7 +537,7 @@
 					},
 					"patterns": [
 						{
-							"match": "(?i)\\b(mandatory|valuefrompipeline|valuefrompipelinebypropertyname|valuefromremainingarguments|position|parametersetname|defaultparametersetname|supportsshouldprocess|supportspaging|positionalbinding|helpuri|confirmimpact|helpmessage|ignorecase)\\b",
+							"match": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position|(?:default)?parametersetname|supports(?:shouldprocess|paging)|positionalbinding|help(?:uri|message)|confirmimpact|ignorecase)\\b",
 							"captures": {
 								"1": {
 									"name": "variable.parameter.attribute.powershell"
@@ -602,7 +594,7 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|EXTERNALHELP|FORWARDHELPCATEGORY|FORWARDHELPTARGETNAME|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|REMOTEHELPRUNSPACE|ROLE|SYNOPSIS))(?:\\s*$)",
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|EXTERNALHELP|FORWARDHELP(?:CATEGORY|TARGETNAME)|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|REMOTEHELPRUNSPACE|ROLE|SYNOPSIS))(?:\\s*$)",
 					"name": "comment.documentation.embedded.powershell"
 				},
 				{
@@ -617,8 +609,21 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(PARAMETER|FORWARDHELPTARGETNAME|FORWARDHELPCATEGORY|REMOTEHELPRUNSPACE|EXTERNALHELP)\\s+([a-z0-9-_]+))",
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(PARAMETER|FORWARDHELP(?:CATEGORY|TARGETNAME)|REMOTEHELPRUNSPACE|EXTERNALHELP)\\s+([\\w-]+))",
 					"name": "comment.documentation.embedded.powershell"
+				}
+			]
+		},
+		"unicodeEscape": {
+			"comment": "`u{xxxx} added in PowerShell 6.0",
+			"patterns": [
+				{
+					"match": "`u\\{(?:(?:10)?([0-9a-fA-F]){,4}|0?\\g<1>{1,5})}",
+					"name": "constant.character.escape.powershell"
+				},
+				{
+					"match": "`u(?:\\{[0-9a-fA-F]{,6}.)?",
+					"name": "invalid.character.escape.powershell"
 				}
 			]
 		},
@@ -627,6 +632,9 @@
 				{
 					"match": "`(?:[`0abefnrtv\"\\x{201C}-\\x{201E}$])",
 					"name": "constant.character.escape.powershell"
+				},
+				{
+					"include": "#unicodeEscape"
 				},
 				{
 					"match": "`",
@@ -643,6 +651,9 @@
 				{
 					"match": "`(?:[`0abefnrtv\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$])",
 					"name": "constant.character.escape.powershell"
+				},
+				{
+					"include": "#unicodeEscape"
 				},
 				{
 					"match": "`",
@@ -765,9 +776,6 @@
 				},
 				{
 					"include": "#variableNoProperty"
-				},
-				{
-					"include": "#attribute"
 				},
 				{
 					"include": "#type"
@@ -1036,6 +1044,9 @@
 						{
 							"match": "(?i:ref)(?=\\])",
 							"name": "storage.modifier.powershell"
+						},
+						{
+							"include": "#attribute"
 						},
 						{
 							"include": "#type_SubType"
@@ -1414,8 +1425,11 @@
 						{
 							"match": "`(?:[`0abefnrtv{}\\n])",
 							"name": "constant.character.escape.powershell"
+						},
+						{
+							"include": "#unicodeEscape"
 						}
-					]
+		]
 				}
 			]
 		},
@@ -1460,6 +1474,9 @@
 							"name": "constant.character.escape.powershell"
 						},
 						{
+							"include": "#unicodeEscape"
+						},
+								{
 							"match": "`",
 							"name": "invalid.character.escape.powershell"
 						},
@@ -1525,6 +1542,9 @@
 							"name": "constant.character.escape.powershell"
 						},
 						{
+							"include": "#unicodeEscape"
+						},
+								{
 							"match": "`",
 							"name": "invalid.character.escape.powershell"
 						},
