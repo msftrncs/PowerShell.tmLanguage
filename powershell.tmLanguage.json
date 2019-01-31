@@ -1302,6 +1302,10 @@
 			"comment": "seperate the parts of the variable name and scope them",
 			"patterns": [
 				{
+					"match": "[$@][^:]*:$",
+					"name": "invalid.character.variable.powershell"
+				},
+				{
 					"captures": {
 						"1": {
 							"name": "constant.language.powershell"
@@ -1311,7 +1315,7 @@
 						}
 					},
 					"comment": "These are special constants.",
-					"match": "((\\$)(?i:(:?(?:False|Null|True)))\\b)"
+					"match": "(([$@])(?i:(:?(?:False|Null|True)))\\b)"
 				},
 				{
 					"captures": {
@@ -1323,7 +1327,7 @@
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "((\\$)(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)\\b)))"
+					"match": "(([$@])(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)\\b)))"
 				},
 				{
 					"captures": {
@@ -1334,7 +1338,7 @@
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
-					"match": "((\\$)(?i:((?:[$^?])|:\\?|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b)))"
+					"match": "(([$@])(?i:((?:[$^?])|:\\?|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b)))"
 				},
 				{
 					"captures": {
@@ -1346,7 +1350,7 @@
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "((\\$)(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)\\b)))"
+					"match": "(([$@])(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)\\b)))"
 				},
 				{
 					"captures": {
@@ -1361,24 +1365,7 @@
 							]
 						}
 					},
-					"match": "(?:(\\$)(?:((?:[\\p{L}_]\\w*):|:)(?!:))?+((?:[\\p{L}\\d_?]|:(?!:))+))",
-					"name": "variable.other.readwrite.powershell"
-				},
-				{
-					"captures": {
-						"1": {
-							"name": "punctuation.definition.variable.powershell"
-						},
-						"2": {
-							"patterns": [
-								{
-									"include": "#variable_scopeOrDrive"
-								}
-							]
-						}
-					},
-					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "(?:(\\@)(?:(?:((?:[\\p{L}_]\\w*):|:))(?!:))?+((?:\\p{L}|\\d|[_?]|:(?!:))++))(?![~`!@#$%^*<>\\]\\\\/+-])",
+					"match": "(?:([$@])(?:(?>([\\w][\\w?]*:|:)?)([\\w](?:[\\w?]|(?<!:):(?!:))*|[$?^:])))",
 					"name": "variable.other.readwrite.powershell"
 				}
 			]
@@ -1433,7 +1420,6 @@
 			]
 		},
 		"variable_bracketed": {
-			"comment": "base rule not account for line breaks: \\$\\{(?:(?:(?:[^`{}:]|`[`{}]?+)+:|:))?+(?:[^`{}]|`[`{}]?+)+(\\})",
 			"begin": "(?=\\$\\{)",
 			"end": "(?!.\\G)",
 			"applyEndPatternLast": true,
@@ -1498,15 +1484,67 @@
 				}
 			]
 		},
+		"variableNoProperty_bracketed": {
+			"begin": "(?=\\$\\{)",
+			"end": "(?!.\\G)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "(\\$)(\\{)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.definition.variable.powershell"
+						},
+						"2": {
+							"name": "punctuation.definition.variable.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.variable.braces.end.powershell"
+						}
+					},
+					"name": "variable.other.readwrite.powershell",
+					"patterns": [
+						{
+							"comment": "this captures up to the first colon, and then matches up the capture",
+							"match": "\\G(?:(?:[^`{}:]|`[`{}]?+)+:|:)",
+							"captures": {
+								"0": {
+									"patterns": [
+										{
+											"include": "#variable_scopeOrDrive"
+										}
+									]
+								}
+							}
+						},
+						{
+							"match": "`(?:[`0abefnrtv{}\\n])",
+							"name": "constant.character.escape.powershell"
+						},
+						{
+							"match": "`",
+							"name": "invalid.character.escape.powershell"
+						},
+						{
+							"match": "{",
+							"name": "invalid.character.powershell"
+						}
+					]
+				}
+			]
+		},
 		"variable": {
 			"patterns": [
 				{
-					"begin": "(?=\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+|\\{))",
+					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
 					"end": "(?!.\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+)(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])(?=\\.(?!\\.)|::|\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -1528,7 +1566,7 @@
 							]
 						},
 						{
-							"begin": "\\$(?:(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))+)",
+							"begin": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
 							"end": "(?!.\\G)",
 							"applyEndPatternLast": true,
 							"captures": {
@@ -1547,7 +1585,8 @@
 					]
 				},
 				{
-					"match": "@(?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:\\p{L}|\\d|[_?]|:(?!:))++(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
+					"comment": "splatting cannot have members and certain characters following, including no line comment",
+					"match": "(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -1559,6 +1598,31 @@
 					}
 				}
 			]
+		},
+		"variableNoProperty": {
+			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
+			"end": "(?!.\\G)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
+					"end": "(?!.\\G)",
+					"applyEndPatternLast": true,
+					"captures": {
+						"0": {
+							"patterns": [
+								{
+									"include": "#variable_inner"
+								}
+							]
+						}
+					}
+				},
+				{
+					"include": "#variableNoProperty_bracketed"
+				}
+			],
+			"name": "meta.embedded.interpolated.powershell"
 		},
 		"UsingDirective": {
 			"match": "(?<!\\w)(?i:(using))\\s+(?i:(namespace|module))\\s+(?i:((?:\\w+(?:\\.)?)+))",
@@ -1596,19 +1660,6 @@
 					"include": "#hashtable"
 				}
 			]
-		},
-		"variableNoProperty": {
-			"match": "(\\$)((?:(?:(?:[\\p{L}_]\\w*):|:)(?!:))?+(?:[\\p{L}\\d_?]|:(?!:))+|\\{(?:(?:(?:[^`{}:]|`[`{}]?)+:|:))?+([^`{}]|`[`{}]?)+(\\}))",
-			"captures": {
-				"0": {
-					"patterns": [
-						{
-							"include": "#variable_inner"
-						}
-					]
-				}
-			},
-			"name": "meta.embedded.interpolated.powershell"
 		},
 		"hashtable": {
 			"begin": "(?=@\\{)",
@@ -2079,7 +2130,7 @@
 				{
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
 					"begin": "(?=[^\\s\\[(){}|,;&])",
-					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){}|,;&$@])|(?<=\\S)(?=[@$<>])",
+					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){}|,;&$@])|(?<=\\S)(?=[$@<>])",
 					"end": "(?=[(){}|,;&\\s])",
 					"applyEndPatternLast": false,
 					"contentName": "unquoted.text.powershell",
