@@ -108,7 +108,7 @@ $a[$b].hello###### .notes
 ‛’‚‘
 '
 "
-[flags()] enum WineSweetness <#: byte #>
+[flags()] enum WineSweetness : byte # requires PS 6.2
 {
     VeryDry
     Dry
@@ -198,11 +198,7 @@ $dict.Add('FirstName', 'Grant')
 
 [System.Collections.ArrayList]$1st_AL =[System.Collections.ArrayList]::new()
 
-new-object [System.Collections.Generic.Dictionary``2+ValueCollection[
-    [System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]
-    ,
-    [System.Collections.Generic.List``1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]
-    ]]
+[System.Collections.Generic.Dictionary``2+ValueCollection[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Collections.Generic.List``1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]]::new()
 
 Write-Host " Breaking to check logs" break
 
