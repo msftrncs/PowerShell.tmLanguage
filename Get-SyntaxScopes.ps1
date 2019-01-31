@@ -1,4 +1,4 @@
-# FYI, this script does not handle tmLanguage syntaxes that possess sub-repositories, at this time.
+# FYI, this script partially handles tmLanguage syntaxes that possess sub-repositories, at this time.
 function getscopes ($grammer) {
 
     function getscopes_recurse($ruleset) {
@@ -16,6 +16,12 @@ function getscopes ($grammer) {
                 continue
             }
             {$_.Name -cin 'beginCaptures', 'captures', 'endCaptures'} {
+                foreach ($rule in $_.Value.PSObject.Properties) {
+                    getscopes_recurse $rule.Value
+                }
+                continue
+            }
+            {$_.Name -cin 'repository'} {
                 foreach ($rule in $_.Value.PSObject.Properties) {
                     getscopes_recurse $rule.Value
                 }
