@@ -537,7 +537,7 @@
 					},
 					"patterns": [
 						{
-							"match": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position|(?:default)?parametersetname|supports(?:shouldprocess|paging)|positionalbinding|help(?:uri|message)|confirmimpact|ignorecase)\\b",
+							"match": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|positionalbinding|help(?:uri|message)|confirmimpact|ignorecase)\\b",
 							"captures": {
 								"1": {
 									"name": "variable.parameter.attribute.powershell"
@@ -1398,7 +1398,7 @@
 					}
 				},
 				{
-					"match": "(?i:(alias|Cert|Env|Function|HKCU|HKLM|Variable|WSMan))(`)?(:)",
+					"match": "(?i:(Alias|Cert|Env|Function|HKCU|HKLM|Variable|WSMan))(`)?(:)",
 					"captures": {
 						"1": {
 							"name": "keyword.type.drive:powershell"
