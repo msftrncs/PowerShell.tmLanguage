@@ -506,14 +506,14 @@
 				{
 					"include": "#unicodeEscape"
 				},
-{
+				{
 					"match": "`",
 					"name": "invalid.character.escape.powershell"
 				}
 			]
 		},
 		"attribute": {
-			"begin": "(?i:(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards)(?=\\())|ordered)",
+			"begin": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards)(?=\\())|ordered(?![.\\w`])",
 			"beginCaptures": {
 				"0": {
 					"name": "support.function.attribute.powershell"
@@ -537,7 +537,7 @@
 					},
 					"patterns": [
 						{
-							"match": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|positionalbinding|help(?:uri|message)|confirmimpact|ignorecase)\\b",
+							"match": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase)\\b",
 							"captures": {
 								"1": {
 									"name": "variable.parameter.attribute.powershell"
@@ -1020,7 +1020,7 @@
 			]
 		},
 		"type": {
-			"comment": "This is used by both type attribute references, attribute references need to be moved here",
+			"comment": "This is used by both type and attribute references.",
 			"begin": "(?=\\[)",
 			"end": "(?!.\\G)",
 			"applyEndPatternLast": true,
@@ -1039,7 +1039,7 @@
 						}
 					},
 					"applyEndPatternLast": true,
-					"name": "meta.type-reference.powershell",
+					"name": "meta.attribute-or-type-reference.powershell",
 					"patterns": [
 						{
 							"match": "(?i:ref)(?=\\])",
@@ -1152,7 +1152,7 @@
 			"patterns": [
 				{
 					"comment:": "[short], [ushort], [uint], [ulong] added PowerShell Core 6.2;",
-					"match": "(?<![\\w-])(?i:type|void|switch|(?:ps(?:custom)?)?object|hashtable|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|valuetype|datetime|array|u?int(?:32|16|64)|u?int|u?long|u?short)(?!\\w)",
+					"match": "(?<![\\w-])(?i:(?:value)?type|void|switch|(?:ps(?:custom)?)?object|hashtable|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|datetime|array|bigint|u?int(?:32|16|64)?|u?long|u?short)(?![.\\w+`])",
 					"name": "keyword.type.powershell"
 				},
 				{
@@ -1429,7 +1429,7 @@
 						{
 							"include": "#unicodeEscape"
 						}
-		]
+					]
 				}
 			]
 		},
@@ -1476,7 +1476,7 @@
 						{
 							"include": "#unicodeEscape"
 						},
-								{
+						{
 							"match": "`",
 							"name": "invalid.character.escape.powershell"
 						},
@@ -1544,7 +1544,7 @@
 						{
 							"include": "#unicodeEscape"
 						},
-								{
+						{
 							"match": "`",
 							"name": "invalid.character.escape.powershell"
 						},
