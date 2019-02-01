@@ -174,7 +174,7 @@ $fs = New-Object 'System.Collections.Generic.List[System.IO.FileStream]'
 $fs = New-Object [System.Collections.Generic.List]::new([System.IO.FileStream])
 
 $i = 0
-while ($i < 10)
+while ($i -lt 10)
 {
     $fsTemp = New-Object System.IO.FileStream("$newFileName",[System.IO.FileMode]::OpenOrCreate,[System.IO.FileAccess]::Write)
     $fsTemp = New-Object System.IO.FileStream("$newFileName",[System.IO.FileMode]'OpenOrCreate',[System.IO.FileAccess]'Write')
@@ -186,7 +186,7 @@ while ($i < 10)
 }
 
 $sw = New-Object 'System.Collections.Generic.List[System.IO.StreamWriter]'
-$dict = New-Object system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]
+$dict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
 $dict = [system.collections.generic.dictionary[string,system.collections.generic.list[string]]]::New()
 $dict = [system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]]::New()
 
