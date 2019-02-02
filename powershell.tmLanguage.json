@@ -12,6 +12,9 @@
 			"include": "#scriptblock"
 		},
 		{
+			"include": "#type"
+		},
+		{
 			"comment": "(dot) source operator, requires trailing space",
 			"begin": "&|\\.(?=\\*?[\\s,;&|{}\\(\\)]|$\\[p{L}:?_{])",
 			"beginCaptures": {
@@ -19,7 +22,7 @@
 					"name": "keyword.operator.other.powershell"
 				}
 			},
-			"end": "$|[;&|]",
+			"end": "$\\n|(?<=[;&|)\\]])",
 			"patterns": [
 				{
 					"include": "#command_mode"
@@ -344,6 +347,9 @@
 		"command_mode": {
 			"patterns": [
 				{
+					"include": "#terminators"
+				},
+				{
 					"include": "#commentBlock"
 				},
 				{
@@ -351,7 +357,7 @@
 				},
 				{
 					"begin": "(?=\\$[{(\\w:]|@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-]|[,(\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
-					"end": "$|(?<=[,;&|)\\]])",
+					"end": "$\\n|(?<=[;&|)\\]])",
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -393,7 +399,7 @@
 						},
 						{
 							"begin": "(?<!\\G)(?<!})",
-							"end": "$|[;&|]",
+							"end": "$\\n",
 							"applyEndPatternLast": false,
 							"patterns": [
 								{
@@ -408,10 +414,31 @@
 		"argument_mode": {
 			"patterns": [
 				{
+					"include": "#terminators"
+				},
+				{
 					"include": "#commentBlock"
 				},
 				{
 					"include": "#commentLine"
+				},
+				{
+					"include": "#scriptblock"
+				},
+				{
+					"include": "#expressionGroup"
+				},
+				{
+					"include": "#substatement"
+				},
+				{
+					"include": "#hashtable"
+				},
+				{
+					"include": "#variables"
+				},
+				{
+					"include": "#quotedStrings_Members"
 				},
 				{
 					"begin": "(?<!\\w)(--%)(?!\\w)",
@@ -442,8 +469,7 @@
 							},
 							"name": "string.quoted.double.powershell"
 						}
-					],
-					"comment": "This should be moved to the repository at some point."
+					]
 				},
 				{
 					"match": "(?:(?<!\\w|!)|\\G)[\\x{2013}-\\x{2015}-]\\p{L}\\w*",
@@ -451,7 +477,7 @@
 				},
 				{
 					"begin": "(?=@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-]|[,(\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])",
-					"end": "$|(?<=[,;&|)\\]])",
+					"end": "$\\n|(?<=[,;&|)\\]])",
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -908,7 +934,7 @@
 					},
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#command_mode"
 						}
 					]
 				},
@@ -2044,9 +2070,25 @@
 				}
 			]
 		},
-		"operator_assignment": {},
+		"terminators": {
+			"patterns": [
+				{
+				"comment": "|| and && conditional terminators are reserved.  ';' resume's in statement mode.",
+				"match": "\\|\\||&&|;",
+				"name": "punctuation.terminator.statement.powershell"
+			},
+			{
+				"comment": " seperators resume in command mode",
+				"match": "[,|]",
+				"name": "punctuation.separator.powershell"
+			}
+		]
+		},
 		"operators": {
 			"patterns": [
+				{
+					"include": "#terminators"
+				},
 				{
 					"begin": "(?:(?<!\\w)|\\G)[\\x{2013}-\\x{2015}-](?i:is(?:not)?|as)(?!\\p{L})",
 					"beginCaptures": {
@@ -2191,16 +2233,6 @@
 							"include": "#command_mode"
 						}
 					]
-				},
-				{
-					"comment": "|| and && conditional terminators are reserved",
-					"match": "\\|\\||&&|;",
-					"name": "punctuation.terminator.statement.powershell"
-				},
-				{
-					"comment": "",
-					"match": "[,|]",
-					"name": "punctuation.separator.powershell"
 				},
 				{
 					"comment": "the range operator is only available after an operand (binary operator)",
