@@ -21,7 +21,7 @@ function HexDigitToByte( [ValidateSet([HexDigits])][char]$char ) {
 }
 
 function HexPairToByte( [ValidateSet([HexDigits])][char]$char1, [ValidateSet([HexDigits])][char]$char2 ) {
-    [byte]((HexDigitToByte $char1) * 16 + (HexDigitToByte $char2))
+    [byte]((HexDigitToByte $char1 ) * 16 + (HexDigitToByte $char2 ))
 }
 
 # assume $b is a string, containing 1 line of an S19 file, the following work on S0 or S1 or S9 records.
@@ -108,6 +108,7 @@ $a[$b].hello###### .notes
 ‛’‚‘
 '
 "
+
 [flags()] enum WineSweetness : byte # requires PS 6.2
 {
     VeryDry
@@ -185,8 +186,8 @@ while ($i -lt 10)
     $i++
 }
 
-$sw = New-Object 'System.Collections.Generic.List[System.IO.StreamWriter]'
-$dict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
+$sw = New-Object System.Collections.Generic.List[System.IO.StreamWriter]
+$dict = New-Object system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]
 $dict = [system.collections.generic.dictionary[string,system.collections.generic.list[string]]]::New()
 $dict = [system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]]::New()
 
