@@ -392,7 +392,6 @@
 						{
 							"begin": "\\G(?=[^\\n(){}|,;&])",
 							"end": "(?=[(){}|,;&\\s])",
-							"applyEndPatternLast": false,
 							"contentName": "variable.function.powershell",
 							"patterns": [
 								{
@@ -403,7 +402,6 @@
 						{
 							"begin": "(?![\\n;&|)}\\]])",
 							"end": "$(?=\\n)|(?=[;&|)}\\]])",
-							"applyEndPatternLast": false,
 							"patterns": [
 								{
 									"include": "#argument_mode"
@@ -511,7 +509,6 @@
 			"begin": "(?=[^\\s(){}|,;&])",
 			"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){}|,;&$@])|(?<=\\S)(?=[$@<>])",
 			"end": "(?=[(){}|,;&\\s])",
-			"applyEndPatternLast": false,
 			"contentName": "string.unquoted.argument.powershell",
 			"patterns": [
 				{
@@ -2154,7 +2151,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2175,7 +2171,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2196,7 +2191,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2217,7 +2211,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2238,7 +2231,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2259,7 +2251,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2284,7 +2275,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "$self"
@@ -2299,7 +2289,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2315,7 +2304,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -2347,7 +2335,6 @@
 					"begin": "(?=[^\\s\\[(){}|,;&])",
 					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){}|,;&$@])|(?<=\\S)(?=[$@<>])",
 					"end": "(?=[(){}|,;&\\s])",
-					"applyEndPatternLast": false,
 					"contentName": "invalid.source.powershell",
 					"patterns": [
 						{
