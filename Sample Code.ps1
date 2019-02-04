@@ -89,11 +89,17 @@ get-childitem 'can0.trc' -recurse | ForEach-Object {$_.fullname
 @{name="bob";age=42}.count
 {Write-Output 1}.count 
 
-& hello 
+& hello & if
 . $hello
 
-$a = $b.
-hello++++
+$a = 
+$b.
+hello++
+command
+++
+command
+--
+hello
 
 [regex`2[string,int32]]::Match()
 
@@ -108,6 +114,8 @@ $a[$b].hello###### .notes
 ‛’‚‘
 '
 "
+--$a
+-hello
 
 [flags()] enum WineSweetness : byte # requires PS 6.2
 {
@@ -139,8 +147,8 @@ Invoke-Expression ([IO.StreamReader]::new([IO.Compression.DeflateStream]::new([I
 
 
 [flags()] enum CrazyEnums {
-    Hello = 1; hello3 = "6" -bxor 
-    3 hello more 
+    Hello = 1; hello3 = "6" -bxor #comment
+    3
     Hello2 = 3 #comment here blocks first element of next line from scoping with original comment_line consuming newline.
     hello5  ; hello6 ; hello7 ="100"
     Hello_There but this is not valid

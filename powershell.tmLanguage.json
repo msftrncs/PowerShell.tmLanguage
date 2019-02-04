@@ -357,7 +357,7 @@
 				},
 				{
 					"begin": "(?=\\$[{(\\w:$?^]|@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,(\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}!+\\x{2013}-\\x{2015}-])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}]))(?:(?<!@\\g<1>)|\\s*$)",
-					"end": "$(?=\\n)|(?=[;&|)}\\]])",
+					"end": "$(?=\\n)|(?=[;&)}\\]])",
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -377,7 +377,7 @@
 					"include": "#numericConstant"
 				},
 				{
-					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){}|,;&\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){}|,;&\\s<>@#\\]]|`(?!\\s)))",
+					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -390,8 +390,8 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\G(?=[^\\n(){}|,;&])",
-							"end": "(?=[(){}|,;&\\s])",
+							"begin": "\\G(?=[^\\n(){},;&|])",
+							"end": "(?=[(){},;&|\\s])",
 							"contentName": "variable.function.powershell",
 							"patterns": [
 								{
@@ -401,7 +401,7 @@
 						},
 						{
 							"begin": "(?![\\n;&|)}\\]])",
-							"end": "$(?=\\n)|(?=[;&|)}\\]])",
+							"end": "$(?=\\n)|(?=[;&)}\\]])",
 							"patterns": [
 								{
 									"include": "#argument_mode"
@@ -481,7 +481,7 @@
 				},
 				{
 					"begin": "(?=@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[(\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))",
-					"end": "$(?=\\n)|(?=[,;&|)}\\s])",
+					"end": "$(?=\\n)|(?=[,;&)}\\s])",
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -506,9 +506,9 @@
 			]
 		},
 		"unquotedArgument": {
-			"begin": "(?=[^\\s(){}|,;&])",
-			"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){}|,;&$@])|(?<=\\S)(?=[$@<>])",
-			"end": "(?=[(){}|,;&\\s])",
+			"begin": "(?=[^\\s(){},;&|])",
+			"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
+			"end": "(?=[(){},;&|\\s])",
 			"contentName": "string.unquoted.argument.powershell",
 			"patterns": [
 				{
@@ -658,7 +658,7 @@
 		"argumentModeEscapes": {
 			"patterns": [
 				{
-					"match": "`(?:[`0abefnrtv\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$@#<>(){}|,;&\\n])",
+					"match": "`(?:[`0abefnrtv\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$@#<>(){},;&|\\n])",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -716,7 +716,7 @@
 			"patterns": [
 				{
 					"comment": "Verb-Noun pattern:",
-					"begin": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|.)+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[(){}|,;&\\s])",
+					"begin": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|.)+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[(){},;&|\\s])",
 					"beginCaptures": {
 						"0": {
 							"name": "support.function.powershell"
@@ -732,7 +732,7 @@
 				},
 				{
 					"comment": "Builtin cmdlets with reserved verbs, trailing negative lookahead needs work",
-					"begin": "(?<!\\w)(?i:(?:foreach|where|sort|tee)-object)(?=[(){}|,;&\\s])",
+					"begin": "(?<!\\w)(?i:(?:foreach|where|sort|tee)-object)(?=[(){},;&|\\s])",
 					"beginCaptures": {
 						"0": {
 							"name": "support.function.powershell"
@@ -837,7 +837,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){}|,;&\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){}|,;&\\s<>@#\\]]|`(?!\\s)))",
+					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -851,7 +851,7 @@
 					"patterns": [
 						{
 							"begin": "\\G",
-							"end": "(?=[(){}|,;&\\s])",
+							"end": "(?=[(){},;&|\\s])",
 							"applyEndPatternLast": false,
 							"contentName": "entity.name.function.powershell",
 							"patterns": [
@@ -1069,7 +1069,7 @@
 						}
 					},
 					"begin": "(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?)(?!\\w)",
-					"end": "(?!.\\G)",
+					"end": "(?!\\s)|$",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1093,7 +1093,7 @@
 						}
 					},
 					"begin": "(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?)(?!\\w)",
-					"end": "(?!.\\G)",
+					"end": "(?!\\s)|$",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1117,7 +1117,7 @@
 						}
 					},
 					"begin": "(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?)(?!\\w)",
-					"end": "(?!.\\G)",
+					"end": "(?!\\s)|$",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2127,12 +2127,12 @@
 		"terminators": {
 			"patterns": [
 				{
-					"comment": "|| and && conditional terminators are reserved.  ';' resume's in statement mode.",
-					"match": "\\|\\||&&|;",
+					"comment": "`||` and `&&` conditional terminators are reserved.  `;` & `&` resume's in statement mode.",
+					"match": "\\|\\||&&|[;&]",
 					"name": "punctuation.terminator.statement.powershell"
 				},
 				{
-					"comment": "`,` just continues current mode",
+					"comment": "`,` just continues current mode, `&` resumes in statement mode",
 					"match": ",",
 					"name": "punctuation.separator.powershell"
 				},
@@ -2165,10 +2165,11 @@
 							"name": "keyword.operator.comparison.type.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
 						},
 						{
 							"include": "#commentBlock"
@@ -2185,10 +2186,11 @@
 							"name": "keyword.operator.comparison.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
 						},
 						{
 							"include": "#commentBlock"
@@ -2205,10 +2207,11 @@
 							"name": "keyword.operator.unary.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
 						},
 						{
 							"include": "#commentBlock"
@@ -2225,10 +2228,11 @@
 							"name": "keyword.operator.logical.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
 						},
 						{
 							"include": "#commentBlock"
@@ -2245,10 +2249,11 @@
 							"name": "keyword.operator.bitwise.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
 						},
 						{
 							"include": "#commentBlock"
@@ -2265,10 +2270,11 @@
 							"name": "keyword.operator.string-format.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
 						},
 						{
 							"include": "#commentBlock"
@@ -2303,10 +2309,17 @@
 							"name": "keyword.operator.arithmetic.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
 						}
 					]
 				},
@@ -2318,10 +2331,11 @@
 							"name": "keyword.operator.range.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#expression_mode"
+							"include": "#numericConstant"
 						},
 						{
 							"include": "#commentBlock"
@@ -2347,9 +2361,9 @@
 				},
 				{
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
-					"begin": "(?=[^\\s\\[(){}|,;&])",
-					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){}|,;&$@])|(?<=\\S)(?=[$@<>])",
-					"end": "(?=[(){}|,;&\\s])",
+					"begin": "(?=[^\\s\\[(){},;&|])",
+					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
+					"end": "(?=[(){},;&|\\s])",
 					"contentName": "invalid.source.powershell",
 					"patterns": [
 						{
