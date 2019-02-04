@@ -390,7 +390,7 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\G",
+							"begin": "\\G(?=[^\\n(){}|,;&])",
 							"end": "(?=[(){}|,;&\\s])",
 							"applyEndPatternLast": false,
 							"contentName": "variable.function.powershell",
@@ -730,24 +730,20 @@
 					]
 				},
 				{
-					"comment": "Builtin cmdlets with reserved verbs",
-					"match": "(?<!\\w)(?i:foreach-object)(?!\\w)",
-					"name": "support.function.powershell"
-				},
-				{
-					"comment": "Builtin cmdlets with reserved verbs",
-					"match": "(?<!\\w)(?i:where-object)(?!\\w)",
-					"name": "support.function.powershell"
-				},
-				{
-					"comment": "Builtin cmdlets with reserved verbs",
-					"match": "(?<!\\w)(?i:sort-object)(?!\\w)",
-					"name": "support.function.powershell"
-				},
-				{
-					"comment": "Builtin cmdlets with reserved verbs",
-					"match": "(?<!\\w)(?i:tee-object)(?!\\w)",
-					"name": "support.function.powershell"
+					"comment": "Builtin cmdlets with reserved verbs, trailing negative lookahead needs work",
+					"begin": "(?<!\\w)(?i:(?:foreach|where|sort|tee)-object)(?!\\w)",
+					"beginCaptures": {
+						"0": {
+							"name": "support.function.powershell"
+						}
+					},
+					"end": "$(?=\\n)|(?=[;&|)}\\]])",
+					"applyEndPatternLast": false,
+					"patterns": [
+						{
+							"include": "#argument_mode"
+						}
+					]
 				}
 			]
 		},
