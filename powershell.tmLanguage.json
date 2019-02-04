@@ -2132,9 +2132,24 @@
 					"name": "punctuation.terminator.statement.powershell"
 				},
 				{
-					"comment": "`|` resume's in command mode, `,` just continues",
-					"match": "[,|]",
+					"comment": "`,` just continues current mode",
+					"match": ",",
 					"name": "punctuation.separator.powershell"
+				},
+				{
+					"comment": "`|` resume's in command mode",
+					"begin": "\\|",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.powershell"
+						}
+					},
+					"end": "$(?=\\n)|(?=[;&|)}\\]])",
+					"patterns": [
+						{
+							"include": "#command_mode"
+						}
+					]
 				}
 			]
 		},
