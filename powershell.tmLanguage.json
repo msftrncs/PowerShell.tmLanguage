@@ -733,7 +733,7 @@
 			"patterns": [
 				{
 					"comment": "Verb-Noun pattern:",
-					"begin": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|.)+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[(){},;&|\\s])",
+					"begin": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|[^(){},;&|\\s])+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[(){},;&|\\s])",
 					"beginCaptures": {
 						"0": {
 							"name": "support.function.powershell"
@@ -1903,12 +1903,15 @@
 									"name": "keyword.operator.assignment.hashtable-member.powershell"
 								}
 							},
-							"end": "(?<=;)|(?=[}\\n])",
+							"end": "(?=[;}\\n])",
 							"patterns": [
 								{
 									"include": "#expression_mode"
 								}
 							]
+						},
+						{
+							"include": "#terminators"
 						},
 						{
 							"include": "#notCode"
@@ -2172,9 +2175,6 @@
 		},
 		"operators": {
 			"patterns": [
-				{
-					"include": "#terminators"
-				},
 				{
 					"begin": "(?:(?<!\\w)|\\G)[\\x{2013}-\\x{2015}-](?i:is(?:not)?|as)(?!\\p{L})",
 					"beginCaptures": {
