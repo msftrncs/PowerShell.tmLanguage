@@ -695,15 +695,32 @@
 					},
 					"patterns": [
 						{
-							"match": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase)\\b",
-							"captures": {
+							"begin": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase)\\b",
+							"beginCaptures": {
 								"1": {
 									"name": "variable.parameter.attribute.powershell"
 								},
 								"2": {
 									"name": "keyword.operator.assignment.powershell"
 								}
-							}
+							},
+							"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+							"patterns": [
+								{
+									"begin": "=",
+									"beginCaptures": {
+										"0": {
+											"name": "keyword.operator.assignment.powershell"
+										}
+									},
+									"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+									"patterns": [
+										{
+											"include": "#expression_mode"
+										}
+									]
+								}
+							]
 						},
 						{
 							"include": "#expression_mode"
