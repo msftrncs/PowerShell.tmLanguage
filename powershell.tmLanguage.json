@@ -1906,7 +1906,7 @@
 							"end": "(?=[;}\\n])",
 							"patterns": [
 								{
-									"include": "#expression_mode"
+									"include": "#command_mode"
 								}
 							]
 						},
