@@ -15,28 +15,14 @@
 			"include": "#type"
 		},
 		{
-			"comment": "(dot) source operator, requires trailing space",
-			"begin": "&|\\.(?=\\*?[\\s,;&|{}\\(\\)]|$\\[p{L}:?_{])",
+			"comment": "default: only in switch; in: only in foreach; else,elsif: only after if,elseif; from,var,define are reserved.",
+			"match": "((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for(?:each)?|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|where|while)(?![\\w\\/.-]))",
+			"name": "keyword.control.$0.powershell"
+		},
+		{
+			"begin": "(?i:class)(?=\\s)",
 			"beginCaptures": {
 				"0": {
-					"name": "keyword.operator.other.powershell"
-				}
-			},
-			"end": "$(?=\\n)|(?=[;&|)}\\]])",
-			"patterns": [
-				{
-					"include": "#command_mode"
-				}
-			]
-		},
-		{
-			"match": "((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for(?:each)?|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|where|while)(?![\\w\\/.-]))",
-			"name": "keyword.control.powershell"
-		},
-		{
-			"begin": "(?<![\\w-])((?i:class))(?=\\s)",
-			"beginCaptures": {
-				"1": {
 					"name": "keyword.other.class.powershell"
 				}
 			},
@@ -44,9 +30,9 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?<![\\w-])([\\p{L}_]\\w*)",
+					"begin": "[\\p{L}_]\\w*",
 					"beginCaptures": {
-						"1": {
+						"0": {
 							"name": "entity.name.type.class.powershell"
 						}
 					},
@@ -347,7 +333,30 @@
 		"command_mode": {
 			"patterns": [
 				{
-					"include": "#terminators"
+					"comment": "`||` and `&&` conditional terminators are reserved.",
+					"match": "\\|\\||&&",
+					"name": "invalid.reserved.powershell"
+				},
+				{
+					"comment": "`;` resume's in statement mode.",
+					"match": ";",
+					"name": "punctuation.terminator.statement.powershell"
+				},
+				{
+					"comment": "(dot) source operator, requires trailing space, or invoke operator",
+					"begin": "&|\\.(?=\\*?[\\s,;&|{}\\(\\)]|\\$[\\p{L}$?^:_{])",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.invoke-or-source.powershell"
+						}
+					},
+					"end": "$(?=\\n)|(?=[;|)}\\]])",
+					"patterns": [
+						{
+							"comment": "Next token needs to be an operand for the operator, not the actual command, but an expression or unquoted expandable string that describes the command's name.",
+							"include": "#argument_mode"
+						}
+					]
 				},
 				{
 					"include": "#commentBlock"
@@ -357,10 +366,25 @@
 				},
 				{
 					"begin": "(?=\\$[{(\\w:$?^]|@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,(\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}!+\\x{2013}-\\x{2015}-])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}]))(?:(?<!@\\g<1>)|\\s*$)",
-					"end": "$(?=\\n)|(?=[;&|)}\\]])",
+					"end": "$(?=\\n)|(?=[;|)}\\]])",
 					"patterns": [
 						{
 							"include": "#expression_mode"
+						}
+					]
+				},
+				{
+					"comment": "`|` resume's in command mode",
+					"begin": "\\|",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.powershell"
+						}
+					},
+					"end": "$(?=\\n)|(?=[;&|)}\\]])",
+					"patterns": [
+						{
+							"include": "#command_mode"
 						}
 					]
 				},
@@ -401,7 +425,7 @@
 						},
 						{
 							"begin": "(?![\\n;&|)}\\]])",
-							"end": "$(?=\\n)|(?=[;&|)}\\]])",
+							"end": "$(?=\\n)|(?=[;|)}\\]])",
 							"patterns": [
 								{
 									"include": "#argument_mode"
@@ -418,7 +442,12 @@
 					"include": "#redirection"
 				},
 				{
-					"include": "#terminators"
+					"include": "#jobOperator"
+				},
+				{
+					"comment": "`,` just continues current mode",
+					"match": ",",
+					"name": "punctuation.separator.powershell"
 				},
 				{
 					"include": "#commentBlock"
@@ -524,6 +553,11 @@
 			"patterns": [
 				{
 					"include": "#redirection"
+				},
+				{
+					"comment": "`,` just continues current mode",
+					"match": ",",
+					"name": "punctuation.separator.powershell"
 				},
 				{
 					"match": "<(?!#)",
@@ -1437,16 +1471,67 @@
 		"members": {
 			"patterns": [
 				{
-					"match": "(?<!\\w-)((?i:(foreach|where)(?=[\\({])))",
-					"name": "support.function.powershell"
-				},
-				{
-					"match": "[\\p{L}_]\\w*(?=\\()",
+					"begin": "(?i:(foreach|where)(?=[\\({]))|([\\p{L}_]\\w*(?=\\())",
 					"captures": {
-						"0": {
-							"name": "variable.function.powershell"
+						"1": {
+							"name": "support.function.$1.powershell"
+						},
+						"2": {
+							"name": "variable.function.method.powershell"
 						}
-					}
+					},
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"begin": "\\G(?=\\()",
+							"end": "(?!.\\G)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"begin": "\\(",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.section.group.begin.powershell"
+										}
+									},
+									"name": "meta.group.subexpression.powershell",
+									"end": "\\)",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.section.group.end.powershell"
+										}
+									},
+									"patterns": [
+										{
+											"include": "#expression_mode"
+										}
+									]
+								},
+								{
+									"begin": "(?<=\\))(?=\\.(?!\\.)|::|\\[)",
+									"end": "(?=[^\\s\\p{L}]|\\n)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#accessors"
+										},
+										{
+											"match": "[^\\s\\W]+"
+										}
+									]
+								}
+							]
+						},
+						{
+							"begin": "\\G(?=\\{)",
+							"end": "(?!\\G)",
+							"patterns": [
+								{
+									"include": "#scriptblock"
+								}
+							]
+						}
+					]
 				},
 				{
 					"begin": "[\\p{L}_]\\w*(?=\\.(?!\\.)|::|\\[)",
@@ -2056,7 +2141,7 @@
 							"end": "\\)",
 							"patterns": [
 								{
-									"include": "#unquotedStrings_text"
+									"include": "#functionName"
 								}
 							]
 						}
@@ -2067,7 +2152,7 @@
 					"end": "\\)",
 					"patterns": [
 						{
-							"include": "#unquotedStrings_text"
+							"include": "#functionName"
 						}
 					]
 				}
@@ -2144,32 +2229,32 @@
 				}
 			]
 		},
+		"jobOperator": {
+			"comment": "`&` resume's in statement mode",
+			"begin": "&(?!&)",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.separator.job.powershell"
+				}
+			},
+			"end": "$(?=\\n)|(?=[;|)}\\]])",
+			"patterns": [
+				{
+					"include": "$self"
+				}
+			]
+		},
 		"terminators": {
 			"patterns": [
 				{
-					"comment": "`||` and `&&` conditional terminators are reserved.  `;` & `&` resume's in statement mode.",
-					"match": "\\|\\||&&|[;&]",
+					"comment": "`;` resume's in statement mode.",
+					"match": ";",
 					"name": "punctuation.terminator.statement.powershell"
 				},
 				{
-					"comment": "`,` just continues current mode, `&` resumes in statement mode",
+					"comment": "`,` just continues current mode",
 					"match": ",",
 					"name": "punctuation.separator.powershell"
-				},
-				{
-					"comment": "`|` resume's in command mode",
-					"begin": "\\|",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.separator.powershell"
-						}
-					},
-					"end": "$(?=\\n)|(?=[;&|)}\\]])",
-					"patterns": [
-						{
-							"include": "#command_mode"
-						}
-					]
 				}
 			]
 		},
