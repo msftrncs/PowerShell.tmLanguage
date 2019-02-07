@@ -1,5 +1,5 @@
 # FYI, this script partially handles tmLanguage syntaxes that possess sub-repositories, at this time.
-function getincludes ($grammer) {
+function getincludes ($grammar) {
 
     function getincludes_recurse($ruleset) {
 
@@ -32,11 +32,11 @@ function getincludes ($grammer) {
 
     # build a hashtable/PSCustomObject containing a list of includes used 
     # in each repository item, $self and $base
-    foreach ($rule in $grammer_json.'repository'.PSObject.Properties) {
+    foreach ($rule in $grammar.'repository'.PSObject.Properties) {
         @{ $rule.Name = @( getincludes_recurse $rule.Value ) }
     }
     , @{ '$self' = @( 
-            foreach ($rule in $grammer_json.'patterns') {
+            foreach ($rule in $grammar.'patterns') {
                 getincludes_recurse $rule
             }
         )
@@ -46,6 +46,6 @@ function getincludes ($grammer) {
 
 }
 
-$grammer_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json
+$grammar_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json
 
-getincludes $grammer_json
+getincludes $grammar_json

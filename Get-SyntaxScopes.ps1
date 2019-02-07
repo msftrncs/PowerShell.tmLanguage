@@ -1,5 +1,5 @@
 # FYI, this script partially handles tmLanguage syntaxes that possess sub-repositories, at this time.
-function getscopes ($grammer) {
+function getscopes ($grammar) {
 
     function getscopes_recurse($ruleset) {
 
@@ -32,22 +32,22 @@ function getscopes ($grammer) {
 
     # build a hashtable/PSCustomObject containing a list of scope names used 
     # in each repository item, $self and $base
-    foreach ($rule in $grammer.'repository'.PSObject.Properties) {
+    foreach ($rule in $grammar.'repository'.PSObject.Properties) {
         @{ $rule.Name = @( getscopes_recurse $rule.Value ) }
     }
     , @{ '$self' = @( 
-            foreach ($rule in $grammer.'patterns') {
+            foreach ($rule in $grammar.'patterns') {
                 getscopes_recurse $rule
             }
         )
     }
     , @{ '$base' = @( 
-            $grammer.'scopeName'
+            $grammar.'scopeName'
         )
     }
 
 }
 
-$grammer_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json
+$grammar_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json
 
-getscopes $grammer_json
+getscopes $grammar_json
