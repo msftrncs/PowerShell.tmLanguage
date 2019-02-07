@@ -15,8 +15,8 @@
 			"include": "#type"
 		},
 		{
-			"comment": "default: only in switch; in: only in foreach; else,elsif: only after if,elseif; from,var,define are reserved.",
-			"match": "((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for(?:each)?|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|where|while)(?![\\w\\/.-]))",
+			"comment": "default: only in switch; in: only in foreach; else,elsif: only after if,elseif; from,var,define are reserved; do,for,foreach,while: allow a :label that must start the statement; until: only after do; catch,finally: only after try; foreach: has parameter -parallel; creak,continue: permit a label following",
+			"match": "((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for(?:each)?|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|while)(?![\\w\\/.-]))",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
