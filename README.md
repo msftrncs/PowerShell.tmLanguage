@@ -19,8 +19,10 @@ I have made significant changes, based on PowerShell/EditorSyntax commit 472c944
 
 2019-02-02
 - Now with improved class and function support and with enum support.
-- Now with consistent 'accessor' (member/method/property) scoping behavior.
+- Now with consistent 'accessor' (member/method/property/index) scoping behavior.
 - Now with a full statement syntaxing approach, which limits keywords from scoping where they are not available.
+- In many places, invalid text will be so marked.
+- There are still issues being worked out, so some valid text/keywords may be marked as invalid.
 
 Included are some scripts for conversion of the JSON file to PList format, and for interogating the scopes used within the syntax.
 
