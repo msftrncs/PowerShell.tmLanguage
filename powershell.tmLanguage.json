@@ -16,7 +16,7 @@
 		},
 		{
 			"comment": "default: only in switch; in: only in foreach; else,elsif: only after if,elseif; from,var,define are reserved; do,for,foreach,while: allow a :label that must start the statement; until: only after do; catch,finally: only after try; foreach: has parameter -parallel; creak,continue: permit a label following",
-			"match": "((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for(?:each)?|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|while)(?![\\w\\/.-]))",
+			"match": "((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for(?:each)?|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|while)(?![^\\s{}(),;&|]))",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -50,7 +50,7 @@
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "(?<![\\w-])(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
+									"begin": "(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
 									"beginCaptures": {
 										"0": {
 											"patterns": [
@@ -82,7 +82,7 @@
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
-													"begin": "(?<![\\w-])(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
+													"begin": "(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
 													"beginCaptures": {
 														"0": {
 															"patterns": [
@@ -144,11 +144,11 @@
 					"name": "meta.class.powershell",
 					"patterns": [
 						{
-							"match": "(?<![\\w-])((?i:hidden|static))(?=\\s)",
+							"match": "((?i:hidden|static))(?=\\s)",
 							"name": "storage.modifier.powershell"
 						},
 						{
-							"begin": "(?<![\\w-])([\\p{L}_]\\w*)(?=\\s*\\()",
+							"begin": "([\\p{L}_]\\w*)(?=\\s*\\()",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.function.powershell"
@@ -201,7 +201,7 @@
 			]
 		},
 		{
-			"begin": "(?<![\\w-])((?i:enum))(?=\\s)",
+			"begin": "((?i:enum))(?=\\s)",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.other.enum.powershell"
@@ -211,7 +211,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?<![\\w-])([\\p{L}_]\\w*)",
+					"begin": "([\\p{L}_]\\w*)",
 					"beginCaptures": {
 						"1": {
 							"name": "entity.name.type.enum.powershell"
@@ -232,7 +232,7 @@
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "(?<![\\w-])(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
+									"begin": "(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
 									"beginCaptures": {
 										"0": {
 											"patterns": [
@@ -288,7 +288,7 @@
 							"name": "punctuation.terminator.statement.powershell"
 						},
 						{
-							"begin": "(?<![\\w-])([\\p{L}_]\\w*)",
+							"begin": "([\\p{L}_]\\w*)",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.variable.enum-member.powershell"
@@ -326,6 +326,12 @@
 			]
 		},
 		{
+			"include": "#function"
+		},
+		{
+			"include": "#UsingDirective"
+		},
+		{
 			"include": "#command_mode"
 		}
 	],
@@ -359,13 +365,7 @@
 					]
 				},
 				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				},
-				{
-					"begin": "(?=\\$[{(\\w:$?^]|@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,(\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}!+\\x{2013}-\\x{2015}-])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}]))(?:(?<!@\\g<1>)|\\s*$)",
+					"begin": "(?=\\$[{(\\w:$?^]|@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,(\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
 					"end": "$(?=\\n)|(?=[;|)}\\]])",
 					"patterns": [
 						{
@@ -389,16 +389,51 @@
 					]
 				},
 				{
+					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
+					"begin": "(?=[\\d+\\x{2013}-\\x{2015}-])",
+					"end": "(?!\\G)|$(?=\\n)|(?=[;|)}\\]])",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"comment": "if numeric constant advanced, switch to expression mode",
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"patterns": [
+								{
+									"include": "#expression_mode"
+								}
+							]
+						},
+						{
+							"comment": "if numeric constant didn't advanced, try finishing command mode with a command name",
+							"begin": "\\G(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"patterns": [
+								{
+									"include": "#command_name"
+								}
+							]
+						}
+					]
+				},
+				{
+					"include": "#command_name"
+				}
+			]
+		},
+		"command_name": {
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
+				},
+				{
 					"include": "#commands"
-				},
-				{
-					"include": "#function"
-				},
-				{
-					"include": "#UsingDirective"
-				},
-				{
-					"include": "#numericConstant"
 				},
 				{
 					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
@@ -507,10 +542,10 @@
 				{
 					"match": "([\\x{2013}-\\x{2015}-]\\p{L}\\w*)(:)?",
 					"captures": {
-						"1":{
+						"1": {
 							"name": "entity.name.parameter.powershell"
 						},
-						"2":{
+						"2": {
 							"name": "punctuation.separator.parameter-value.powershell"
 						}
 					}
@@ -525,7 +560,7 @@
 					]
 				},
 				{
-					"begin": "(?=\\d)",
+					"begin": "(?=\\d[^~`!@#$%^*.<>{}()|&;,\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]*(?![~`!@#$%^*.<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]))",
 					"end": "(?!\\G)",
 					"patterns": [
 						{
@@ -1126,9 +1161,8 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?)(?!\\w)",
-					"end": "(?!\\s)|$",
-					"applyEndPatternLast": true,
+					"begin": "([+\\x{2013}-\\x{2015}-]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?)(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
 							"include": "#operators"
@@ -1150,9 +1184,8 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?)(?!\\w)",
-					"end": "(?!\\s)|$",
-					"applyEndPatternLast": true,
+					"begin": "([+\\x{2013}-\\x{2015}-]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?)(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
 							"include": "#operators"
@@ -1174,9 +1207,8 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?)(?!\\w)",
-					"end": "(?!\\s)|$",
-					"applyEndPatternLast": true,
+					"begin": "([+\\x{2013}-\\x{2015}-]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?)(?![^\\s#{(,;|)}\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
 							"include": "#operators"
@@ -1198,7 +1230,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"comment": "(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:b[01_]+l?))((?i:[kmgtp]b)?)(?!\\w)"
+					"comment": "(?>(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:b[01_]+l?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])"
 				}
 			]
 		},

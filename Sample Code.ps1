@@ -72,7 +72,7 @@ class myclass : float
 
 "@).count
 
-
+'<?xml version="1.0"' + (if ($encoding) {' encoding="' + $encoding + '"'}) + '?>' | get-command
 
 $(hello).test 
 
@@ -92,8 +92,8 @@ get-childitem 'can0.trc' -recurse | ForEach-Object {$_.fullname
 & hello & if
 . $hello
 echo 7.3d>test.txt # should output '7.3d>test.txt', not redirect 7.3 to test.txt
-
-$a = 
+echo 7.34d  # should be decimal number!
+$a = 7.34d
 $b.
 hello++
 command
