@@ -390,7 +390,7 @@
 				},
 				{
 					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
-					"begin": "(?=[\\d+\\x{2013}-\\x{2015}-])",
+					"begin": "(?=[\\d.!+\\x{2013}-\\x{2015}-])",
 					"end": "(?!\\G)|$(?=\\n)|(?=[;|)}\\]])",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -398,8 +398,11 @@
 							"include": "#numericConstant"
 						},
 						{
+							"include": "#operators_preUnary"
+						},
+						{
 							"comment": "if numeric constant advanced, switch to expression mode",
-							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))|(?=[{(\\[,$+%*/\\x{2013}-\\x{2015}-])",
 							"end": "$(?=\\n)|(?=[;|)}\\]])",
 							"patterns": [
 								{
@@ -560,11 +563,11 @@
 					]
 				},
 				{
-					"begin": "(?=\\d[^~`!@#$%^*.<>{}()|&;,\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]*(?![~`!@#$%^*.<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]))",
+					"begin": "(?=\\d)",
 					"end": "(?!\\G)",
 					"patterns": [
 						{
-							"include": "#numericConstant"
+							"include": "#numericConstant_argumentMode"
 						},
 						{
 							"include": "#unquotedArgument"
@@ -1161,7 +1164,130 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "([+\\x{2013}-\\x{2015}-]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?)(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"begin": "(?>([+\\x{2013}-\\x{2015}-]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))l?|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
+					"patterns": [
+						{
+							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
+							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#accessors"
+								},
+								{
+									"match": "[^\\s\\W]+"
+								}
+							]
+						},
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"beginCaptures": {
+						"1": {
+							"name": "constant.numeric.hex.powershell"
+						},
+						"2": {
+							"name": "constant.language.powershell"
+						}
+					},
+					"begin": "(?>([+\\x{2013}-\\x{2015}-]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
+					"patterns": [
+						{
+							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
+							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#accessors"
+								},
+								{
+									"match": "[^\\s\\W]+"
+								}
+							]
+						},
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"beginCaptures": {
+						"1": {
+							"name": "constant.numeric.decimal.powershell"
+						},
+						"2": {
+							"name": "constant.language.powershell"
+						}
+					},
+					"begin": "(?>([+\\x{2013}-\\x{2015}-]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
+					"patterns": [
+						{
+							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
+							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#accessors"
+								},
+								{
+									"match": "[^\\s\\W]+"
+								}
+							]
+						},
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.numeric.binary.powershell"
+						},
+						"2": {
+							"name": "constant.language.powershell"
+						}
+					},
+					"comment": "(?>(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:b[01_]+l?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])"
+				}
+			]
+		},
+		"numericConstant_argumentMode": {
+			"patterns": [
+				{
+					"beginCaptures": {
+						"1": {
+							"name": "constant.numeric.integer.powershell"
+						},
+						"3": {
+							"name": "constant.language.powershell"
+						}
+					},
+					"begin": "(?>((?:[0-9]+(?i:(?![ed]|\\.(?!\\.))l?|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>)))((?i:[kmgtp]b)?)(?![^\\s{(,;|)}])",
 					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
@@ -1184,7 +1310,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "([+\\x{2013}-\\x{2015}-]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?)(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"begin": "(?>(0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])",
 					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
@@ -1207,7 +1333,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "([+\\x{2013}-\\x{2015}-]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?)(?![^\\s#{(,;|)}\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"begin": "(?>((?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])",
 					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
@@ -1230,7 +1356,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"comment": "(?>(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:b[01_]+l?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])"
+					"comment": "(?>(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:b[01_]+l?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])"
 				}
 			]
 		},
@@ -2297,10 +2423,55 @@
 				}
 			]
 		},
+		"operators_preUnary": {
+			"patterns": [
+				{
+					"match": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
+					"captures": {
+						"1": {
+							"name": "keyword.operator.arithmetic.unary.increment.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.arithmetic.unary.decrement.powershell"
+						}
+					}
+				},
+				{
+					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.))|(!))(?!\\p{L})",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.logical.unary.not.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.bitwise.unary.bnot.powershell"
+						},
+						"4": {
+							"name": "keyword.operator.logical.unary.not.powershell"
+						},
+						"3": {
+							"name": "keyword.operator.arithmetic.unary.negate.powershell"
+						}
+					},
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
+				}
+			]
+		},
 		"operators": {
 			"patterns": [
 				{
-					"begin": "(?:(?<!\\w)|\\G)[\\x{2013}-\\x{2015}-](?i:is(?:not)?|as)(?!\\p{L})",
+					"include": "#operators_preUnary"
+				},
+				{
+					"begin": "[\\x{2013}-\\x{2015}-](?i:is(?:not)?|as)(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.comparison.type.powershell"
@@ -2310,9 +2481,6 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2321,19 +2489,16 @@
 					]
 				},
 				{
-					"begin": "(?:(?<!\\w|!)|\\G)[\\x{2013}-\\x{2015}-](?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace))(?!\\p{L})",
+					"begin": "[\\x{2013}-\\x{2015}-]((?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in)|replace)))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.comparison.powershell"
+							"name": "keyword.operator.comparison.$1.powershell"
 						}
 					},
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2342,19 +2507,16 @@
 					]
 				},
 				{
-					"begin": "(?:(?<!\\w|!)|\\G)[\\x{2013}-\\x{2015}-](?i:join|split)(?!\\p{L})",
+					"begin": "[\\x{2013}-\\x{2015}-]((?i:join|[ic]?split))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.unary.powershell"
+							"name": "keyword.operator.string-$1.powershell"
 						}
 					},
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2363,19 +2525,16 @@
 					]
 				},
 				{
-					"begin": "(?:(?<!\\w|!)|\\G)[\\x{2013}-\\x{2015}-](?i:and|or|not|xor)(?!\\p{L})|!",
+					"begin": "[\\x{2013}-\\x{2015}-]((?i:and|or|not|xor))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.logical.powershell"
+							"name": "keyword.operator.logical.$1.powershell"
 						}
 					},
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2384,19 +2543,16 @@
 					]
 				},
 				{
-					"begin": "(?:(?<!\\w|!)|\\G)[\\x{2013}-\\x{2015}-](?i:band|bor|bnot|bxor|shl|shr)(?!\\p{L})",
+					"begin": "[\\x{2013}-\\x{2015}-]((?i:band|bor|bxor|shl|shr))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.bitwise.powershell"
+							"name": "keyword.operator.bitwise.$1.powershell"
 						}
 					},
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2405,7 +2561,7 @@
 					]
 				},
 				{
-					"begin": "(?:(?<!\\w|!)|\\G)[\\x{2013}-\\x{2015}-](?i:f)(?!\\p{L})",
+					"begin": "[\\x{2013}-\\x{2015}-](?i:f)(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.string-format.powershell"
@@ -2415,19 +2571,12 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#commentBlock"
 						},
 						{
 							"include": "#commentLine"
 						}
 					]
-				},
-				{
-					"match": "\\+\\+|[\\x{2013}-\\x{2015}-]{2}",
-					"name": "keyword.operator.unary.powershell"
 				},
 				{
 					"begin": "[+%*/\\x{2013}-\\x{2015}-]?=",
@@ -2454,9 +2603,6 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2475,9 +2621,6 @@
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
-						{
-							"include": "#numericConstant"
-						},
 						{
 							"include": "#commentBlock"
 						},
