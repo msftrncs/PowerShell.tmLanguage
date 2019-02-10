@@ -38,7 +38,7 @@ $c = [byte[]]@(); for ( $i = 8; $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 2; ) { 
 
 
 # formatting and conversion samples.
-(0x73).ToChar($null) # 's'
+0x73.ToChar($null) # 's'
 
 "16#{0:x}" -f (('w').ToChar($null).ToInt32($null)) # 16#77
 
@@ -50,6 +50,12 @@ $c = [byte[]]@(); for ( $i = 8; $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 2; ) { 
 
     A method to add a line to the memory block would search out which memory block it could be appended to.
 #>
+
+:hello <#this is actually the label for the foreach below! #> <# hello george #> foreach ($x in 1..34) {
+    echo $x
+    continue hello
+}
+
 
 $_hello
 $hello
@@ -92,7 +98,7 @@ get-childitem 'can0.trc' -recurse | ForEach-Object {$_.fullname
 & hello & if
 . $hello
 echo 7.3d>test.txt # should output '7.3d>test.txt', not redirect 7.3 to test.txt
-echo 7.34d  # should be decimal number!
+echo 7.24d  # should be decimal number!
 $a = 7.34d
 $b.
 hello++
@@ -101,6 +107,9 @@ command
 command
 --
 hello
+! $true
+!hello
+
 
 [regex`2[string,int32]]::Match()
 
@@ -115,7 +124,7 @@ $a[$b].hello###### .notes
 ‛’‚‘
 '
 "
---$a
+-$a
 -hello
 
 [flags()] enum WineSweetness : byte # requires PS 6.2

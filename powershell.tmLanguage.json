@@ -15,11 +15,6 @@
 			"include": "#type"
 		},
 		{
-			"comment": "default: only in switch; in: only in foreach; else,elsif: only after if,elseif; from,var,define are reserved; do,for,foreach,while: allow a :label that must start the statement; until: only after do; catch,finally: only after try; foreach: has parameter -parallel; creak,continue: permit a label following",
-			"match": "((?i:begin|break|catch|continue|data|default|define|do|dynamicparam|else|elseif|end|exit|finally|for(?:each)?|from|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until|var|while)(?![^\\s{}(),;&|]))",
-			"name": "keyword.control.$0.powershell"
-		},
-		{
 			"begin": "(?i:class)(?=\\s)",
 			"beginCaptures": {
 				"0": {
@@ -326,10 +321,134 @@
 			]
 		},
 		{
-			"include": "#function"
+			"begin": "(?<![\\w-])((?i:function|filter|configuration|workflow))(?=\\s)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.function.powershell"
+				}
+			},
+			"end": "(?=[//s])|(?<=})",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
+					"beginCaptures": {
+						"1": {
+							"name": "storage.modifier.scope.powershell"
+						},
+						"2": {
+							"name": "punctuation.separator.colon.powershell"
+						}
+					},
+					"end": "(?=[//s])|(?<=})",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G",
+							"end": "(?=[(){},;&|\\s])",
+							"applyEndPatternLast": false,
+							"contentName": "entity.name.function.powershell",
+							"patterns": [
+								{
+									"include": "#functionName"
+								}
+							]
+						},
+						{
+							"begin": "(?<!\\G)(?<!})",
+							"end": "(?=[//s])|(?<=})",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"begin": "{",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.begin.powershell"
+										}
+									},
+									"end": "}",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.end.powershell"
+										}
+									},
+									"name": "meta.function.powershell",
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"include": "#declarationParameterSet"
+								},
+								{
+									"include": "#notCode"
+								},
+								{
+									"comment": "#commentLine"
+								},
+								{
+									"comment": "(?<!})[^\\s{}()]+"
+								}
+							]
+						}
+					]
+				},
+				{
+					"include": "#notCode"
+				}
+			]
 		},
 		{
-			"include": "#UsingDirective"
+			"comment": "A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!",
+			"begin": "(?>(:)(\\p{L}\\w*))?((?:\\s*<#.*?#>)*)\\s*(?=(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|]))",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.separator.colon.label.powershell"
+				},
+				"2": {
+					"name": "entity.name.label.powershell"
+				},
+				"3": {
+					"patterns": [
+						{
+							"include": "#commentBlock"
+						}
+					]
+				}
+			},
+			"end": "(?!\\G)",
+			"patterns": [
+				{
+					"match": "(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|])",
+					"name": "keyword.control.$0.powershell"
+				}
+			]
+		},
+		{
+			"match": "(?i:(using))\\s+(?i:(namespace|module))\\s+(?i:((?:\\w+(?:\\.)?)+))",
+			"captures": {
+				"1": {
+					"name": "keyword.control.using.powershell"
+				},
+				"2": {
+					"name": "keyword.other.powershell"
+				},
+				"3": {
+					"name": "variable.parameter.powershell"
+				}
+			}
+		},
+		{
+			"comment": "from,var,define are reserved",
+			"match": "(?i:define|from|var)(?![^\\s{}(),;&|])",
+			"name": "invalid.reserved.keyword.control.$0.powershell"
+		},
+		{
+			"comment": "default: only in switch; in: only in foreach; else,elsif: only after if,elseif; do,for,foreach,while: allow a :label that must start the statement; until: only after do; catch,finally: only after try; foreach: has parameter -parallel; break,continue: permit a label following",
+			"match": "(?i:begin|break|catch|continue|data|default|dynamicparam|else|elseif|end|exit|finally|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until)(?![^\\s{}(),;&|])",
+			"name": "keyword.control.$0.powershell"
 		},
 		{
 			"include": "#command_mode"
@@ -922,86 +1041,6 @@
 				}
 			]
 		},
-		"function": {
-			"begin": "(?<![\\w-])((?i:function|filter|configuration|workflow))(?=\\s)",
-			"beginCaptures": {
-				"1": {
-					"name": "keyword.other.function.powershell"
-				}
-			},
-			"end": "(?=[//s])|(?<=})",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
-					"beginCaptures": {
-						"1": {
-							"name": "storage.modifier.scope.powershell"
-						},
-						"2": {
-							"name": "punctuation.separator.colon.powershell"
-						}
-					},
-					"end": "(?=[//s])|(?<=})",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"begin": "\\G",
-							"end": "(?=[(){},;&|\\s])",
-							"applyEndPatternLast": false,
-							"contentName": "entity.name.function.powershell",
-							"patterns": [
-								{
-									"include": "#functionName"
-								}
-							]
-						},
-						{
-							"begin": "(?<!\\G)(?<!})",
-							"end": "(?=[//s])|(?<=})",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"begin": "{",
-									"beginCaptures": {
-										"0": {
-											"name": "punctuation.section.braces.begin.powershell"
-										}
-									},
-									"end": "}",
-									"endCaptures": {
-										"0": {
-											"name": "punctuation.section.braces.end.powershell"
-										}
-									},
-									"name": "meta.function.powershell",
-									"patterns": [
-										{
-											"include": "$self"
-										}
-									]
-								},
-								{
-									"include": "#declarationParameterSet"
-								},
-								{
-									"include": "#notCode"
-								},
-								{
-									"comment": "#commentLine"
-								},
-								{
-									"comment": "(?<!})[^\\s{}()]+"
-								}
-							]
-						}
-					]
-				},
-				{
-					"include": "#notCode"
-				}
-			]
-		},
 		"declarationParameterSet": {
 			"begin": "\\(",
 			"beginCaptures": {
@@ -1279,7 +1318,7 @@
 		"numericConstant_argumentMode": {
 			"patterns": [
 				{
-					"beginCaptures": {
+					"captures": {
 						"1": {
 							"name": "constant.numeric.integer.powershell"
 						},
@@ -1287,22 +1326,10 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "(?>((?:[0-9]+(?i:(?![ed]|\\.(?!\\.))l?|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>)))((?i:[kmgtp]b)?)(?![^\\s{(,;|)}])",
-					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
-					"patterns": [
-						{
-							"include": "#operators"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
-						}
-					]
+					"match": "(?>((?:[0-9]+(?i:(?![ed]|\\.(?!\\.))l?|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>)))((?i:[kmgtp]b)?)(?![^\\s{(,;|)}])"
 				},
 				{
-					"beginCaptures": {
+					"captures": {
 						"1": {
 							"name": "constant.numeric.hex.powershell"
 						},
@@ -1310,22 +1337,10 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "(?>(0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])",
-					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
-					"patterns": [
-						{
-							"include": "#operators"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
-						}
-					]
+					"match": "(?>(0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])"
 				},
 				{
-					"beginCaptures": {
+					"captures": {
 						"1": {
 							"name": "constant.numeric.decimal.powershell"
 						},
@@ -1333,19 +1348,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"begin": "(?>((?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])",
-					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
-					"patterns": [
-						{
-							"include": "#operators"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
-						}
-					]
+					"match": "(?>((?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])"
 				},
 				{
 					"captures": {
@@ -2076,22 +2079,8 @@
 			],
 			"name": "meta.embedded.interpolated.powershell"
 		},
-		"UsingDirective": {
-			"match": "(?<!\\w)(?i:(using))\\s+(?i:(namespace|module))\\s+(?i:((?:\\w+(?:\\.)?)+))",
-			"captures": {
-				"1": {
-					"name": "keyword.control.using.powershell"
-				},
-				"2": {
-					"name": "keyword.other.powershell"
-				},
-				"3": {
-					"name": "variable.parameter.powershell"
-				}
-			}
-		},
 		"RequiresDirective": {
-			"begin": "(?<=#)(?i:(requires))\\s",
+			"begin": "(?<=#)(?i:requires)(?=\\s)",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.requires.powershell"
@@ -2101,15 +2090,22 @@
 			"name": "meta.requires.powershell",
 			"patterns": [
 				{
-					"match": "\\-(?i:Modules|PSSnapin|RunAsAdministrator|ShellId|Version)",
+					"match": "[\\x{2013}-\\x{2015}-](?i:Modules|PSSnapin|RunAsAdministrator|ShellId|Version)",
 					"name": "keyword.other.powershell"
 				},
 				{
-					"match": "(?<!-)\\b\\p{L}+|\\d+(?:\\.\\d+)*",
+					"match": "(?<!\\x{2013}-\\x{2015}-)\\b\\p{L}+|\\d+(?:\\.\\d+)*",
 					"name": "variable.parameter.powershell"
 				},
 				{
+					"match": ",",
+					"name": "punctuation.separator.powershell"
+				},
+				{
 					"include": "#hashtable"
+				},
+				{
+					"include": "#notCode"
 				}
 			]
 		},

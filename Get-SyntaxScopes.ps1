@@ -35,13 +35,13 @@ function getscopes ($grammar) {
     foreach ($rule in $grammar.'repository'.PSObject.Properties) {
         @{ $rule.Name = @( getscopes_recurse $rule.Value ) }
     }
-    , @{ '$self' = @( 
+    , @{ '$self' = @(
             foreach ($rule in $grammar.'patterns') {
                 getscopes_recurse $rule
             }
         )
     }
-    , @{ '$base' = @( 
+    , @{ '$base' = @(
             $grammar.'scopeName'
         )
     }
