@@ -101,14 +101,20 @@ echo 7.3d>test.txt # should output '7.3d>test.txt', not redirect 7.3 to test.txt
 echo 7.24d  # should be decimal number!
 $a = 7.34d
 $b.
-hello++
+hello++ #post unary operator, should not affect next line
 command
-++
+++      #pre unary operator, should invalidate next line looking for an operand in expression mode
 command
 --
 hello
 ! $true
-!hello
+! hello
+
+enum tester {
+    testitem = --
+    35
+    
+}
 
 
 [regex`2[string,int32]]::Match()

@@ -301,6 +301,19 @@
 									"end": "(?<=;)|(?=[}\\n])",
 									"patterns": [
 										{
+											"include": "#operators_preUnary"
+										},
+										{
+											"comment": "after testing for pre unary operators, after anything has matched, stay locked in expression mode.",
+											"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+											"end": "$(?=\\n)|(?=[;|)}\\]])",
+											"patterns": [
+												{
+													"include": "#expression_mode"
+												}
+											]
+										},
+										{
 											"include": "#expression_mode"
 										}
 									]
@@ -484,6 +497,40 @@
 					]
 				},
 				{
+					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
+					"begin": "(?=[\\d.!+\\x{2013}-\\x{2015}-])",
+					"end": "(?!\\G)|$(?=\\n)|(?=[;|)}\\]])",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#numericConstant"
+						},
+						{
+							"include": "#operators_preUnary"
+						},
+						{
+							"comment": "if numeric constant advanced, switch to expression mode",
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"patterns": [
+								{
+									"include": "#expression_mode"
+								}
+							]
+						},
+						{
+							"comment": "if numeric constant didn't advanced, try finishing command mode with a command name",
+							"begin": "\\G(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"patterns": [
+								{
+									"include": "#command_name"
+								}
+							]
+						}
+					]
+				},
+				{
 					"begin": "(?=\\$[{(\\w:$?^]|@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,(\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
 					"end": "$(?=\\n)|(?=[;|)}\\]])",
 					"patterns": [
@@ -504,40 +551,6 @@
 					"patterns": [
 						{
 							"include": "#command_mode"
-						}
-					]
-				},
-				{
-					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
-					"begin": "(?=[\\d.!+\\x{2013}-\\x{2015}-])",
-					"end": "(?!\\G)|$(?=\\n)|(?=[;|)}\\]])",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#numericConstant"
-						},
-						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"comment": "if numeric constant advanced, switch to expression mode",
-							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))|(?=[{(\\[,$+%*/\\x{2013}-\\x{2015}-])",
-							"end": "$(?=\\n)|(?=[;|)}\\]])",
-							"patterns": [
-								{
-									"include": "#expression_mode"
-								}
-							]
-						},
-						{
-							"comment": "if numeric constant didn't advanced, try finishing command mode with a command name",
-							"begin": "\\G(?!$(?=\\n)|(?=[;|)}\\]]))",
-							"end": "$(?=\\n)|(?=[;|)}\\]])",
-							"patterns": [
-								{
-									"include": "#command_name"
-								}
-							]
 						}
 					]
 				},
@@ -2419,7 +2432,7 @@
 				}
 			]
 		},
-		"operators_preUnary": {
+		"operators_postUnary": {
 			"patterns": [
 				{
 					"match": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
@@ -2431,6 +2444,31 @@
 							"name": "keyword.operator.arithmetic.unary.decrement.powershell"
 						}
 					}
+				}
+			]
+		},
+		"operators_preUnary": {
+			"patterns": [
+				{
+					"begin": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.arithmetic.unary.increment.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.arithmetic.unary.decrement.powershell"
+						}
+					},
+					"end": "(?![\\s])",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#commentLine"
+						}
+					]
 				},
 				{
 					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.))|(!))(?!\\p{L})",
@@ -2464,6 +2502,9 @@
 		"operators": {
 			"patterns": [
 				{
+					"include": "#operators_postUnary"
+				},
+				{
 					"include": "#operators_preUnary"
 				},
 				{
@@ -2476,6 +2517,9 @@
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
+						{
+							"include": "#operators_preUnary"
+						},
 						{
 							"include": "#commentBlock"
 						},
@@ -2495,6 +2539,9 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
+							"include": "#operators_preUnary"
+						},
+						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2512,6 +2559,9 @@
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
+						{
+							"include": "#operators_preUnary"
+						},
 						{
 							"include": "#commentBlock"
 						},
@@ -2531,6 +2581,9 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
+							"include": "#operators_preUnary"
+						},
+						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2549,6 +2602,9 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
+							"include": "#operators_preUnary"
+						},
+						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2566,6 +2622,9 @@
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
+						{
+							"include": "#operators_preUnary"
+						},
 						{
 							"include": "#commentBlock"
 						},
@@ -2599,6 +2658,9 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
+							"include": "#operators_preUnary"
+						},
+						{
 							"include": "#commentBlock"
 						},
 						{
@@ -2617,6 +2679,9 @@
 					"end": "(?![\\s])",
 					"applyEndPatternLast": true,
 					"patterns": [
+						{
+							"include": "#operators_preUnary"
+						},
 						{
 							"include": "#commentBlock"
 						},
