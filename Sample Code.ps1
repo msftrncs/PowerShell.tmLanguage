@@ -130,7 +130,7 @@ $a[$b].hello###### .notes
 ‛’‚‘
 '
 "
--$a
+- ($a)+32-35
 -hello
 
 [flags()] enum WineSweetness : byte # requires PS 6.2

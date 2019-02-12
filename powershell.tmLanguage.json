@@ -499,8 +499,7 @@
 				{
 					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
 					"begin": "(?=[\\d.!+\\x{2013}-\\x{2015}-])",
-					"end": "(?!\\G)|$(?=\\n)|(?=[;|)}\\]])",
-					"applyEndPatternLast": true,
+					"end": "$(?=\\n)|(?=[;|)}\\]])",
 					"patterns": [
 						{
 							"include": "#numericConstant"
@@ -737,17 +736,30 @@
 					"name": "punctuation.separator.powershell"
 				},
 				{
-					"match": "<(?!#)",
-					"name": "invalid.reserved.redirection.powershell"
+					"include": "#type"
 				},
+				{
+					"include": "#operand"
+				},
+				{
+					"include": "#operators"
+				},
+				{
+					"include": "#notCode"
+				},
+				{
+					"match": "`",
+					"name": "invalid.character.escape.powershell"
+				}
+			]
+		},
+		"operand": {
+			"patterns": [
 				{
 					"include": "#variable"
 				},
 				{
 					"include": "#expressionGroup"
-				},
-				{
-					"include": "#type"
 				},
 				{
 					"include": "#hashtable"
@@ -805,21 +817,7 @@
 					"include": "#substatement"
 				},
 				{
-					"match": "(\\b(([\\p{L}0-9_\\.!%^&+=][\\p{L}0-9_\\.!@#%^&+=-]*)\\.(?i:exe|com|cmd|bat))\\b)",
-					"name": "support.function.powershell"
-				},
-				{
-					"include": "#operators"
-				},
-				{
 					"include": "#quotedStrings_Members"
-				},
-				{
-					"include": "#notCode"
-				},
-				{
-					"comment": "Needed to parse stuff correctly in 'argument mode'. (See about_parsing.)",
-					"include": "#argumentModeEscapes"
 				}
 			]
 		},
@@ -1613,7 +1611,7 @@
 									"name": "punctuation.section.bracket.begin.powershell"
 								}
 							},
-							"end": "]",
+							"end": "]|(?!\\G)$(?=\\n)",
 							"endCaptures": {
 								"0": {
 									"name": "punctuation.section.bracket.end.powershell"
@@ -1621,6 +1619,19 @@
 							},
 							"name": "meta.index.powershell",
 							"patterns": [
+								{
+									"begin": "\\G(?!\\S)",
+									"end": "(?![\\s]|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#commentBlock"
+										},
+										{
+											"include": "#commentLine"
+										}
+									]
+								},
 								{
 									"include": "#expression_mode"
 								}
@@ -2459,7 +2470,7 @@
 							"name": "keyword.operator.arithmetic.unary.decrement.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2486,7 +2497,7 @@
 							"name": "keyword.operator.arithmetic.unary.negate.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2514,7 +2525,7 @@
 							"name": "keyword.operator.comparison.type.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2535,7 +2546,7 @@
 							"name": "keyword.operator.comparison.$1.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2556,7 +2567,7 @@
 							"name": "keyword.operator.string-$1.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2577,7 +2588,7 @@
 							"name": "keyword.operator.logical.$1.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2598,7 +2609,7 @@
 							"name": "keyword.operator.bitwise.$1.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2619,7 +2630,7 @@
 							"name": "keyword.operator.string-format.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2654,7 +2665,7 @@
 							"name": "keyword.operator.arithmetic.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2676,7 +2687,7 @@
 							"name": "keyword.operator.range.powershell"
 						}
 					},
-					"end": "(?![\\s])",
+					"end": "(?![\\s]|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
