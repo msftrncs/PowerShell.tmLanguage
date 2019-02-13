@@ -38,10 +38,12 @@ $c = [byte[]]@(); for ( $i = 8; $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 2; ) { 
 
 
 # formatting and conversion samples.
-0x73.ToChar($null) # 's'
+(0x73).ToChar($null) # 's'
+[char]0x73
 
-"16#{0:x}" -f (('w').ToChar($null).ToInt32($null)) # 16#77
-
+"16#{0:x}" -f ('w').ToChar($null).ToInt32($null) # 16#77
+"16#{0:x}" -f [int][char]'w'
+"16#{0:x}" -f [int]'w'[0]
 
 <# 
     Should consider a class that can store memory blocks from S19/S28/S37 files, each memory block would posses a property
@@ -51,7 +53,14 @@ $c = [byte[]]@(); for ( $i = 8; $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 2; ) { 
     A method to add a line to the memory block would search out which memory block it could be appended to.
 #>
 
-:hello <#this is actually the label for the foreach below! #> <# hello george #> foreach ($x in 1..34) {
+# create a crazy random password
+((Get-Random (1..100) -count 9) +
+    (Get-Random ([char]0x21..[char]0x2F+[char]0x3a..[char]0x7E) -count 9) | 
+    Sort-Object {get-random}) -join ''
+
+
+:hello <#this is actually the label for the foreach below! #> <# hello george #> 
+foreach ($x in 1..34) {
     echo $x
     continue hello
 }
@@ -62,7 +71,7 @@ $hello
 echo "$$this $($_.this) $^ $? there ${_}.this $this " <# .parameter feger #> $$this
 
 
-$dir[3].name
+$dir[3].name(for )
 
 <#
  .input 
