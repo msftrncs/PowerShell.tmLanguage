@@ -65,6 +65,7 @@ foreach ($x in 1..34) {
     continue hello
 }
 
+function hello ($a=--$global:b) {$a, $b}
 
 $_hello
 $hello
@@ -120,7 +121,7 @@ hello
 ! hello
 
 enum tester {
-    testitem = --
+    testitem = -
     35
     
 }
@@ -141,6 +142,7 @@ $a[$b].hello###### .notes
 "
 - ($a)+32-35
 -hello
+
 
 [flags()] enum WineSweetness : byte # requires PS 6.2
 {

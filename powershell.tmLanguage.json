@@ -334,10 +334,10 @@
 			]
 		},
 		{
-			"begin": "(?<![\\w-])((?i:function|filter|configuration|workflow))(?=\\s)",
+			"begin": "(?i:function|filter|configuration|workflow)(?![^\\s{}(),;&|])",
 			"beginCaptures": {
-				"1": {
-					"name": "keyword.other.function.powershell"
+				"0": {
+					"name": "keyword.other.$0.powershell"
 				}
 			},
 			"end": "(?=[//s])|(?<=})",
@@ -397,12 +397,6 @@
 								},
 								{
 									"include": "#notCode"
-								},
-								{
-									"comment": "#commentLine"
-								},
-								{
-									"comment": "(?<!})[^\\s{}()]+"
 								}
 							]
 						}
@@ -415,8 +409,8 @@
 		},
 		{
 			"comment": "A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!",
-			"begin": "(?>(:)(\\p{L}\\w*))?((?:\\s*<#.*?#>)*)\\s*(?=(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|]))",
-			"beginCaptures": {
+			"match": "(?>(:)(\\p{L}\\w*))((?:\\s*<#.*?#>)*)\\s*(?=(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|])|$)",
+			"captures": {
 				"1": {
 					"name": "punctuation.separator.colon.label.powershell"
 				},
@@ -430,14 +424,104 @@
 						}
 					]
 				}
+			}
+		},
+		{
+			"begin": "(?i:foreach)(?![^\\s{}(),;&|])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.foreach.powershell"
+				}
 			},
-			"end": "(?!\\G)",
+			"end": "(?=[^\\s])|(?<=})",
+			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"match": "(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|])",
-					"name": "keyword.control.$0.powershell"
+					"begin": "\\(",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.group.begin.powershell"
+						}
+					},
+					"name": "meta.foreach-set.powershell",
+					"end": "\\)",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.group.end.powershell"
+						}
+					},
+					"patterns": [
+						{
+							"begin": "(?i:in)",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control.foreach-in.powershell"
+								}
+							},
+							"end": "(?=[;)])",
+							"patterns": [
+								{
+									"include": "#operators_preUnary"
+								},
+								{
+									"comment": "after testing for pre unary operators, after anything has matched, stay locked in expression mode.",
+									"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+									"end": "$(?=\\n)|(?=[;|)}\\]])",
+									"patterns": [
+										{
+											"include": "#expression_mode"
+										}
+									]
+								},
+								{
+									"include": "#expression_mode"
+								}
+							]
+						},
+						{
+							"include": "#variableNoProperty"
+						},
+						{
+							"include": "#type"
+						},
+						{
+							"include": "#notCode"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.end.powershell"
+						}
+					},
+					"name": "meta.foreach.powershell",
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"comment": "-parallel parameter can only be used in a workflow, consider using meta scopes, and an injection to properly catch this",
+					"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)",
+					"name": "entity.name.parameter.powershell"
+				},
+				{
+					"include": "#notCode"
 				}
 			]
+		},
+		{
+			"match": "(?i:do|for|while)(?![^\\s{}(),;&|])",
+			"name": "keyword.control.$0.powershell"
 		},
 		{
 			"match": "(?i:(using))\\s+(?i:(namespace|module))\\s+(?i:((?:\\w+(?:\\.)?)+))",
@@ -1071,13 +1155,26 @@
 					"begin": "=",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.assignment.enum-member.powershell"
+							"name": "keyword.operator.assignment.parameter-default.powershell"
 						}
 					},
 					"end": "(?<=,)|(?=[)\\n])",
 					"patterns": [
 						{
-							"include": "$self"
+							"include": "#operators_preUnary"
+						},
+						{
+							"comment": "after testing for pre unary operators, after anything has matched, stay locked in expression mode.",
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"patterns": [
+								{
+									"include": "#expression_mode"
+								}
+							]
+						},
+						{
+							"include": "#expression_mode"
 						}
 					]
 				},
