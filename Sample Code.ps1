@@ -27,11 +27,21 @@ function HexPairToByte( [ValidateSet([HexDigits])][char]$char1, [ValidateSet([He
 # assume $b is a string, containing 1 line of an S19 file, the following work on S0 or S1 or S9 records.
 
 # check the check sum of an SREC record. (should work for all record types)
-[byte]$cs = 0; for ( $i = 2; $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 4; ) { $cs = ($cs + (HexPairToByte $b[$i++] $b[$i++])) -band 255 }
+for ( 
+    ($i = 2), ([byte]$cs = 0)
+    $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 4
+) { 
+    $cs = ($cs + (HexPairToByte $b[$i++] $b[$i++])) -band 255
+}
 $cs -eq 255 # must result in 255!
 
 # collect the data bytes from the line for an S1 record
-$c = [byte[]]@(); for ( $i = 8; $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 2; ) { $c += , [byte](HexPairToByte $b[$i++] $b[$i++]) }
+for ( 
+    ($i = 8), ($c = [byte[]]@())
+    $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 2
+) {
+    $c += , [byte](HexPairToByte $b[$i++] $b[$i++])
+}
 
 # collect the address value from an S1 record.
 [uint16]((HexPairToByte $b[4] $b[5]) * 256 + (HexPairToByte $b[6] $b[7]))
@@ -64,6 +74,8 @@ foreach ($x in 1..34) {
     echo $x
     continue hello
 }
+
+($i=5, $c )
 
 function hello ($a=--$global:b) {$a, $b}
 
