@@ -408,8 +408,8 @@
 			]
 		},
 		{
-			"comment": "A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!",
-			"match": "(?>(:)(\\p{L}\\w*))((?:\\s*<#.*?#>)*)\\s*(?=(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|])|$)",
+			"comment": "do,for,foreach,while: allow a `:label` that must start the statement; A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!",
+			"match": "(?>(:)([\\p{L}_]\\w*))((?:\\s*<#.*?#>)*)\\s*(?=(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|])|$)",
 			"captures": {
 				"1": {
 					"name": "punctuation.separator.colon.label.powershell"
@@ -425,6 +425,27 @@
 					]
 				}
 			}
+		},
+		{
+			"comment": "break,continue: permit a label following, then revert back to statement mode",
+			"begin": "(?i:break|continue)(?![^\\s{}(),;&|])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.$0.powershell"
+				}
+			},
+			"end": "[\\p{L}_]\\w*|(?=$\\n|\\S)",
+			"endCaptures": {
+				"0": {
+					"name": "entity.name.label.powershell"
+				}
+			},
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentBlock"
+				}
+			]
 		},
 		{
 			"begin": "(?i:foreach)(?![^\\s{}(),;&|])",
@@ -461,6 +482,7 @@
 							"end": "(?=[;)])",
 							"patterns": [
 								{
+									"comment": "!!this needs rewritten as it cannot test for a preunary operator until after the first token has been located!!  This logic needs updated in multiple locations",
 									"include": "#operators_preUnary"
 								},
 								{
@@ -543,8 +565,8 @@
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
-			"comment": "default: only in switch; in: only in foreach; else,elsif: only after if,elseif; do,for,foreach,while: allow a :label that must start the statement; until: only after do; catch,finally: only after try; foreach: has parameter -parallel; break,continue: permit a label following",
-			"match": "(?i:begin|break|catch|continue|data|default|dynamicparam|else|elseif|end|exit|finally|if|in|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until)(?![^\\s{}(),;&|])",
+			"comment": "default: only in switch; else,elsif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
+			"match": "(?i:begin|catch|data|default|dynamicparam|else|elseif|end|exit|finally|if|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until)(?![^\\s{}(),;&|])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -654,7 +676,7 @@
 					"include": "#commands"
 				},
 				{
-					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
+					"begin": "(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -1033,7 +1055,6 @@
 						}
 					},
 					"end": "$(?=\\n)|(?=[;&|)}\\]])",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "#argument_mode"
@@ -1042,14 +1063,13 @@
 				},
 				{
 					"comment": "Builtin cmdlets with reserved verbs, trailing negative lookahead needs work",
-					"begin": "(?<!\\w)(?i:(?:foreach|where|sort|tee)-object)(?=[(){},;&|\\s])",
+					"begin": "(?i:(?:foreach|where|sort|tee)-object)(?=[(){},;&|\\s])",
 					"beginCaptures": {
 						"0": {
-							"name": "support.function.powershell"
+							"name": "support.function.$0.powershell"
 						}
 					},
 					"end": "$(?=\\n)|(?=[;&|)}\\]])",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "#argument_mode"
