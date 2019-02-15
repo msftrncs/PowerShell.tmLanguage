@@ -448,6 +448,20 @@
 			]
 		},
 		{
+			"begin": "(?i:return)(?![^\\s{}(),;&|])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.$0.powershell"
+				}
+			},
+			"end": "$(?=\\n)|(?=[;|)}\\]])",
+			"patterns": [
+				{
+					"include": "#command_mode"
+				}
+			]
+		},
+		{
 			"begin": "(?i:foreach)(?![^\\s{}(),;&|])",
 			"beginCaptures": {
 				"0": {
@@ -2276,6 +2290,9 @@
 						{
 							"match": "\\b(\\w+)(?=\\s*=)",
 							"name": "entity.name.variable.property.powershell"
+						},
+						{
+							"include": "#type"
 						},
 						{
 							"include": "#variable"
