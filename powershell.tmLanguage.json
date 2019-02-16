@@ -322,6 +322,7 @@
 									"end": "(?<=;)|(?=[}\\n])",
 									"patterns": [
 										{
+											"comment": "!!this needs rewritten as it cannot test for a preunary operator until after the first token has been located!!  This logic needs updated in multiple locations",
 											"include": "#operators_preUnary"
 										},
 										{
@@ -517,21 +518,7 @@
 							"end": "(?=[;)])",
 							"patterns": [
 								{
-									"comment": "!!this needs rewritten as it cannot test for a preunary operator until after the first token has been located!!  This logic needs updated in multiple locations",
-									"include": "#operators_preUnary"
-								},
-								{
-									"comment": "after testing for pre unary operators, after anything has matched, stay locked in expression mode.",
-									"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
-									"end": "$(?=\\n)|(?=[;|)}\\]])",
-									"patterns": [
-										{
-											"include": "#expression_mode"
-										}
-									]
-								},
-								{
-									"include": "#expression_mode"
+									"include": "#command_mode"
 								}
 							]
 						},
