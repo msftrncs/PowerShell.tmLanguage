@@ -766,6 +766,9 @@
 					"include": "#hashtable"
 				},
 				{
+					"include": "#array"
+				},
+				{
 					"include": "#variable"
 				},
 				{
@@ -812,15 +815,6 @@
 							"name": "punctuation.separator.parameter-value.powershell"
 						}
 					}
-				},
-				{
-					"begin": "(?=@[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[(\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))",
-					"end": "$(?=\\n)|(?=[,;&|)}\\s])",
-					"patterns": [
-						{
-							"include": "#expression_mode"
-						}
-					]
 				},
 				{
 					"begin": "(?=\\d)",
@@ -900,53 +894,54 @@
 					"include": "#numericConstant"
 				},
 				{
-					"begin": "(?=@\\()",
-					"end": "(?!.\\G)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"begin": "(@)(\\()",
-							"beginCaptures": {
-								"1": {
-									"name": "keyword.other.array.begin.powershell"
-								},
-								"2": {
-									"name": "punctuation.section.group.begin.powershell"
-								}
-							},
-							"end": "\\)",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.section.group.end.powershell"
-								}
-							},
-							"name": "meta.group.array-expression.powershell",
-							"patterns": [
-								{
-									"include": "$self"
-								}
-							]
-						},
-						{
-							"begin": "(?<=\\))(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=[^\\s\\p{L}]|\\n)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"include": "#accessors"
-								},
-								{
-									"match": "[^\\s\\W]+"
-								}
-							]
-						}
-					]
+					"include": "#array"
 				},
 				{
 					"include": "#substatement"
 				},
 				{
 					"include": "#quotedStrings_Members"
+				}
+			]
+		},
+		"array": {
+			"begin": "(?=@\\()",
+			"end": "(?!\\G)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "\\G(@)(\\()",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.other.array.begin.powershell"
+						},
+						"2": {
+							"name": "punctuation.section.group.begin.powershell"
+						}
+					},
+					"end": "\\)",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.group.end.powershell"
+						}
+					},
+					"name": "meta.group.array-expression.powershell",
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#accessors"
+						}
+					]
 				}
 			]
 		},
@@ -978,7 +973,7 @@
 				}
 			},
 			"end": "$(?=(\\n)?)",
-			"endCaptures": {
+			"ignore-endCaptures": {
 				"1": {
 					"name": "comment.line.powershell"
 				}
@@ -1071,7 +1066,7 @@
 			"patterns": [
 				{
 					"comment": "Verb-Noun pattern:",
-					"begin": "(?:(\\p{L}|\\d|_|-|\\\\|:)*\\\\)?\\b(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|[^(){},;&|\\s])+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[(){},;&|\\s])",
+					"begin": "(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|[^(){},;&|\\s])+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[(){},;&|\\s])",
 					"beginCaptures": {
 						"0": {
 							"name": "support.function.powershell"
@@ -1262,15 +1257,13 @@
 					]
 				},
 				{
-					"begin": "(?<=\\))(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"match": "[^\\s\\W]+"
 						}
 					]
 				}
@@ -1305,15 +1298,13 @@
 					]
 				},
 				{
-					"begin": "(?<=\\))(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"match": "[^\\s\\W]+"
 						}
 					]
 				}
@@ -1359,14 +1350,12 @@
 					"patterns": [
 						{
 							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"ignore": "(?=[^\\s\\p{L}]|\\n)",
+							"end": "(?=.|\\n)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
 									"include": "#accessors"
-								},
-								{
-									"match": "[^\\s\\W]+"
 								}
 							]
 						},
@@ -1395,14 +1384,12 @@
 					"patterns": [
 						{
 							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"ignore": "(?=[^\\s\\p{L}]|\\n)",
+							"end": "(?=.|\\n)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
 									"include": "#accessors"
-								},
-								{
-									"match": "[^\\s\\W]+"
 								}
 							]
 						},
@@ -1431,14 +1418,12 @@
 					"patterns": [
 						{
 							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"ignore": "(?=[^\\s\\p{L}]|\\n)",
+							"end": "(?=.|\\n)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
 									"include": "#accessors"
-								},
-								{
-									"match": "[^\\s\\W]+"
 								}
 							]
 						},
@@ -1540,15 +1525,13 @@
 					]
 				},
 				{
-					"begin": "(?<=})(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"match": "[^\\s\\W]+"
 						}
 					]
 				}
@@ -1557,7 +1540,7 @@
 		"type": {
 			"comment": "This is used by both type and attribute references.",
 			"begin": "(?=\\[)",
-			"end": "(?!.\\G)",
+			"end": "(?!\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -1587,28 +1570,32 @@
 							"include": "#type_SubType"
 						},
 						{
-							"match": "[^\\s\\W]+"
+							"comment": "[^\\s\\W]+"
 						}
 					]
 				},
 				{
-					"begin": "(?<=])(?=\\.(?!\\.)|::|\\[)",
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.section.bracket.end.powershell"
 						}
 					},
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#accessors"
 						},
 						{
-							"include": "#expression_mode"
-						},
-						{
-							"match": "[^\\s\\W]+"
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"patterns": [
+								{
+									"include": "#expression_mode"
+								}
+							]
 						}
 					]
 				}
@@ -1705,7 +1692,8 @@
 							"name": "punctuation.accessor.powershell"
 						}
 					},
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1718,17 +1706,11 @@
 							"include": "#commentBlock"
 						},
 						{
-							"comment": "[^\\s\\W]+"
-						},
-						{
 							"comment": "consume spaces and comments and line ends until the next token appears",
-							"begin": "\\G(?<=\\.|::)(?!\\S)",
-							"end": "(?=.)",
+							"begin": "\\G(?<=\\.|::)(?=[\\s#]|<#)",
+							"end": "(?!\\s)(?!$)",
 							"applyEndPatternLast": true,
 							"patterns": [
-								{
-									"match": "\\s+"
-								},
 								{
 									"include": "#commentLine"
 								},
@@ -1741,7 +1723,7 @@
 				},
 				{
 					"begin": "\\G(?=\\[)",
-					"end": "(?!.\\G)",
+					"end": "(?!\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1760,33 +1742,18 @@
 							"name": "meta.index.powershell",
 							"patterns": [
 								{
-									"begin": "\\G(?!\\S)",
-									"end": "(?![\\s]|$)",
-									"applyEndPatternLast": true,
-									"patterns": [
-										{
-											"include": "#commentBlock"
-										},
-										{
-											"include": "#commentLine"
-										}
-									]
-								},
-								{
 									"include": "#expression_mode"
 								}
 							]
 						},
 						{
-							"begin": "(?<=])(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"begin": "(?=\\.(?!\\.)|::|\\[)",
+							"ignore": "(?=[^\\s\\p{L}]|\\n)",
+							"end": "(?=.|\\n)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
 									"include": "#accessors"
-								},
-								{
-									"match": "[^\\s\\W]+"
 								}
 							]
 						}
@@ -1803,7 +1770,7 @@
 		"members": {
 			"patterns": [
 				{
-					"begin": "(?i:(foreach|where)(?=[\\({]))|([\\p{L}_]\\w*(?=\\())",
+					"begin": "(?<![\\])])(?:(?i:(foreach|where)(?=[\\({]))|([\\p{L}_]\\w*(?=\\()))",
 					"captures": {
 						"1": {
 							"name": "support.function.$1.powershell"
@@ -1816,7 +1783,7 @@
 					"patterns": [
 						{
 							"begin": "\\G(?=\\()",
-							"end": "(?!.\\G)",
+							"end": "(?!\\G)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -1840,15 +1807,13 @@
 									]
 								},
 								{
-									"begin": "(?<=\\))(?=\\.(?!\\.)|::|\\[)",
-									"end": "(?=[^\\s\\p{L}]|\\n)",
+									"begin": "(?=\\.(?!\\.)|::|\\[)",
+									"ignore": "(?=[^\\s\\p{L}]|\\n)",
+									"end": "(?=.|\\n)",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
 											"include": "#accessors"
-										},
-										{
-											"match": "[^\\s\\W]+"
 										}
 									]
 								}
@@ -1866,8 +1831,9 @@
 					]
 				},
 				{
-					"begin": "[\\p{L}_]\\w*(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"begin": "(?<![\\])])[\\p{L}_]\\w*(?=\\.(?!\\.)|::|\\[)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"beginCaptures": {
 						"0": {
@@ -1877,33 +1843,15 @@
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"comment": "[^\\s\\W]+"
 						}
 					]
 				},
 				{
-					"begin": "[\\p{L}_]\\w*",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
-					"beginCaptures": {
-						"0": {
-							"name": "variable.other.property.powershell"
-						}
-					},
-					"patterns": [
-						{
-							"include": "#commentLine"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"comment": "[^\\s\\W]+"
-						}
-					]
+					"match": "(?<![\\])])[\\p{L}_]\\w*",
+					"name": "variable.other.property.powershell"
 				},
 				{
+					"comment": "need to wrap a begin block around this using \\G",
 					"include": "#quotedStrings_Members"
 				}
 			]
@@ -2086,15 +2034,13 @@
 					]
 				},
 				{
-					"begin": "(?<=})(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"comment": "[^\\s\\W]+"
 						}
 					]
 				}
@@ -2159,7 +2105,7 @@
 			"patterns": [
 				{
 					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
-					"end": "(?!.\\G)",
+					"end": "(?!\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2173,21 +2119,17 @@
 									]
 								}
 							},
-							"end": "(?=[^\\s\\p{L}]|\\n)",
+							"ignore": "(?=[^\\s\\p{L}]|\\n)",
+							"end": "(?=.|\\n)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
 									"include": "#accessors"
-								},
-								{
-									"comment": "[^\\s\\W]+"
 								}
 							]
 						},
 						{
-							"begin": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
-							"end": "(?!.\\G)",
-							"applyEndPatternLast": true,
+							"match": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
 							"captures": {
 								"0": {
 									"patterns": [
@@ -2332,15 +2274,13 @@
 					]
 				},
 				{
-					"begin": "(?<=\\})(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"ignore": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"comment": "[^\\s\\W]+"
 						}
 					]
 				}
@@ -2348,7 +2288,7 @@
 		},
 		"quotedStrings_Members": {
 			"begin": "(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))",
-			"end": "(?!.\\G)",
+			"end": "(?!\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -2422,15 +2362,14 @@
 					]
 				},
 				{
-					"begin": "(?<=^(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])@|(?<=\\g<1>))(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=[^\\s\\p{L}]|\\n)",
+					"ignoreBegin": "(?<=^(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])@|(?<=\\g<1>))(?=\\.(?!\\.)|::|\\[)",
+					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"ignoreEnd": "(?=[^\\s\\p{L}]|\\n)",
+					"end": "(?=.|\\n)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#accessors"
-						},
-						{
-							"comment": "[^\\s\\W]+"
 						}
 					]
 				}
