@@ -15,7 +15,7 @@
 			"include": "#type"
 		},
 		{
-			"begin": "(?i:class)(?=\\s)",
+			"begin": "(?i:class)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.other.class.powershell"
@@ -217,7 +217,7 @@
 			]
 		},
 		{
-			"begin": "((?i:enum))(?=\\s)",
+			"begin": "((?i:enum))(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.other.enum.powershell"
@@ -356,7 +356,7 @@
 			]
 		},
 		{
-			"begin": "(?i:function|filter|configuration|workflow)(?![^\\s{}(),;&|])",
+			"begin": "(?i:function|filter|configuration|workflow)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.other.$0.powershell"
@@ -366,12 +366,15 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?<![\\w-])(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
+					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&|)}])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\s{(,;&|)}<>@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
 						},
 						"2": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"3": {
 							"name": "punctuation.separator.colon.powershell"
 						}
 					},
@@ -380,10 +383,13 @@
 					"patterns": [
 						{
 							"begin": "\\G",
-							"end": "(?=[(){},;&|\\s])",
-							"applyEndPatternLast": false,
-							"contentName": "entity.name.function.powershell",
+							"end": "(?=[\\s{(,;&|)}])",
+							"name": "entity.name.function.powershell",
 							"patterns": [
+								{
+									"comment": "function names that start with `:` are treated differently",
+									"match": "\\G(?<!:):\\p{L}\\w*[^\\s{(,;&|)}]?"
+								},
 								{
 									"include": "#functionName"
 								}
@@ -430,8 +436,8 @@
 			]
 		},
 		{
-			"comment": "do,for,foreach,while: allow a `:label` that must start the statement; A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!",
-			"match": "(?>(:)([\\p{L}_]\\w*))((?:\\s*<#.*?#>)*)\\s*(?=(?i:do|for(?:each)?|while)(?![^\\s{}(),;&|])|$)",
+			"comment": "do,for,foreach,while: allow a `:label` that must start the statement; A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!  Here we just see if a valid label appears to be the only useful thing on a single line",
+			"match": "(?>(:)([\\p{L}_]\\w*)(?![^\\s{(,;&|)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|while)(?![^\\s{(,;&|)}])|#|<#.*$|`?$))",
 			"captures": {
 				"1": {
 					"name": "punctuation.separator.colon.label.powershell"
@@ -450,7 +456,7 @@
 		},
 		{
 			"comment": "break,continue: permit a label following, then revert back to statement mode",
-			"begin": "(?i:break|continue)(?![^\\s{}(),;&|])",
+			"begin": "(?i:break|continue)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -470,7 +476,7 @@
 			]
 		},
 		{
-			"begin": "(?i:return)(?![^\\s{}(),;&|])",
+			"begin": "(?i:return)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -484,7 +490,7 @@
 			]
 		},
 		{
-			"begin": "(?i:foreach)(?![^\\s{}(),;&|])",
+			"begin": "(?i:foreach)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.foreach.powershell"
@@ -564,7 +570,7 @@
 			]
 		},
 		{
-			"match": "(?i:do|for|while)(?![^\\s{}(),;&|])",
+			"match": "(?i:do|for|while)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -583,12 +589,12 @@
 		},
 		{
 			"comment": "from,var,define are reserved",
-			"match": "(?i:define|from|var)(?![^\\s{}(),;&|])",
+			"match": "(?i:define|from|var)(?![^\\s{(,;&|)}])",
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
 			"comment": "default: only in switch; else,elsif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
-			"match": "(?i:begin|catch|data|default|dynamicparam|else|elseif|end|exit|finally|if|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until)(?![^\\s{}(),;&|])",
+			"match": "(?i:begin|catch|data|default|dynamicparam|else|elseif|end|exit|finally|if|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -699,23 +705,30 @@
 					"include": "#commands"
 				},
 				{
-					"begin": "(?:(global|local|script|private)(:)(?=[^(){},;&|\\s])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}(){},;&|\\s<>@#\\]]|`(?!\\s)))",
+					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&|)}])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\s{(,;&|)}<>@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
 						},
 						"2": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"3": {
 							"name": "punctuation.separator.colon.powershell"
 						}
 					},
-					"end": "(?!.\\G)",
+					"end": "(?!\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"begin": "\\G(?=[^\\n(){},;&|])",
-							"end": "(?=[(){},;&|\\s])",
-							"contentName": "variable.function.powershell",
+							"end": "(?=[\\s{(,;&|)}])",
+							"name": "variable.function.powershell",
 							"patterns": [
+								{
+									"comment": "function names that start with `:` are treated differently",
+									"match": "\\G(?<!:):\\p{L}\\w*[^\\s{(,;&|)}]?"
+								},
 								{
 									"include": "#functionName"
 								}
@@ -836,7 +849,7 @@
 		"unquotedArgument": {
 			"begin": "(?=[^\\s(){},;&|])",
 			"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
-			"end": "(?=[(){},;&|\\s])",
+			"end": "(?=[\\s{(,;&|)}])",
 			"contentName": "string.unquoted.argument.powershell",
 			"patterns": [
 				{
@@ -1066,7 +1079,7 @@
 			"patterns": [
 				{
 					"comment": "Verb-Noun pattern:",
-					"begin": "(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|[^(){},;&|\\s])+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[(){},;&|\\s])",
+					"begin": "(?i:Add|Approve|Assert|Backup|Block|Build|Checkpoint|Clear|Close|Compare|Complete|Compress|Confirm|Connect|Convert|ConvertFrom|ConvertTo|Copy|Debug|Deny|Deploy|Disable|Disconnect|Dismount|Edit|Enable|Enter|Exit|Expand|Export|Find|Format|Get|Grant|Group|Hide|Import|Initialize|Install|Invoke|Join|Limit|Lock|Measure|Merge|Mount|Move|New|Open|Optimize|Out|Ping|Pop|Protect|Publish|Push|Read|Receive|Redo|Register|Remove|Rename|Repair|Request|Reset|Resize|Resolve|Restart|Restore|Resume|Revoke|Save|Search|Select|Send|Set|Show|Skip|Split|Start|Step|Stop|Submit|Suspend|Switch|Sync|Test|Trace|Unblock|Undo|Uninstall|Unlock|Unprotect|Unpublish|Unregister|Update|Use|Wait|Watch|Write)-(?:`.|[^\\s{(,;&|)}])+?(?:\\.(?i:exe|cmd|bat|ps1))?(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
 							"name": "support.function.powershell"
@@ -1081,7 +1094,7 @@
 				},
 				{
 					"comment": "Builtin cmdlets with reserved verbs, trailing negative lookahead needs work",
-					"begin": "(?i:(?:foreach|where|sort|tee)-object)(?=[(){},;&|\\s])",
+					"begin": "(?i:(?:foreach|where|sort|tee)-object)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
 							"name": "support.function.$0.powershell"
@@ -2801,7 +2814,7 @@
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
 					"begin": "(?=[^\\s\\[(){},;&|])",
 					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
-					"end": "(?=[(){},;&|\\s])",
+					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "invalid.source.powershell",
 					"patterns": [
 						{
