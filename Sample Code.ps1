@@ -51,9 +51,9 @@ for (
 (0x73).ToChar($null) # 's'
 [char]0x73
 
-"16#{0:x}" -f ('w').ToChar($null).ToInt32($null) # 16#77
-"16#{0:x}" -f [int][char]'w'
-"16#{0:x}" -f [int]'w'[0]
+"16#{0:X}" -f ('w').ToChar($null).ToInt32($null) # 16#77
+"16#{0:X}" -f [int][char]'w'
+"16#{0:X}" -f [int]'w'[0]
 
 <# 
     Should consider a class that can store memory blocks from S19/S28/S37 files, each memory block would posses a property
