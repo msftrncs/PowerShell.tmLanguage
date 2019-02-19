@@ -75,7 +75,7 @@ foreach ($x in 1..34) {
     continue hello
 }
 
-($i=5, $c )
+($i=-5kb, $c, ${true} )
 
 function hello ($a=--$global:b) {$a, $b}
 
