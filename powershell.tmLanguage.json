@@ -143,13 +143,8 @@
 							"name": "storage.modifier.powershell"
 						},
 						{
-							"begin": "([\\p{L}_]\\w*)(?=\\s*\\()",
-							"beginCaptures": {
-								"1": {
-									"name": "entity.name.function.powershell"
-								}
-							},
-							"end": "}|(?=[^\\s])",
+							"begin": "(?=[\\p{L}_])",
+							"end": "}|(?=[^\\s])|$(?=\\n)",
 							"endCaptures": {
 								"0": {
 									"name": "punctuation.section.braces.end.powershell"
@@ -159,45 +154,74 @@
 							"name": "meta.method.powershell",
 							"patterns": [
 								{
-									"begin": ":",
+									"match": "`\\n",
+									"name": "constant.character.escape.powershell"
+								},
+								{
+									"begin": "\\G([\\p{L}_]\\w*)",
 									"beginCaptures": {
-										"0": {
-											"name": "punctuation.separator.colon.powershell"
+										"1": {
+											"name": "entity.name.function.powershell"
 										}
 									},
-									"end": "(?=[;{])",
+									"end": "(?=[^\\s])|$(?=\\n)",
+									"applyEndPatternLast": true,
 									"patterns": [
 										{
-											"begin": "(?i:base)",
-											"beginCaptures": {
-												"0": {
-													"name": "variable.language.super.powershell"
-												}
-											},
-											"end": "(?=[;{])",
+											"begin": "(?=\\()",
+											"end": "(?=[^\\s])",
+											"applyEndPatternLast": true,
 											"patterns": [
 												{
+													"begin": ":",
+													"beginCaptures": {
+														"0": {
+															"name": "punctuation.separator.colon.powershell"
+														}
+													},
+													"end": "(?=[;{])",
+													"patterns": [
+														{
+															"begin": "(?i:base)(?![^\\s{(,;&|)}])",
+															"beginCaptures": {
+																"0": {
+																	"name": "variable.language.super.powershell"
+																}
+															},
+															"end": "(?=[;{])",
+															"patterns": [
+																{
+																	"include": "#declarationParameterSet"
+																}
+															]
+														}
+													]
+												},
+												{
 													"include": "#declarationParameterSet"
+												},
+												{
+													"begin": "{",
+													"beginCaptures": {
+														"0": {
+															"name": "punctuation.section.braces.begin.powershell"
+														}
+													},
+													"end": "(?=})",
+													"contentName": "meta.method-body.powershell",
+													"patterns": [
+														{
+															"include": "$self"
+														}
+													]
+												},
+												{
+													"include": "#notCode"
 												}
 											]
-										}
-									]
-								},
-								{
-									"include": "#declarationParameterSet"
-								},
-								{
-									"begin": "{",
-									"beginCaptures": {
-										"0": {
-											"name": "punctuation.section.braces.begin.powershell"
-										}
-									},
-									"end": "(?=})",
-									"contentName": "meta.method-body.powershell",
-									"patterns": [
+										},
 										{
-											"include": "$self"
+											"include": "#notCode"
 										}
 									]
 								},
