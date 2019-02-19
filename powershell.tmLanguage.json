@@ -2544,10 +2544,10 @@
 					"match": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
 					"captures": {
 						"1": {
-							"name": "keyword.operator.arithmetic.unary.increment.powershell"
+							"name": "keyword.operator.arithmetic.postfix.unary.increment.powershell"
 						},
 						"2": {
-							"name": "keyword.operator.arithmetic.unary.decrement.powershell"
+							"name": "keyword.operator.arithmetic.postfix.unary.decrement.powershell"
 						}
 					}
 				}
@@ -2559,10 +2559,10 @@
 					"begin": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
 					"beginCaptures": {
 						"1": {
-							"name": "keyword.operator.arithmetic.unary.increment.powershell"
+							"name": "keyword.operator.arithmetic.prefix.unary.increment.powershell"
 						},
 						"2": {
-							"name": "keyword.operator.arithmetic.unary.decrement.powershell"
+							"name": "keyword.operator.arithmetic.prefix.unary.decrement.powershell"
 						}
 					},
 					"end": "(?![\\s]|$)",
@@ -2585,11 +2585,11 @@
 						"2": {
 							"name": "keyword.operator.bitwise.unary.bnot.powershell"
 						},
-						"4": {
-							"name": "keyword.operator.logical.unary.not.powershell"
-						},
 						"3": {
 							"name": "keyword.operator.arithmetic.unary.negate.powershell"
+						},
+						"4": {
+							"name": "keyword.operator.logical.unary.not.powershell"
 						}
 					},
 					"end": "(?![\\s]|$)",
@@ -2609,9 +2609,6 @@
 			"patterns": [
 				{
 					"include": "#operators_postUnary"
-				},
-				{
-					"include": "#operators_preUnary"
 				},
 				{
 					"begin": "[\\x{2013}-\\x{2015}-](?i:is(?:not)?|as)(?!\\p{L})",
@@ -2677,7 +2674,7 @@
 					]
 				},
 				{
-					"begin": "[\\x{2013}-\\x{2015}-]((?i:and|or|not|xor))(?!\\p{L})",
+					"begin": "[\\x{2013}-\\x{2015}-]((?i:and|or|xor))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.logical.$1.powershell"
@@ -2754,7 +2751,7 @@
 					]
 				},
 				{
-					"begin": "[+%*/\\x{2013}-\\x{2015}-]",
+					"begin": "[+%*/]|[\\x{2013}-\\x{2015}-](?![\\p{L}\\x{2013}-\\x{2015}-])",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.arithmetic.powershell"
@@ -2795,6 +2792,10 @@
 							"include": "#commentLine"
 						}
 					]
+				},
+				{
+					"comment": "included last only because preunary also includes the negate `!` and `-b?not` operators",
+					"include": "#operators_preUnary"
 				}
 			]
 		},
