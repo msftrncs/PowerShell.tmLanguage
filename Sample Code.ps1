@@ -219,13 +219,13 @@ enum crazy {
 }
 
 $fs = New-Object 'System.Collections.Generic.List[System.IO.FileStream]'
-$fs = New-Object [System.Collections.Generic.List]::new([System.IO.FileStream])
+$fs = [System.Collections.Generic.List]::new([System.IO.FileStream])
 
 $i = 0
 while ($i -lt 10)
 {
-    $fsTemp = New-Object System.IO.FileStream("$newFileName",[System.IO.FileMode]::OpenOrCreate,[System.IO.FileAccess]::Write)
-    $fsTemp = New-Object System.IO.FileStream("$newFileName",[System.IO.FileMode]'OpenOrCreate',[System.IO.FileAccess]'Write')
+    $fsTemp = New-Object System.IO.FileStream "$newFileName", OpenOrCreate, Write
+    $fsTemp = New-Object System.IO.FileStream ("$newFileName", [System.IO.FileMode]'OpenOrCreate', [System.IO.FileAccess]'Write')
     $fsTemp = [System.IO.FileStream]::new("$newFileName", [System.IO.FileMode]::OpenOrCreate,[System.IO.FileAccess]::Write)
     $fs.Add($fsTemp)
     $swTemp = New-Object System.IO.StreamWriter($fsTemp)
@@ -241,7 +241,7 @@ $dict = [system.collections.generic.dictionary[[string],[system.collections.gene
 $dict_ss = [System.Collections.Generic.Dictionary`2+ValueCollection[[string],[System.Collections.Generic.List[string]]]]
 
 $dict = New-Object System.Collections.Generic.Dictionary``2[System.String,System.String]
-$dict = [System.Collections.Generic.Dictionary``2[[System.String],[System.String]]]
+$dict = [System.Collections.Generic.Dictionary``2[[System.String],[System.String]]]::new()
 $dict.Add('FirstName', 'Grant')
 
 [System.Collections.ArrayList]$1st_AL =[System.Collections.ArrayList]::new()
