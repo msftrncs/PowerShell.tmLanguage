@@ -548,6 +548,11 @@
 							"end": "(?=[;)])",
 							"patterns": [
 								{
+									"comment": "`;` not permitted here",
+									"match": ";",
+									"name": "invalid.terminator.statement.powershell"
+								},
+								{
 									"include": "#command_mode"
 								}
 							]
@@ -557,6 +562,11 @@
 						},
 						{
 							"include": "#type"
+						},
+						{
+							"comment": "`;` not permitted here",
+							"match": ";",
+							"name": "invalid.terminator.statement.powershell"
 						},
 						{
 							"include": "#notCode"
@@ -576,7 +586,7 @@
 							"name": "punctuation.section.braces.end.powershell"
 						}
 					},
-					"name": "meta.foreach.powershell",
+					"name": "meta.foreach-statements.powershell",
 					"patterns": [
 						{
 							"include": "$self"
@@ -594,8 +604,213 @@
 			]
 		},
 		{
-			"match": "(?i:do|for|while)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:while)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.while.powershell"
+				}
+			},
+			"end": "(?=[^\\s])|(?<=})",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "\\(",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.group.begin.powershell"
+						}
+					},
+					"name": "meta.while-condition.powershell",
+					"end": "\\)",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.group.end.powershell"
+						}
+					},
+					"patterns": [
+						{
+							"comment": "`;` not permitted here",
+							"match": ";",
+							"name": "invalid.terminator.statement.powershell"
+						},
+						{
+							"include": "#command_mode"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.end.powershell"
+						}
+					},
+					"name": "meta.while-statements.powershell",
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"include": "#notCode"
+				}
+			]
+		},
+		{
+			"begin": "(?i:for)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.for.powershell"
+				}
+			},
+			"end": "(?=[^\\s])|(?<=})",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "\\(",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.group.begin.powershell"
+						}
+					},
+					"name": "meta.for-condition.powershell",
+					"end": "\\)",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.group.end.powershell"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#command_mode"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.end.powershell"
+						}
+					},
+					"name": "meta.for-statements.powershell",
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"include": "#notCode"
+				}
+			]
+		},
+		{
+			"match": "(?i:do)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
+		},
+		{
+			"begin": "(?i:switch)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.switch.powershell"
+				}
+			},
+			"end": "(?=[^\\s])|(?<=})",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"begin": "\\(",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.group.begin.powershell"
+						}
+					},
+					"name": "meta.switch-value.powershell",
+					"end": "\\)",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.group.end.powershell"
+						}
+					},
+					"patterns": [
+						{
+							"comment": "`;` not permitted here",
+							"match": ";",
+							"name": "invalid.terminator.statement.powershell"
+						},
+						{
+							"include": "#command_mode"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.begin.powershell"
+						}
+					},
+					"end": "}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.braces.end.powershell"
+						}
+					},
+					"name": "meta.switch-conditions.powershell",
+					"patterns": [
+						{
+							"comment": "default: only in switch",
+							"match": "(?i:default)(?![^\\s{(,;&|)}])",
+							"name": "keyword.control.$0.powershell"
+						},
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
+					"name": "entity.name.parameter.powershell"
+				},
+				{
+					"comment": "-file is special case, needs file argument, no condition expression",
+					"begin": "(?i:[\\x{2013}-\\x{2015}-]file)",
+					"beginCaptures": {
+						"0": {
+							"name": "entity.name.parameter.powershell"
+						}
+					},
+					"end": "(?=\\{)",
+					"patterns": [
+						{
+							"begin": "(?![\\n{(;&|)}\\]])",
+							"end": "$(?=\\n)|(?=[{(;&|)}\\]])",
+							"patterns": [
+								{
+									"include": "#argument_mode"
+								}
+							]
+						}
+					]
+				},
+				{
+					"include": "#notCode"
+				}
+			]
 		},
 		{
 			"match": "(?i:(using))\\s+(?i:(namespace|module))\\s+(?i:((?:\\w+(?:\\.)?)+))",
@@ -617,8 +832,8 @@
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
-			"comment": "default: only in switch; else,elsif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
-			"match": "(?i:begin|catch|data|default|dynamicparam|else|elseif|end|exit|finally|if|inlinescript|parallel|param|process|return|sequence|switch|throw|trap|try|until)(?![^\\s{(,;&|)}])",
+			"comment": "else,elsif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
+			"match": "(?i:begin|catch|data|dynamicparam|else|elseif|end|exit|finally|if|inlinescript|parallel|param|process|sequence|throw|trap|try|until)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
