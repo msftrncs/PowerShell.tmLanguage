@@ -380,7 +380,7 @@
 			]
 		},
 		{
-			"begin": "(?i:function|filter|configuration|workflow)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:function|filter|workflow)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.other.$0.powershell"
@@ -827,8 +827,8 @@
 			}
 		},
 		{
-			"comment": "from,var,define are reserved",
-			"match": "(?i:define|from|var)(?![^\\s{(,;&|)}])",
+			"comment": "from,var,define are reserved; configuration is TODO, needs significant syntax structure work.",
+			"match": "(?i:configuration|define|from|var)(?![^\\s{(,;&|)}])",
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
@@ -1256,7 +1256,7 @@
 			]
 		},
 		"attribute": {
-			"begin": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards)(?=\\())|ordered(?![.\\w`])",
+			"begin": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?=\\())|ordered(?![.\\w`])",
 			"beginCaptures": {
 				"0": {
 					"name": "support.function.attribute.powershell"
@@ -1280,7 +1280,8 @@
 					},
 					"patterns": [
 						{
-							"begin": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase)\\b",
+							"comment": "`key` for DscProperty attribute",
+							"begin": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase|key)\\b",
 							"beginCaptures": {
 								"1": {
 									"name": "variable.parameter.attribute.powershell"
@@ -1926,11 +1927,11 @@
 			"patterns": [
 				{
 					"comment:": "[short], [ushort], [uint], [ulong] added PowerShell Core 6.2;",
-					"match": "(?<![\\w-])(?i:(?:value)?type|void|switch|(?:ps(?:custom)?)?object|hashtable|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|datetime|array|bigint|u?int(?:32|16|64)?|u?long|u?short)(?![.\\w+`])",
+					"match": "(?<![.\\w-])(?i:(?:value)?type|void|switch|(?:ps(?:custom)?)?object|pscredential|psmoduleinfo|hashtable|scriptblock|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|datetime|array|bigint|u?int(?:32|16|64)?|u?long|u?short)(?![.\\w+`-])",
 					"name": "keyword.type.powershell"
 				},
 				{
-					"match": "(?<![\\w-])(?i:system|math|text|convert|regex|xml)(?!\\w)",
+					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml)(?!\\w-)",
 					"name": "support.class.powershell"
 				}
 			]
@@ -2109,7 +2110,7 @@
 			]
 		},
 		"variable_inner": {
-			"comment": "seperate the parts of the variable name and scope them",
+			"comment": "separate the parts of the variable name and scope them",
 			"patterns": [
 				{
 					"match": "[$@][^:]*:$",
@@ -2175,7 +2176,7 @@
 							]
 						}
 					},
-					"match": "(?:([$@])(?:(?>([\\w][\\w?]*:|:)?)([\\w](?:[\\w?]|(?<!:):(?!:))*|[$?^:])))",
+					"match": "(?:([$@])(?:(?>([\\w][\\w?]*:(?!:)|:)?)([\\w](?:[\\w?]|(?<!:):(?!:))*|[$?^:])))",
 					"name": "variable.other.readwrite.powershell"
 				}
 			]
@@ -2234,7 +2235,7 @@
 		},
 		"variable_bracketed": {
 			"begin": "(?=\\$\\{)",
-			"end": "(?!.\\G)",
+			"end": "(?!\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -2256,32 +2257,7 @@
 					"name": "variable.other.readwrite.powershell",
 					"patterns": [
 						{
-							"comment": "this captures up to the first colon, and then matches up the capture",
-							"match": "\\G(?:(?:[^`{}:]|`[`{}]?+)+:|:)",
-							"captures": {
-								"0": {
-									"patterns": [
-										{
-											"include": "#variable_scopeOrDrive"
-										}
-									]
-								}
-							}
-						},
-						{
-							"match": "`(?:[`0abefnrtv{}\\n])",
-							"name": "constant.character.escape.powershell"
-						},
-						{
-							"include": "#unicodeEscape"
-						},
-						{
-							"match": "`",
-							"name": "invalid.character.escape.powershell"
-						},
-						{
-							"match": "{",
-							"name": "invalid.character.powershell"
+							"include": "#variable_bracketed_inside"
 						}
 					]
 				},
@@ -2298,9 +2274,44 @@
 				}
 			]
 		},
+		"variable_bracketed_inside": {
+			"patterns": [
+				{
+					"comment": "capture a complete variable reference that appears on a single line and attempt to scope language variables"
+				},
+				{
+					"comment": "this captures up to the first colon, and then matches up the capture",
+					"match": "\\G(?:(?:[^`{}:]|`[`{}]?+)+:|:)",
+					"captures": {
+						"0": {
+							"patterns": [
+								{
+									"include": "#variable_scopeOrDrive"
+								}
+							]
+						}
+					}
+				},
+				{
+					"match": "`(?:[`0abefnrtv{}\\n])",
+					"name": "constant.character.escape.powershell"
+				},
+				{
+					"include": "#unicodeEscape"
+				},
+				{
+					"match": "`",
+					"name": "invalid.character.escape.powershell"
+				},
+				{
+					"match": "{",
+					"name": "invalid.character.powershell"
+				}
+			]
+		},
 		"variableNoProperty_bracketed": {
 			"begin": "(?=\\$\\{)",
-			"end": "(?!.\\G)",
+			"end": "(?!\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -2322,32 +2333,7 @@
 					"name": "variable.other.readwrite.powershell",
 					"patterns": [
 						{
-							"comment": "this captures up to the first colon, and then matches up the capture",
-							"match": "\\G(?:(?:[^`{}:]|`[`{}]?+)+:|:)",
-							"captures": {
-								"0": {
-									"patterns": [
-										{
-											"include": "#variable_scopeOrDrive"
-										}
-									]
-								}
-							}
-						},
-						{
-							"match": "`(?:[`0abefnrtv{}\\n])",
-							"name": "constant.character.escape.powershell"
-						},
-						{
-							"include": "#unicodeEscape"
-						},
-						{
-							"match": "`",
-							"name": "invalid.character.escape.powershell"
-						},
-						{
-							"match": "{",
-							"name": "invalid.character.powershell"
+							"include": "#variable_bracketed_inside"
 						}
 					]
 				}
@@ -2356,12 +2342,12 @@
 		"variable": {
 			"patterns": [
 				{
-					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
+					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
 					"end": "(?!\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])(?=\\.(?!\\.)|::|\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -2381,7 +2367,7 @@
 							]
 						},
 						{
-							"match": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
+							"match": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
 							"captures": {
 								"0": {
 									"patterns": [
@@ -2399,7 +2385,7 @@
 				},
 				{
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
+					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -2413,12 +2399,12 @@
 			]
 		},
 		"variableNoProperty": {
-			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
+			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
 			"end": "(?!.\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\$(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
+					"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
 					"end": "(?!.\\G)",
 					"applyEndPatternLast": true,
 					"captures": {

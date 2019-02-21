@@ -138,6 +138,8 @@ enum tester {
     
 }
 
+$:: #valid, but cannot specify a scope or drive and cannot use static accessor
+${local:} #not valid!  no variable reference following scope/drive delimiter
 
 [regex`2[string,int32]]::Match()
 
