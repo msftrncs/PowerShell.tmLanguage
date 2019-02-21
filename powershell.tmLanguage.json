@@ -783,27 +783,42 @@
 					]
 				},
 				{
-					"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
-					"name": "entity.name.parameter.powershell"
-				},
-				{
-					"comment": "-file is special case, needs file argument, no condition expression",
-					"begin": "(?i:[\\x{2013}-\\x{2015}-]file)",
-					"beginCaptures": {
-						"0": {
-							"name": "entity.name.parameter.powershell"
-						}
-					},
-					"end": "(?=\\{)",
+					"comment": "only allow switch arguments before the `(` or `{`",
+					"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?=[^\\s#\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
-							"begin": "(?![\\n{(;&|)}\\]])",
-							"end": "$(?=\\n)|(?=[{(;&|)}\\]])",
+							"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
+							"name": "entity.name.parameter.powershell"
+						},
+						{
+							"comment": "-file is special case, needs file argument, no condition expression",
+							"begin": "(?i:[\\x{2013}-\\x{2015}-]file)",
+							"beginCaptures": {
+								"0": {
+									"name": "entity.name.parameter.powershell"
+								}
+							},
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"include": "#argument_mode"
+									"begin": "\\G(?![{(;&|)}])",
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#argument"
+										},
+										{
+											"include": "#advanceToToken"
+										}
+									]
 								}
 							]
+						},
+						{
+							"include": "#notCode"
 						}
 					]
 				},
@@ -875,14 +890,11 @@
 					"end": "$(?=\\n)|(?=[;|)}\\]])",
 					"patterns": [
 						{
-							"include": "#numericConstant"
-						},
-						{
 							"include": "#operators_preUnary"
 						},
 						{
-							"comment": "if numeric constant advanced, switch to expression mode",
-							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"comment": "if unary operators/numeric constant advanced, switch to expression mode",
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$)",
 							"end": "$(?=\\n)|(?=[;|)}\\]])",
 							"patterns": [
 								{
@@ -904,7 +916,7 @@
 				},
 				{
 					"comment": "patterns that indicate an expression, might be able to simplify this to include expression_mode and then see if the cursor advanced, sorta, don't forget about 'notCode'",
-					"begin": "(?=\\$[{(\\w:$?^]|@?[({]|(?>@(?:(?>[\\w][\\w?]*:|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
+					"begin": "(?=\\$[{(\\w:$?^]|@?[({]|(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
 					"end": "$(?=\\n)|(?=[;|)}\\]])",
 					"patterns": [
 						{
@@ -960,7 +972,7 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\G(?=[^\\n(){},;&|])",
+							"begin": "\\G(?=[^\\n{(,;&|)}])",
 							"end": "(?=[\\s{(,;&|)}])",
 							"name": "variable.function.powershell",
 							"patterns": [
@@ -986,25 +998,8 @@
 				}
 			]
 		},
-		"argument_mode": {
+		"argument": {
 			"patterns": [
-				{
-					"include": "#redirection"
-				},
-				{
-					"include": "#jobOperator"
-				},
-				{
-					"comment": "`,` just continues current mode",
-					"match": ",",
-					"name": "punctuation.separator.powershell"
-				},
-				{
-					"include": "#commentBlock"
-				},
-				{
-					"include": "#commentLine"
-				},
 				{
 					"include": "#scriptblock"
 				},
@@ -1025,6 +1020,42 @@
 				},
 				{
 					"include": "#quotedStrings_Members"
+				},
+				{
+					"begin": "(?=\\d)",
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"include": "#numericConstant_argumentMode"
+						},
+						{
+							"include": "#unquotedArgument"
+						}
+					]
+				},
+				{
+					"include": "#unquotedArgument"
+				}
+			]
+		},
+		"argument_mode": {
+			"patterns": [
+				{
+					"include": "#redirection"
+				},
+				{
+					"include": "#jobOperator"
+				},
+				{
+					"comment": "`,` just continues current mode",
+					"match": ",",
+					"name": "punctuation.separator.powershell"
+				},
+				{
+					"include": "#commentBlock"
+				},
+				{
+					"include": "#commentLine"
 				},
 				{
 					"begin": "(?<!\\w)(--%)(?!\\w)",
@@ -1069,24 +1100,12 @@
 					}
 				},
 				{
-					"begin": "(?=\\d)",
-					"end": "(?!\\G)",
-					"patterns": [
-						{
-							"include": "#numericConstant_argumentMode"
-						},
-						{
-							"include": "#unquotedArgument"
-						}
-					]
-				},
-				{
-					"include": "#unquotedArgument"
+					"include": "#argument"
 				}
 			]
 		},
 		"unquotedArgument": {
-			"begin": "(?=[^\\s(){},;&|])",
+			"begin": "(?=[^\\s{(,;&|)}])",
 			"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
 			"end": "(?=[\\s{(,;&|)}])",
 			"contentName": "string.unquoted.argument.powershell",
@@ -1187,7 +1206,7 @@
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1512,7 +1531,7 @@
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1553,7 +1572,7 @@
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1599,12 +1618,12 @@
 						}
 					},
 					"begin": "(?>([+\\x{2013}-\\x{2015}-]?(?:[0-9]+(?i:(?![ed]|\\.(?!\\.))l?|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
-					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"ignore": "(?=[^\\s\\p{L}]|\\n)",
-							"end": "(?=.|\\n)",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -1613,13 +1632,25 @@
 							]
 						},
 						{
-							"include": "#operators"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"begin": "\\G(?=[\\s#.+\\x{2013}-\\x{2015}-]|<#)(?![\\x{2013}-\\x{2015}-]\\p{L})",
+							"end": "\\.\\.|\\+\\+?|([\\x{2013}-\\x{2015}-])(?!\\p{L})\\g<1>?|$|(?![\\s#]|<#)",
+							"endCaptures":{
+								"0":{
+									"patterns":[
+										{
+											"include": "#operators"
+										}
+									]
+								}
+							},
+							"patterns": [
+								{
+									"include": "#commentBlock"
+								},
+								{
+									"include": "#commentLine"
+								}
+							]
 						}
 					]
 				},
@@ -1633,12 +1664,12 @@
 						}
 					},
 					"begin": "(?>([+\\x{2013}-\\x{2015}-]?0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])",
-					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"ignore": "(?=[^\\s\\p{L}]|\\n)",
-							"end": "(?=.|\\n)",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -1647,13 +1678,25 @@
 							]
 						},
 						{
-							"include": "#operators"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"begin": "\\G(?=[\\s#.+\\x{2013}-\\x{2015}-]|<#)(?![\\x{2013}-\\x{2015}-]\\p{L})",
+							"end": "\\.\\.|\\+\\+?|([\\x{2013}-\\x{2015}-])(?!\\p{L})\\g<1>?|$|(?![\\s#]|<#)",
+							"endCaptures":{
+								"0":{
+									"patterns":[
+										{
+											"include": "#operators"
+										}
+									]
+								}
+							},
+							"patterns": [
+								{
+									"include": "#commentBlock"
+								},
+								{
+									"include": "#commentLine"
+								}
+							]
 						}
 					]
 				},
@@ -1667,12 +1710,12 @@
 						}
 					},
 					"begin": "(?>([+\\x{2013}-\\x{2015}-]?(?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
-					"end": "$|(?![\\s#.+\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"ignore": "(?=[^\\s\\p{L}]|\\n)",
-							"end": "(?=.|\\n)",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -1681,13 +1724,25 @@
 							]
 						},
 						{
-							"include": "#operators"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"begin": "\\G(?=[\\s#.+\\x{2013}-\\x{2015}-]|<#)(?![\\x{2013}-\\x{2015}-]\\p{L})",
+							"end": "\\.\\.|\\+\\+?|([\\x{2013}-\\x{2015}-])(?!\\p{L})\\g<1>?|$|(?![\\s#]|<#)",
+							"endCaptures":{
+								"0":{
+									"patterns":[
+										{
+											"include": "#operators"
+										}
+									]
+								}
+							},
+							"patterns": [
+								{
+									"include": "#commentBlock"
+								},
+								{
+									"include": "#commentLine"
+								}
+							]
 						}
 					]
 				},
@@ -1780,7 +1835,7 @@
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1835,7 +1890,7 @@
 						}
 					},
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1936,6 +1991,21 @@
 				}
 			]
 		},
+		"advanceToToken": {
+			"comment": "consume spaces and comments and line ends until the next token appears",
+			"ignore": "\\G(?<=\\.|::)(?=[\\s#]|<#)",
+			"begin": "\\G(?=[\\s#]|<#)",
+			"end": "(?!\\s)(?!$)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#commentLine"
+				},
+				{
+					"include": "#commentBlock"
+				}
+			]
+		},
 		"accessors": {
 			"patterns": [
 				{
@@ -1945,8 +2015,7 @@
 							"name": "punctuation.accessor.powershell"
 						}
 					},
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -1959,18 +2028,7 @@
 							"include": "#commentBlock"
 						},
 						{
-							"comment": "consume spaces and comments and line ends until the next token appears",
-							"begin": "\\G(?<=\\.|::)(?=[\\s#]|<#)",
-							"end": "(?!\\s)(?!$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"include": "#commentLine"
-								},
-								{
-									"include": "#commentBlock"
-								}
-							]
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -2002,7 +2060,7 @@
 						{
 							"begin": "(?=\\.(?!\\.)|::|\\[)",
 							"ignore": "(?=[^\\s\\p{L}]|\\n)",
-							"end": "(?=.|\\n)",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -2062,7 +2120,7 @@
 								{
 									"begin": "(?=\\.(?!\\.)|::|\\[)",
 									"ignore": "(?=[^\\s\\p{L}]|\\n)",
-									"end": "(?=.|\\n)",
+									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
@@ -2086,7 +2144,7 @@
 				{
 					"begin": "(?<![\\])])[\\p{L}_]\\w*(?=\\.(?!\\.)|::|\\[)",
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"beginCaptures": {
 						"0": {
@@ -2176,7 +2234,7 @@
 							]
 						}
 					},
-					"match": "(?:([$@])(?:(?>([\\w][\\w?]*:(?!:)|:)?)([\\w](?:[\\w?]|(?<!:):(?!:))*|[$?^:])))",
+					"match": "(?:([$@])(?:(?>([\\w][\\w?]*:(?!:)|:))?([\\w](?:[\\w?]|(?<!:):(?!:))*|[$^:])))",
 					"name": "variable.other.readwrite.powershell"
 				}
 			]
@@ -2264,7 +2322,7 @@
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2342,12 +2400,12 @@
 		"variable": {
 			"patterns": [
 				{
-					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
+					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
 					"end": "(?!\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])(?=\\.(?!\\.)|::|\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -2358,7 +2416,7 @@
 								}
 							},
 							"ignore": "(?=[^\\s\\p{L}]|\\n)",
-							"end": "(?=.|\\n)",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -2367,7 +2425,7 @@
 							]
 						},
 						{
-							"match": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
+							"match": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
 							"captures": {
 								"0": {
 									"patterns": [
@@ -2385,7 +2443,7 @@
 				},
 				{
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
+					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -2399,12 +2457,12 @@
 			]
 		},
 		"variableNoProperty": {
-			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:]|\\{))",
+			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
 			"end": "(?!.\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w](?:[\\w?]|:(?!:))*|:(?!:))|[$?^:])",
+					"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
 					"end": "(?!.\\G)",
 					"applyEndPatternLast": true,
 					"captures": {
@@ -2514,7 +2572,7 @@
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"ignore": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2603,7 +2661,7 @@
 					"ignoreBegin": "(?<=^(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])@|(?<=\\g<1>))(?=\\.(?!\\.)|::|\\[)",
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
 					"ignoreEnd": "(?=[^\\s\\p{L}]|\\n)",
-					"end": "(?=.|\\n)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2790,16 +2848,16 @@
 							"name": "keyword.operator.arithmetic.prefix.unary.decrement.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
+				},
+				{
+					"include": "#numericConstant"
 				},
 				{
 					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.))|(!))(?!\\p{L})",
@@ -2817,14 +2875,11 @@
 							"name": "keyword.operator.logical.unary.not.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				}
@@ -2842,17 +2897,11 @@
 							"name": "keyword.operator.comparison.type.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -2863,17 +2912,11 @@
 							"name": "keyword.operator.comparison.$1.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -2884,17 +2927,11 @@
 							"name": "keyword.operator.string-$1.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -2905,17 +2942,11 @@
 							"name": "keyword.operator.logical.$1.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -2926,17 +2957,11 @@
 							"name": "keyword.operator.bitwise.$1.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -2947,17 +2972,11 @@
 							"name": "keyword.operator.string-format.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -2982,17 +3001,11 @@
 							"name": "keyword.operator.arithmetic.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
@@ -3004,17 +3017,11 @@
 							"name": "keyword.operator.range.powershell"
 						}
 					},
-					"end": "(?![\\s]|$)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
-						},
-						{
-							"include": "#commentBlock"
-						},
-						{
-							"include": "#commentLine"
+							"include": "#advanceToToken"
 						}
 					]
 				},
