@@ -75,8 +75,14 @@ foreach ($x in 1..34) {
     continue hello
 }
 
-($i=-5kb/10, $c, ${true} )
+($i=-5kb/10, $c-.67, ${true} )
 $a-45; -45-xor15
+-45kb.hello
+-45::count
+-!hello
+-+hello
+-.hello
+
 
 function hello ($a=--$global:b) {$a, $b}
 
