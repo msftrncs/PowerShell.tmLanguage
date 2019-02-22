@@ -84,7 +84,7 @@ $a-45; -45-xor15
 -.hello
 
 
-function hello ($a=--$global:b) {$a, $b}
+function hello ($a=--$global:b++) {$a, $b}
 
 $_hello
 $hello

@@ -346,10 +346,6 @@
 									"end": "(?<=;)|(?=[}\\n])",
 									"patterns": [
 										{
-											"comment": "!!this needs rewritten as it cannot test for a preunary operator until after the first token has been located!!  This logic needs updated in multiple locations",
-											"include": "#operators_preUnary"
-										},
-										{
 											"comment": "after testing for pre unary operators, after anything has matched, stay locked in expression mode.",
 											"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
 											"end": "$(?=\\n)|(?=[;|)}\\]])",
@@ -358,6 +354,10 @@
 													"include": "#expression_mode"
 												}
 											]
+										},
+										{
+											"comment": "!!this needs rewritten as it cannot test for a preunary operator until after the first token has been located!!  This logic needs updated in multiple locations",
+											"include": "#operators_preUnary"
 										},
 										{
 											"include": "#expression_mode"
@@ -891,7 +891,7 @@
 					"patterns": [
 						{
 							"comment": "if unary operators/numeric constant advanced, switch to expression mode",
-							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$)",
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$)(?!$(?=\\n)|(?=[;|)}\\]]))",
 							"end": "$(?=\\n)|(?=[;|)}\\]])",
 							"patterns": [
 								{
@@ -1210,7 +1210,6 @@
 				},
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -1384,7 +1383,7 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|EXTERNALHELP|FORWARDHELP(?:CATEGORY|TARGETNAME)|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|REMOTEHELPRUNSPACE|ROLE|SYNOPSIS))(?:\\s*$)",
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|ROLE|SYNOPSIS))(?:\\s*$)",
 					"name": "comment.documentation.embedded.powershell"
 				},
 				{
@@ -1473,23 +1472,34 @@
 							"name": "keyword.operator.assignment.parameter-default.powershell"
 						}
 					},
-					"end": "(?<=,)|(?=[)\\n])",
+					"end": "(?<=,)|(?=\\))|(?=\\n)(?!\\G)",
 					"patterns": [
 						{
-							"include": "#operators_preUnary"
+							"include": "#advanceToToken"
 						},
 						{
-							"comment": "after testing for pre unary operators, after anything has matched, stay locked in expression mode.",
-							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
-							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"comment": "begin at the first token in the expression, to test for numeric and unary operators",
+							"begin": "(?![\\s#]|<#)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"include": "#expression_mode"
+									"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
+									"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$)(?!$(?=\\n)|(?=[;|)}\\]]))",
+									"end": "$(?=\\n)|(?=[;|)}\\]])",
+									"patterns": [
+										{
+											"include": "#expression_mode"
+										}
+									]
+								},
+								{
+									"include": "#numericConstant"
+								},
+								{
+									"include": "#operators_preUnary"
 								}
 							]
-						},
-						{
-							"include": "#expression_mode"
 						}
 					]
 				},
@@ -1510,7 +1520,7 @@
 		},
 		"expressionGroup": {
 			"begin": "(?=\\()",
-			"end": "(?!.\\G)",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -1535,7 +1545,6 @@
 				},
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -1576,7 +1585,6 @@
 				},
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -1736,11 +1744,17 @@
 						"1": {
 							"name": "constant.numeric.integer.powershell"
 						},
-						"3": {
+						"2": {
+							"name": "storage.modifier.long.powershell"
+						},
+						"4": {
+							"name": "storage.modifier.long.powershell"
+						},
+						"5": {
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "(?>((?:[0-9]+(?i:(?![ed]|\\.(?!\\.))l?|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?l))|(?:\\.[0-9]+)\\g<2>)))((?i:[kmgtp]b)?)(?![^\\s{(,;|)}])"
+					"match": "(?>((?:[0-9]+(?i:(?![ed]|\\.(?!\\.))(l)?|(?:\\.[0-9]*)?((?:(?i:e)[+\\x{2013}-\\x{2015}-]?[0-9]+)?(l)))|(?:\\.[0-9]+)\\g<2>)))((?i:[kmgtp]b)?)(?![^\\s{(,;|)}])"
 				},
 				{
 					"captures": {
@@ -1748,10 +1762,13 @@
 							"name": "constant.numeric.hex.powershell"
 						},
 						"2": {
+							"name": "storage.modifier.long.powershell"
+						},
+						"3": {
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "(?>(0(?i:x[0-9a-f_]+l?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])"
+					"match": "(?>(0(?i:x[0-9a-f_]+(l)?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])"
 				},
 				{
 					"captures": {
@@ -1759,10 +1776,13 @@
 							"name": "constant.numeric.decimal.powershell"
 						},
 						"2": {
+							"name": "storage.modifier.decimal.powershell"
+						},
+						"3": {
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "(?>((?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)d?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])"
+					"match": "(?>((?:(?:[0-9]+)|(?=\\.[0-9]))(?:\\.[0-9]*)?(?i:(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(?!l)(d)?))((?i:[kmgtp]b)?))(?![^\\s{(,;|)}])"
 				},
 				{
 					"captures": {
@@ -1804,7 +1824,6 @@
 				},
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -1859,7 +1878,6 @@
 							"name": "punctuation.section.bracket.end.powershell"
 						}
 					},
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -1932,10 +1950,30 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
+							"match": "((?i:Version|Culture|PublicKeyToken))(=)([^,\\[\\]]*)",
+							"captures": {
+								"1": {
+									"name": "variable.parameter.attribute.powershell"
+								},
+								"2": {
+									"name": "keyword.operator.assignment.powershell"
+								},
+								"3": {
+									"name": "constant.character.powershell"
+								}
+							},
+							"name": "invalid.character.powershell"
+						},
+						{
 							"include": "#type_SubType"
 						},
 						{
-							"match": "(?<!])[^\\s\\[\\]+]+"
+							"match": ",",
+							"name": "punctuation.separator.comma.powershell"
+						},
+						{
+							"match": "(?<!])[^\\s\\[\\]+,]+",
+							"name": "invalid.character.powershell"
 						}
 					]
 				},
@@ -1956,14 +1994,13 @@
 					"name": "keyword.type.powershell"
 				},
 				{
-					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml)(?!\\w-)",
+					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml)(?![\\w-])",
 					"name": "support.class.powershell"
 				}
 			]
 		},
 		"advanceToToken": {
 			"comment": "consume spaces and comments and line ends until the next token appears",
-			"ignore": "\\G(?<=\\.|::)(?=[\\s#]|<#)",
 			"begin": "\\G(?=[\\s#]|<#)",
 			"end": "(?!\\s)(?!$)",
 			"applyEndPatternLast": true,
@@ -2029,7 +2066,6 @@
 						},
 						{
 							"begin": "(?=\\.(?!\\.)|::|\\[)",
-							"ignore": "(?=[^\\s\\p{L}]|\\n)",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -2089,7 +2125,6 @@
 								},
 								{
 									"begin": "(?=\\.(?!\\.)|::|\\[)",
-									"ignore": "(?=[^\\s\\p{L}]|\\n)",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"patterns": [
@@ -2113,7 +2148,6 @@
 				},
 				{
 					"begin": "(?<![\\])])[\\p{L}_]\\w*(?=\\.(?!\\.)|::|\\[)",
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"beginCaptures": {
@@ -2291,7 +2325,6 @@
 				},
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -2371,7 +2404,7 @@
 			"patterns": [
 				{
 					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
-					"end": "(?!\\G)",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -2385,7 +2418,6 @@
 									]
 								}
 							},
-							"ignore": "(?=[^\\s\\p{L}]|\\n)",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -2428,13 +2460,11 @@
 		},
 		"variableNoProperty": {
 			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
-			"end": "(?!.\\G)",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
-					"end": "(?!.\\G)",
-					"applyEndPatternLast": true,
+					"match": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -2541,7 +2571,6 @@
 				},
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"ignore": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -2957,8 +2986,11 @@
 							"name": "keyword.operator.assignment.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+					"end": "$(?=\\n)(?!\\G)|(?=[,;&|)}\\]])",
 					"patterns": [
+						{
+							"include": "#advanceToToken"
+						},
 						{
 							"include": "$self"
 						}
