@@ -1557,7 +1557,7 @@
 		},
 		"substatement": {
 			"begin": "(?=\\$\\()",
-			"end": "(?!.\\G)",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -1799,8 +1799,8 @@
 		},
 		"scriptblock": {
 			"begin": "(?={)",
-			"end": "(?!.\\G)",
-			"applyEndPatternLast": true,
+				"end": "(?=.|$)",
+				"applyEndPatternLast": true,
 			"patterns": [
 				{
 					"begin": "{",
@@ -1837,8 +1837,8 @@
 		"type": {
 			"comment": "This is used by both type and attribute references.",
 			"begin": "(?=\\[)",
-			"end": "(?!\\G)",
-			"applyEndPatternLast": true,
+				"end": "(?=.|$)",
+				"applyEndPatternLast": true,
 			"patterns": [
 				{
 					"begin": "\\[",
@@ -2041,8 +2041,8 @@
 				},
 				{
 					"begin": "\\G(?=\\[)",
-					"end": "(?!\\G)",
-					"applyEndPatternLast": true,
+						"end": "(?=.|$)",
+						"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"begin": "\\[",
@@ -2100,7 +2100,7 @@
 					"patterns": [
 						{
 							"begin": "\\G(?=\\()",
-							"end": "(?!\\G)",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
