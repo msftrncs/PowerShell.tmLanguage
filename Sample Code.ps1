@@ -1,3 +1,5 @@
+([hex].FromChar -shl 4)
+
 # a class to describe a validation set of valid hex digits
 class HexDigits : Management.Automation.IValidateSetValuesGenerator {
     [string[]] GetValidValues() {
@@ -62,6 +64,112 @@ for (
 
     A method to add a line to the memory block would search out which memory block it could be appended to.
 #>
+
+class HexConverter {
+    static [byte] FromChar( [char]$char ) {
+        return [byte]$(
+            if ($char -ge [char]'A' ) {
+                # handle both upper and lowercase A-F, limit at F
+                [MATH]::Min(([byte]$char -band 0x5F) - 0x37, 15)
+            }
+            elseif ($char -ge [char]'0') {
+                [MATH]::Min([byte]$char - 0x30, 9)
+            }
+            else {
+                0
+            }
+        )
+    }
+    
+    static [byte] FromCharPair( [char]$char1, [char]$char2 ) {
+        return ([HexConverter]::FromChar($char1) -shl 4 ) + [HexConverter]::FromChar($char2)
+    }
+    
+}
+
+class HexSRecord {
+    hidden [string]$SRecord = ""
+    [int]$Length
+    [byte]$RecType
+    $address
+    [byte[]]$DataBytes
+
+    HexSRecord ([string]$SRecord) {
+        $this.Compile($SRecord)
+    }
+
+    hidden Compile([string]$SRecord) {
+        $this.SRecord = $SRecord.Trim()
+        if ($this.SRecord.Length -lt 4 -or $this.SRecord[0] -cne [char]'S') {
+            throw "Invalid SREC format, first character not 'S' or insufficient length!"
+        }
+        if ($this.SRecord[1] -lt [char]'0' -or $this.SRecord[1] -gt [char]'9') {
+            throw "invalid SREC format, record type must be 0 - 9!"
+        }
+        $this.RecType = [byte]$this.SRecord[1] - [byte][char]'0'
+        if ($this.SRecord.Length -lt $(switch ($this.RecType) {0 {8} 1 {8} 2 {10} 3 {12} 7 {12} 8 {10} 9 {8} })) {
+            throw "invalid SREC format, insufficient minimum length for record type!"
+        }
+        $this.Length = [HexConverter]::FromCharPair($this.SRecord[2],$this.SRecord[3])
+        if ($this.SRecord.Length -lt $this.Length * 2 + 4) {
+            throw "invalid SREC format, insufficient length for data!"
+        }
+        if (!$this.ValidCheckSum()) {
+            throw "SREC checksum failed!"
+        }
+        $this.address = switch ($this.RecType) {
+            0 {[uint16](([uint16][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7]))}
+            1 {[uint16](([uint16][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7]))}
+            2 {[uint32](((([uint32](HexPairToByte $this.SRecord[4] $this.SRecord[5]) -shl 8) + (HexPairToByte $this.SRecord[6] $this.SRecord[7])) -shl 8) + (HexPairToByte $this.SRecord[8] $this.SRecord[9]))}
+            3 {[uint32](((((([uint32](HexPairToByte $this.SRecord[4] $this.SRecord[5]) -shl 8) + (HexPairToByte $this.SRecord[6] $this.SRecord[7])) -shl 8) + (HexPairToByte $this.SRecord[8] $this.SRecord[9])) -shl 8) + (HexPairToByte $this.SRecord[10] $this.SRecord[11]))} 
+            7 {[uint32](((((([uint32](HexPairToByte $this.SRecord[4] $this.SRecord[5]) -shl 8) + (HexPairToByte $this.SRecord[6] $this.SRecord[7])) -shl 8) + (HexPairToByte $this.SRecord[8] $this.SRecord[9])) -shl 8) + (HexPairToByte $this.SRecord[10] $this.SRecord[11]))} 
+            8 {[uint32](((([uint32](HexPairToByte $this.SRecord[4] $this.SRecord[5]) -shl 8) + (HexPairToByte $this.SRecord[6] $this.SRecord[7])) -shl 8) + (HexPairToByte $this.SRecord[8] $this.SRecord[9]))} 
+            9 {[uint16](([uint16][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7]))}
+        }
+        $this.DataBytes = $this.GetBytes()
+    }
+
+    hidden [bool] ValidCheckSum () {
+        # check the check sum of an SREC record. (should work for all record types)
+        for (
+            ($i = 2), ([byte]$cs = 0)
+            $i -lt $this.Length * 2 + 4
+        ) {
+            $cs = ($cs + [HexConverter]::FromCharPair($this.SRecord[$i++], $this.SRecord[$i++])) -band 255
+        }
+
+        return $cs -eq 255 # must result in 255!
+    }
+
+    hidden [byte[]] GetBytes () {
+        # collect the data bytes from the line for an S1 record
+        for ( 
+            ($i = 8), ($c = [byte[]]@())
+            $i -lt $this.Length * 2 + 2
+        ) {
+            $c += , [byte][HexConverter]::FromCharPair($this.SRecord[$i++], $this.SRecord[$i++])
+        }
+        return $c
+    }
+}
+
+# SREC sample
+@'
+S00F00004F4349382D3130392E30303751
+S12340001A61F34106469DA71A255558F2E91FB01F101EAC1E4800001F306FB0F2E985504A
+S12340204F5254410000473C000085504F525442401E473C00018444445241402A473C0049
+S12340400284444452424036473C000385504F5254454041473C00088444445245404C472D
+S123FF0000000000000000000000FFFFFFFFFFFE104F4349382D3130392E303037202020D5
+S123FF2020004500010743414E4F50454E000000000000000000000000000000000000004C
+S123FF4000000000000000000000000000000000000000000000000000000000000000009D
+S123FF6000000000000000000000000000000000000000000000000000000000000000007D
+S123FF8000000000000000000000000010241027102A102D1030103310361039103C103FCE
+S123FFA0104210451048104B104E105110541057105A105D1060106310661069106C106FB5
+S123FFC0107210751078107B107E108110841087108A108D1090109310961099109C109F95
+S123FFE010A210A510A810AB10AE10B110B410B710BA10BD10C010C34690F820F820F820C1
+S90380007C
+'@
+
 
 # create a crazy random password
 ((Get-Random (1..100) -count 9) +
@@ -262,3 +370,5 @@ Write-Host " Breaking to check logs" break
 [byte[ ]] ` 
 
 ` hello
+
+
