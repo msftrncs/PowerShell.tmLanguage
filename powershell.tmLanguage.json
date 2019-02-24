@@ -776,11 +776,11 @@
 							"begin": "(?:\\G|(?<=\\}))(?![,;&|)}])",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
-							"name": "meta.argument.switch-condition.powershell",
 							"patterns": [
 								{
 									"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
 									"end": "(?!\\G)",
+									"name": "meta.argument.switch-condition.powershell",
 									"patterns": [
 										{
 											"comment": "default: only in switch",
@@ -854,11 +854,11 @@
 									"begin": "\\G(?![,;&|)}<>])",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
-									"name": "meta.argument.switch-file.powershell",
 									"patterns": [
 										{
 											"begin": "(?<=[\\s]|\\G)(?![\\s#,;&|)}<>]|<#|$)",
 											"end": "(?!\\G)",
+											"name": "meta.argument.switch-file.powershell",
 											"patterns": [
 												{
 													"include": "#argument"
@@ -1026,7 +1026,8 @@
 					"include": "#commands"
 				},
 				{
-					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&|)}])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\s{(,;&|)}<>@#\\]]|`(?!\\s)))",
+					"comment": "command names are allowed to start with < or >, without a backtick, but `function` requires a backtick.  See below!",
+					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&|)}])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\s{(,;&|)}@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -1041,6 +1042,11 @@
 					"end": "(?!\\G)",
 					"applyEndPatternLast": true,
 					"patterns": [
+						{
+							"comment": "at the begining of a command name, `<`, `>` or `>>` are the entire command name.",
+							"match": "\\G(?:<|>>?)",
+							"name": "variable.function.powershell"
+						},
 						{
 							"begin": "\\G(?=[^\\n{(,;&|)}])",
 							"end": "(?=[\\s{(,;&|)}])",
@@ -1103,9 +1109,6 @@
 			"patterns": [
 				{
 					"include": "#redirection"
-				},
-				{
-					"include": "#jobOperator"
 				},
 				{
 					"comment": "`,` just continues current mode",
@@ -2848,21 +2851,6 @@
 				}
 			]
 		},
-		"jobOperator": {
-			"comment": "`&` resume's in statement mode",
-			"begin": "&(?!&)",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.separator.job.powershell"
-				}
-			},
-			"end": "$(?=\\n)|(?=[;|)}\\]])",
-			"patterns": [
-				{
-					"include": "$self"
-				}
-			]
-		},
 		"terminators": {
 			"patterns": [
 				{
@@ -3117,15 +3105,68 @@
 			]
 		},
 		"redirection": {
-			"match": "([2-6*]>&1|[1-6*]?>>?)|(<(?!#))",
-			"captures": {
-				"1": {
-					"name": "keyword.operator.redirection.powershell"
+			"patterns": [
+				{
+					"comment": "`&` resume's in statement mode",
+					"begin": "&(?!&)",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.job.powershell"
+						}
+					},
+					"end": "$(?=\\n)|(?=[;|)}\\]])",
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
 				},
-				"2": {
+				{
+					"match": "<(?!#)",
 					"name": "invalid.reserved.redirection.powershell"
+				},
+				{
+					"match": "[2-6*]>&1",
+					"name": "keyword.operator.redirection.to-stdout.powershell"
+				},
+				{
+					"begin": "[1-6*]?>>?",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.redirection.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G(?![;&|)}])",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"begin": "(?<=[\\s]|\\G)(?![\\s#;&|)}]|<#|$)",
+									"end": "(?!\\G)",
+									"name": "meta.argument.redirect-file.powershell",
+									"patterns": [
+										{
+											"comment": "`,`, `<` and `>` not permitted here",
+											"match": "[,<>]",
+											"name": "invalid.source.powershell"
+										},
+										{
+											"include": "#argument"
+										}
+									]
+								},
+								{
+									"include": "#advanceToToken"
+								}
+							]
+						}
+					]
 				}
-			}
+			]
 		}
 	}
 }
