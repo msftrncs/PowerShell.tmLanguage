@@ -4,28 +4,22 @@ function getscopes ($grammar) {
     function getscopes_recurse($ruleset) {
 
         # iterate through the rule set and capture the possible scope names
-        switch ($ruleset.psobject.Properties) {
-            {$_.Name -cin 'name', 'contentName'} {
-                $_.value
-                continue
+        foreach ($ruleprop in $ruleset.psobject.Properties) {
+            if ($ruleprop.Name -cin 'name', 'contentName') {
+                # return the specified scope selectors
+                $ruleprop.value
             }
-            {$_.Name -cin 'patterns'} {
-                foreach ($rule in $_.Value) {
+            elseif ($ruleprop.Name -cin 'patterns') {
+                foreach ($rule in $ruleprop.Value) {
+                    # recurse the contained patterns
                     getscopes_recurse $rule
                 }
-                continue
             }
-            {$_.Name -cin 'beginCaptures', 'captures', 'endCaptures'} {
-                foreach ($rule in $_.Value.PSObject.Properties) {
-                    getscopes_recurse $rule.Value
+            elseif ($ruleprop.Name -cin 'beginCaptures', 'captures', 'endCaptures', 'repository') {
+                foreach ($rule in $ruleprop.Value.PSObject.Properties) {
+                    # recurse the sub-items, note that we don't keep the sub-items names, including the sub-repositories
+                    getscopes_recurse $rule.Value 
                 }
-                continue
-            }
-            {$_.Name -cin 'repository'} {
-                foreach ($rule in $_.Value.PSObject.Properties) {
-                    getscopes_recurse $rule.Value
-                }
-                continue
             }
         }
     }
@@ -37,6 +31,7 @@ function getscopes ($grammar) {
     }
     , @{ '$self' = @(
             foreach ($rule in $grammar.'patterns') {
+                # recurse the contained patterns
                 getscopes_recurse $rule
             }
         )

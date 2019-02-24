@@ -4,28 +4,23 @@ function getincludes ($grammar) {
     function getincludes_recurse($ruleset) {
 
         # iterate through the rule set and capture the possible includes
-        switch ($ruleset.psobject.Properties) {
-            {$_.Name -cin 'include' } {
-                $_.value
+        foreach ($ruleprop in $ruleset.psobject.Properties) {
+            if ($ruleprop.Name -cin 'include') {
+                # return the specified include
+                $ruleprop.value
                 continue
             }
-            {$_.Name -cin 'patterns'} {
-                foreach ($rule in $_.Value) {
+            elseif ($ruleprop.Name -cin 'patterns') {
+                foreach ($rule in $ruleprop.Value) {
+                    # recurse the contained patterns
                     getincludes_recurse $rule
                 }
-                continue
             }
-            {$_.Name -cin 'beginCaptures', 'captures', 'endCaptures'} {
-                foreach ($rule in $_.Value.PSObject.Properties) {
+            elseif ($ruleprop.Name -cin 'beginCaptures', 'captures', 'endCaptures', 'repository') {
+                foreach ($rule in $ruleprop.Value.PSObject.Properties) {
+                    # recurse the sub-items, note that we don't keep the sub-items names, including the sub-repositories
                     getincludes_recurse $rule.Value
                 }
-                continue
-            }
-            {$_.Name -cin 'repository'} {
-                foreach ($rule in $_.Value.PSObject.Properties) {
-                    getincludes_recurse $rule.Value
-                }
-                continue
             }
         }
     }
@@ -37,6 +32,7 @@ function getincludes ($grammar) {
     }
     , @{ '$self' = @( 
             foreach ($rule in $grammar.'patterns') {
+                # recurse the contained patterns
                 getincludes_recurse $rule
             }
         )
