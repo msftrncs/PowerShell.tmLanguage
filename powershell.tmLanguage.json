@@ -629,9 +629,9 @@
 					},
 					"patterns": [
 						{
-							"comment": "`;` not permitted here",
-							"match": ";",
-							"name": "invalid.terminator.statement.powershell"
+							"comment": "`;` or `,` not permitted here",
+							"match": "[;,]",
+							"name": "invalid.source.powershell"
 						},
 						{
 							"include": "#command_mode"
@@ -750,7 +750,7 @@
 						{
 							"comment": "`;` not permitted here",
 							"match": ";",
-							"name": "invalid.terminator.statement.powershell"
+							"name": "invalid.source.powershell"
 						},
 						{
 							"include": "#command_mode"
@@ -773,13 +773,13 @@
 					"name": "meta.switch-conditions.powershell",
 					"patterns": [
 						{
-							"begin": "\\G(?![;&|)}])|(?<=\\})",
+							"begin": "(?:\\G|(?<=\\}))(?![,;&|)}])",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"name": "meta.argument.switch-condition.powershell",
 							"patterns": [
 								{
-									"begin": "(?<=[\\s]|\\G)(?![\\s#;&|)}]|<#|$)",
+									"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
 									"end": "(?!\\G)",
 									"patterns": [
 										{
@@ -819,6 +819,11 @@
 						},
 						{
 							"include": "#notCode"
+						},
+						{
+							"comment": "very limited what is permitted here",
+							"match": "[^{()}]",
+							"name": "invalid.source.powershell"
 						}
 					]
 				},
@@ -841,18 +846,18 @@
 								"2": {
 									"name": "punctuation.separator.parameter-value.powershell"
 								}
-									},
+							},
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "\\G(?![;&|)}])",
+									"begin": "\\G(?![,;&|)}<>])",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"name": "meta.argument.switch-file.powershell",
 									"patterns": [
 										{
-											"begin": "(?<=[\\s]|\\G)(?![\\s#;&|)}]|<#|$)",
+											"begin": "(?<=[\\s]|\\G)(?![\\s#,;&|)}<>]|<#|$)",
 											"end": "(?!\\G)",
 											"patterns": [
 												{
@@ -866,11 +871,13 @@
 									]
 								}
 							]
-						},
-						{
-							"include": "#notCode"
 						}
 					]
+				},
+				{
+					"comment": "`,`, `<` and `>` not permitted here",
+					"match": "[,<>]",
+					"name": "invalid.source.powershell"
 				},
 				{
 					"include": "#notCode"
@@ -1849,8 +1856,8 @@
 		},
 		"scriptblock": {
 			"begin": "(?={)",
-				"end": "(?=.|$)",
-				"applyEndPatternLast": true,
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
 			"patterns": [
 				{
 					"begin": "{",
@@ -1887,8 +1894,8 @@
 		"type": {
 			"comment": "This is used by both type and attribute references.",
 			"begin": "(?=\\[)",
-				"end": "(?=.|$)",
-				"applyEndPatternLast": true,
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
 			"patterns": [
 				{
 					"begin": "\\[",
@@ -2091,8 +2098,8 @@
 				},
 				{
 					"begin": "\\G(?=\\[)",
-						"end": "(?=.|$)",
-						"applyEndPatternLast": true,
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"begin": "\\[",
