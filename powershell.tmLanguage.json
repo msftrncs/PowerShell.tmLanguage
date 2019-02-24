@@ -985,7 +985,7 @@
 					]
 				},
 				{
-					"comment": "patterns that indicate an expression, might be able to simplify this to include expression_mode and then see if the cursor advanced, sorta, don't forget about 'notCode'",
+					"comment": "patterns that indicate an expression, might be able to simplify this to include expression_mode and then see if the cursor advanced, sorta, don't forget about 'notCode', maybe check operand/operator only first, as redirect could also be a problem.",
 					"begin": "(?=\\$[{(\\w:$?^]|@?[({]|(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
 					"end": "$(?=\\n)|(?=[;|)}\\]])",
 					"patterns": [
@@ -1680,43 +1680,6 @@
 			]
 		},
 		"numericConstant": {
-			"repository": {
-				"numeric_post": {
-					"patterns": [
-						{
-							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"include": "#accessors"
-								}
-							]
-						},
-						{
-							"begin": "\\G(?=[\\s#.+\\x{2013}-\\x{2015}-]|<#)(?![\\x{2013}-\\x{2015}-]\\p{L})(?!\\n)",
-							"end": "\\.\\.|\\+\\+?|([\\x{2013}-\\x{2015}-])(?!\\p{L})\\g<1>?|$(?=\\n)|(?![\\s#]|<#)",
-							"endCaptures": {
-								"0": {
-									"patterns": [
-										{
-											"include": "#operators"
-										}
-									]
-								}
-							},
-							"patterns": [
-								{
-									"include": "#commentBlock"
-								},
-								{
-									"include": "#commentLine"
-								}
-							]
-						}
-					]
-				}
-			},
 			"patterns": [
 				{
 					"beginCaptures": {
@@ -1795,7 +1758,44 @@
 					},
 					"comment": "(?>(?:(?<!\\w)|\\G)([+\\x{2013}-\\x{2015}-]?0(?i:b[01_]+l?))((?i:[kmgtp]b)?))(?![^\\s#{(,;|)}<>.!+%*/=\\x{2013}-\\x{2015}-])"
 				}
-			]
+			],
+			"repository": {
+				"numeric_post": {
+					"patterns": [
+						{
+							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#accessors"
+								}
+							]
+						},
+						{
+							"begin": "\\G(?=[\\s#.+\\x{2013}-\\x{2015}-]|<#)(?![\\x{2013}-\\x{2015}-]\\p{L}|\\n)",
+							"end": "\\.\\.|\\+\\+?|[\\x{2013}-\\x{2015}-](?!\\p{L})[\\x{2013}-\\x{2015}-]?|$(?=\\n)|(?![\\s#]|<#)",
+							"endCaptures": {
+								"0": {
+									"patterns": [
+										{
+											"include": "#operators"
+										}
+									]
+								}
+							},
+							"patterns": [
+								{
+									"include": "#commentBlock"
+								},
+								{
+									"include": "#commentLine"
+								}
+							]
+						}
+					]
+				}
+			}
 		},
 		"numericConstant_argumentMode": {
 			"patterns": [
@@ -2248,7 +2248,7 @@
 						}
 					},
 					"comment": "These are special constants.",
-					"match": "(([$@])(?i:(:?(?:False|Null|True)))\\b)"
+					"match": "(([$@])(?i:(:?(?:False|Null|True)))$)"
 				},
 				{
 					"captures": {
@@ -2260,7 +2260,7 @@
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "(([$@])(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)\\b)))"
+					"match": "(([$@])(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)$)))"
 				},
 				{
 					"captures": {
@@ -2271,7 +2271,7 @@
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
-					"match": "(([$@])(?i:((?:[$^?])|:\\?|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)\\b)))"
+					"match": "(([$@])(?i:((?:[$^?])|:\\?|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)))"
 				},
 				{
 					"captures": {
@@ -2283,7 +2283,7 @@
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "(([$@])(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)\\b)))"
+					"match": "(([$@])(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)$)))"
 				},
 				{
 					"captures": {
@@ -2866,6 +2866,7 @@
 			]
 		},
 		"operators_postUnary": {
+			"comment": "expression mode operators that follow operands (cannot have implicit operand on the left).",
 			"patterns": [
 				{
 					"match": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
@@ -2877,10 +2878,27 @@
 							"name": "keyword.operator.arithmetic.postfix.unary.decrement.powershell"
 						}
 					}
+				},
+				{
+					"comment": "the range operator is only available after an operand (but is a binary operator)",
+					"begin": "(?<!^)\\s*(\\.\\.)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.range.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						}
+					]
 				}
 			]
 		},
 		"operators_preUnary": {
+			"comment": "expression mode unary operators that precede operands.",
 			"patterns": [
 				{
 					"begin": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
@@ -2904,7 +2922,7 @@
 					"reserve": "#numericConstant"
 				},
 				{
-					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.))|(!))(?!\\p{L})",
+					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.))|(!))(?!\\p{L})|(\\+)",
 					"beginCaptures": {
 						"1": {
 							"name": "keyword.operator.logical.unary.not.powershell"
@@ -2917,6 +2935,9 @@
 						},
 						"4": {
 							"name": "keyword.operator.logical.unary.not.powershell"
+						},
+						"5": {
+							"name": "keyword.operator.arithmetic.unary.positive.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -2935,10 +2956,13 @@
 					"include": "#operators_postUnary"
 				},
 				{
-					"begin": "[\\x{2013}-\\x{2015}-](?i:is(?:not)?|as)(?!\\p{L})",
+					"begin": "[\\x{2013}-\\x{2015}-](?i:(is(?:not)?)|(as))(?!\\p{L})",
 					"beginCaptures": {
-						"0": {
+						"1": {
 							"name": "keyword.operator.comparison.type.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.type-cast.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -3057,23 +3081,7 @@
 					]
 				},
 				{
-					"comment": "the range operator is only available after an operand (binary operator)",
-					"begin": "(?<!^)\\s*(\\.\\.)",
-					"beginCaptures": {
-						"1": {
-							"name": "keyword.operator.range.powershell"
-						}
-					},
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#advanceToToken"
-						}
-					]
-				},
-				{
-					"comment": "included last only because preunary also includes the negate `!` and `-b?not` operators",
+					"comment": "included last only because preunary also includes the negate `!` and `-b?not` operators, but we didn't want the `-` negate operator replacing `-` subtract.",
 					"include": "#operators_preUnary"
 				}
 			]
