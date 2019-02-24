@@ -114,7 +114,7 @@ class HexSRecord {
             throw "Invalid SREC format, first character not 'S' or insufficient length!"
         }
         if ($this.SRecord[1] -lt [char]'0' -or $this.SRecord[1] -gt [char]'9' -or $this.SRecord[1] -eq [char]'4') {
-            throw "invalid SREC format, record type must be 0,1,2,3,5,6,7,8,9!"
+            throw "invalid SREC format, record type <$($this.SRecord[1])> not recognized!"
         }
         $this.RecType = [byte]$this.SRecord[1] - [byte][char]'0'
         if ($this.SRecord.Length -lt $this.GetDataStartPos()) {
@@ -172,11 +172,19 @@ class HexSRecord {
     }
 
     hidden [uint16] GetAddress16 () {
-        return [uint16](([uint16][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7]))    }
+        return [uint16](([uint16][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + 
+            [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7]))
+    }
     hidden [uint32] GetAddress24 () {
-        return [uint32](((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9]))    }
+        return [uint32](((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + 
+            [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) + 
+            [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9]))
+    }
     hidden [uint32] GetAddress32 () {
-        return [uint32](((((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9])) -shl 8) + [HexConverter]::FromCharPair($this.SRecord[10], $this.SRecord[11]))
+        return [uint32](((((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + 
+            [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) + 
+            [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9])) -shl 8) + 
+            [HexConverter]::FromCharPair($this.SRecord[10], $this.SRecord[11]))
     }
 }
 
