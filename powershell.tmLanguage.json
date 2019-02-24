@@ -773,42 +773,92 @@
 					"name": "meta.switch-conditions.powershell",
 					"patterns": [
 						{
-							"comment": "default: only in switch",
-							"match": "(?i:default)(?![^\\s{(,;&|)}])",
-							"name": "keyword.control.$0.powershell"
+							"begin": "\\G(?![;&|)}])|(?<=\\})",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"name": "meta.argument.switch-condition.powershell",
+							"patterns": [
+								{
+									"begin": "(?<=[\\s]|\\G)(?![\\s#;&|)}]|<#|$)",
+									"end": "(?!\\G)",
+									"patterns": [
+										{
+											"comment": "default: only in switch",
+											"match": "(?i:default)(?![^\\s{(,;&|)}])",
+											"name": "keyword.control.$0.powershell"
+										},
+										{
+											"include": "#argument"
+										}
+									]
+								},
+								{
+									"include": "#advanceToToken"
+								}
+							]
 						},
 						{
-							"include": "$self"
+							"begin": "{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.statements.switch-condition.powershell",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"include": "#notCode"
 						}
 					]
 				},
 				{
 					"comment": "only allow switch arguments before the `(` or `{`",
 					"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
-					"end": "(?=[^\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
 							"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
-							"name": "entity.name.parameter.powershell"
+							"name": "entity.name.parameter.switch-$0.powershell"
 						},
 						{
 							"comment": "-file is special case, needs file argument, no condition expression",
-							"begin": "(?i:[\\x{2013}-\\x{2015}-]file)",
+							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(:)?",
 							"beginCaptures": {
-								"0": {
-									"name": "entity.name.parameter.powershell"
+								"1": {
+									"name": "entity.name.parameter.switch-file.powershell"
+								},
+								"2": {
+									"name": "punctuation.separator.parameter-value.powershell"
 								}
-							},
+									},
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "\\G(?![{(;&|)}])",
+									"begin": "\\G(?![;&|)}])",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
+									"name": "meta.argument.switch-file.powershell",
 									"patterns": [
 										{
-											"include": "#argument"
+											"begin": "(?<=[\\s]|\\G)(?![\\s#;&|)}]|<#|$)",
+											"end": "(?!\\G)",
+											"patterns": [
+												{
+													"include": "#argument"
+												}
+											]
 										},
 										{
 											"include": "#advanceToToken"
@@ -3047,7 +3097,7 @@
 				},
 				{
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
-					"begin": "(?=[^\\s\\[(){},;&|])",
+					"begin": "(?=[^\\[\\s{(,;&|)}])",
 					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
 					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "invalid.source.powershell",
