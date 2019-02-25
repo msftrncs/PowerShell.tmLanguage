@@ -334,7 +334,7 @@
 									"name": "entity.name.variable.enum-member.powershell"
 								}
 							},
-							"end": "(?=[#,;&|}\\n])",
+							"end": "(?=[#;&|}\\n])",
 							"patterns": [
 								{
 									"begin": "=",
@@ -346,53 +346,26 @@
 									"end": "(?=[#;&|}\\n])",
 									"patterns": [
 										{
-											"comment": "locate first available token.",
-											"begin": "(?!$|[\\s#;&|)}\\]])",
+											"comment": "begin at the first token in the expression, to test for numeric and unary operators",
+											"begin": "(?![\\s#]|<#)(?!$(?=\\n)|(?=[;|)}\\]]))",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
-													"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
-													"begin": "(?=[\\d.!+\\x{2013}-\\x{2015}-])",
-													"end": "$(?=\\n)|(?=[#;&|)}\\]])",
-													"patterns": [
-														{
-															"comment": "if unary operators/numeric constant advanced, switch to expression mode",
-															"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?!$(?=\\n)|[;&|)}\\]])",
-															"end": "$(?=\\n)|(?=[#;&|)}\\]])",
-															"patterns": [
-																{
-																	"include": "#expression_mode"
-																}
-															]
-														},
-														{
-															"include": "#numericConstant"
-														},
-														{
-															"include": "#operators_preUnary"
-														},
-														{
-															"comment": "if numeric/operator didn't advanced, just finish in expression mode",
-															"begin": "(?!$(?=\\n)|[;&|)}\\]])",
-															"end": "$(?=\\n)|(?=[;&|)}\\]])",
-															"patterns": [
-																{
-																	"include": "#expression_mode"
-																}
-															]
-														}
-													]
-												},
-												{
-													"comment": "if no numeric constant or pre-unary operator, just finish in expression mode",
-													"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
+													"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?!$(?=\\n)|[;&|)}\\]])",
 													"end": "$(?=\\n)|(?=[;&|)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
 														}
 													]
+												},
+												{
+													"include": "#numericConstant"
+												},
+												{
+													"include": "#operators_preUnary"
 												}
 											]
 										},
