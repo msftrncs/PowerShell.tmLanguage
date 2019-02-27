@@ -27,16 +27,16 @@ function HexPairToByte( [ValidateSet([HexDigits])][char]$char1, [ValidateSet([He
 # assume $b is a string, containing 1 line of an S19 file, the following work on S0 or S1 or S9 records.
 
 # check the check sum of an SREC record. (should work for all record types)
-for ( 
+for (
     ($i = 2), ([byte]$cs = 0)
     $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 4
-) { 
+) {
     $cs = ($cs + (HexPairToByte $b[$i++] $b[$i++])) -band 255
 }
 $cs -eq 255 # must result in 255!
 
 # collect the data bytes from the line for an S1 record
-for ( 
+for (
     ($i = 8), ($c = [byte[]]@())
     $i -lt (HexPairToByte $b[2] $b[3]) * 2 + 2
 ) {
@@ -55,9 +55,9 @@ for (
 "16#{0:X}" -f [int][char]'w'
 "16#{0:X}" -f [int]'w'[0]
 
-<# 
+<#
     Should consider a class that can store memory blocks from S19/S28/S37 files, each memory block would posses a property
-    of start address, and an array of lines which are an array of bytes.   The array of lines (themselves an array of bytes) 
+    of start address, and an array of lines which are an array of bytes.   The array of lines (themselves an array of bytes)
     need to be be logically contiguous.
 
     A method to add a line to the memory block would search out which memory block it could be appended to.
@@ -78,11 +78,11 @@ class HexConverter {
             }
         )
     }
-    
+
     static [byte] FromCharPair( [char]$char1, [char]$char2 ) {
         return ([HexConverter]::FromChar($char1) -shl 4 ) + [HexConverter]::FromChar($char2)
     }
-    
+
 }
 
 enum HexSRecType : byte {
@@ -143,12 +143,12 @@ class HexSRecord {
     }
 
     hidden [int] GetDataStartPos () {
-        return $(switch ($this.RecType.value__) {0 {8} 1 {8} 2 {10} 3 {12} 5 {8} 6 {10} 7 {12} 8 {10} 9 {8} })
+        return $(switch ($this.RecType.value__) {0 {8} 1 {8} 2 {10} 3 {12} 5 {8} 6 {10} 7 {12} 8 {10} 9 {8}})
     }
 
     hidden [byte[]] GetBytes () {
         # collect the data bytes from the record
-        for ( 
+        for (
             ($i = $this.GetDataStartPos()), ($c = [byte[]]@())
             $i -lt $this.Length * 2 + 2
         ) {
@@ -172,18 +172,18 @@ class HexSRecord {
     }
 
     hidden [uint16] GetAddress16 () {
-        return [uint16](([uint16][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + 
+        return [uint16](([HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
             [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7]))
     }
     hidden [uint32] GetAddress24 () {
-        return [uint32](((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + 
-            [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) + 
+        return [uint32](((([HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
+                    [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) +
             [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9]))
     }
     hidden [uint32] GetAddress32 () {
-        return [uint32](((((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) + 
-            [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) + 
-            [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9])) -shl 8) + 
+        return [uint32](((((([HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
+                            [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) +
+                    [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9])) -shl 8) +
             [HexConverter]::FromCharPair($this.SRecord[10], $this.SRecord[11]))
     }
 }
@@ -214,17 +214,29 @@ S5030003F9
 S9030000FC
 '@ -split "`n" | ForEach-Object { [hexsrecord]::new($_) }
 
+@'
+S00600004844521B
+S31400100000015A0000001000809037D1EF00000F5A
+S3140010000FA5313136373734322041657269616C4D
+S3140010001E205761746572303031303000000000A9
+S3140010002D000000000089840000000000000000A1
+S3140010003C000000000000000000000000383839F6
+S3140010004B38380000000000000000000000000020
+S3140010005A00003230313830383131303034310027
+S31400100069000000000000000000FFFFFFFFFFFF78
+'@ -split "`n" | ForEach-Object { [hexsrecord]::new($_) }
+
 # create a crazy random password
 ((Get-Random (1..100) -count 9) +
-    (Get-Random ([char]0x21..[char]0x2F+[char]0x3a..[char]0x7E) -count 9) | 
+    (Get-Random ([char]0x21..[char]0x2F+[char]0x3a..[char]0x7E) -count 9) |
     Sort-Object {Get-Random}) -join ''
 
 ((Get-Random ([char]0x30..[char]0x39) -count 9) +
-    (Get-Random ([char]0x21..[char]0x7E) -count 18) | 
+    (Get-Random ([char]0x21..[char]0x7E) -count 18) |
     Sort-Object {Get-Random}) -join ''
 
 
-:hello <#this is actually the label for the foreach below! #> <# hello george #> 
+:hello <#this is actually the label for the foreach below! #> <# hello george #>
 foreach ($x in 1..34) {
     echo $x
     continue hello
@@ -249,8 +261,8 @@ echo "$$this $($_.this) $^ $? there ${_}.this $this " <# .parameter feger #> $$t
 $dir[3].name(for )
 
 <#
- .input 
- test 
+ .input
+ test
 #>
 
 class myclass : float
@@ -264,20 +276,20 @@ class myclass : float
 
 '<?xml version="1.0"' + (if ($encoding) {' encoding="' + $encoding + '"'}) + '?>' | get-command
 
-$(hello).test 
+$(hello).test
 
 dir #dir
 #dir
 dir c:\dir#dir\3#dir!#dir
 
-${env:hel`{`}lo} ` 
+${env:hel`{`}lo} `
 
 get-childitem 'can0.trc' -recurse | ForEach-Object {$_.fullname
     get-content $_ | where-object {$_ -match '0c19920b'} }
 
 "$(@($ImportedMatrix).Count) Maxtrix Files"
 @{name="bob";age=42}.count
-{Write-Output 1}.count 
+{Write-Output 1}.count
 
 & hello & if
 . $hello
@@ -297,7 +309,7 @@ hello
 enum tester {
     testitem = -
     35
-    
+
 }
 
 $:: #valid, but cannot specify a scope or drive and cannot use static accessor
@@ -414,7 +426,7 @@ $dict.Add('FirstName', 'Grant')
 
 Write-Host " Breaking to check logs" break
 
-[byte[ ]] ` 
+[byte[ ]] `
 
 ` hello
 
