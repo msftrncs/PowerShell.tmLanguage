@@ -754,12 +754,12 @@
 					"name": "keyword.control.switch.powershell"
 				}
 			},
-			"end": "(?=[^\\s])|(?<=})",
+			"end": "(?=\\S)|(?<=})",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
 					"begin": "(?=\\()",
-					"end": "(?=.|$)",
+					"end": "(?=\\S)|(?<=})",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -789,7 +789,7 @@
 									"name": "punctuation.section.group.end.powershell"
 								}
 							},
-							"end": "(?=.|$)",
+							"end": "(?=\\S)|(?<=})",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -857,69 +857,74 @@
 										},
 										{
 											"comment": "very limited what is permitted here",
-											"match": "[^{()}]",
+											"match": "[^\\s{()}]",
 											"name": "invalid.source.powershell"
 										}
 									]
-								}
-							]
-						},
-						{
-							"comment": "only allow switch arguments before the `(` or `{`",
-							"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
-							"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
-							"patterns": [
-								{
-									"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
-									"name": "entity.name.parameter.switch-$0.powershell"
 								},
 								{
-									"comment": "-file is special case, needs file argument, no condition expression",
-									"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(:)?",
-									"beginCaptures": {
-										"1": {
-											"name": "entity.name.parameter.switch-file.powershell"
-										},
-										"2": {
-											"name": "punctuation.separator.parameter-value.powershell"
-										}
-									},
+									"comment": "very limited what is permitted here",
+									"match": "[^\\s{}]",
+									"name": "invalid.source.powershell"
+								}
+							]
+						}
+					]
+				},
+				{
+					"comment": "only allow switch arguments before the `(` or `{`",
+					"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"patterns": [
+						{
+							"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
+							"name": "entity.name.parameter.switch-$0.powershell"
+						},
+						{
+							"comment": "-file is special case, needs file argument, no condition expression",
+							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(:)?",
+							"beginCaptures": {
+								"1": {
+									"name": "entity.name.parameter.switch-file.powershell"
+								},
+								"2": {
+									"name": "punctuation.separator.parameter-value.powershell"
+								}
+							},
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"begin": "\\G(?![,;&|)}<>])",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
-											"begin": "\\G(?![,;&|)}<>])",
-											"end": "(?=.|$)",
-											"applyEndPatternLast": true,
+											"begin": "(?<=[\\s]|\\G)(?![\\s#,;&|)}<>]|<#|$)",
+											"end": "(?!\\G)",
+											"name": "meta.argument.switch-file.powershell",
 											"patterns": [
 												{
-													"begin": "(?<=[\\s]|\\G)(?![\\s#,;&|)}<>]|<#|$)",
-													"end": "(?!\\G)",
-													"name": "meta.argument.switch-file.powershell",
-													"patterns": [
-														{
-															"include": "#argument"
-														}
-													]
-												},
-												{
-													"include": "#advanceToToken"
+													"include": "#argument"
 												}
 											]
+										},
+										{
+											"include": "#advanceToToken"
 										}
 									]
 								}
 							]
-						},
-						{
-							"comment": "`,`, `<` and `>` not permitted here",
-							"match": "[,<>]",
-							"name": "invalid.source.powershell"
-						},
-						{
-							"include": "#notCode"
 						}
 					]
+				},
+				{
+					"comment": "`,`, `<` and `>` not permitted here",
+					"match": "[,<>]",
+					"name": "invalid.source.powershell"
+				},
+				{
+					"include": "#notCode"
 				}
 			]
 		},
