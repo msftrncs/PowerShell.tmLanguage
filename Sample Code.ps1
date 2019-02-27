@@ -430,4 +430,4 @@ Write-Host " Breaking to check logs" break
 
 ` hello
 
-
+switch (test) { test <##> {command} }
