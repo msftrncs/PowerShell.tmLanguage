@@ -353,7 +353,7 @@
 											"patterns": [
 												{
 													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-													"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?!$(?=\\n)|[;&|)}\\]])",
+													"begin": "(?!\\G)(?!$(?=\\n)|[;&|)}\\]])",
 													"end": "$(?=\\n)|(?=[;&|)}\\]])",
 													"patterns": [
 														{
@@ -366,6 +366,16 @@
 												},
 												{
 													"include": "#operators_preUnary"
+												},
+												{
+													"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
+													"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[;&|)}\\]])",
+													"patterns": [
+														{
+															"include": "#expression_mode"
+														}
+													]
 												}
 											]
 										},
@@ -748,154 +758,168 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\(",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.group.begin.powershell"
-						}
-					},
-					"name": "meta.switch-value.powershell",
-					"end": "\\)",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.group.end.powershell"
-						}
-					},
+					"begin": "(?=\\()",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"comment": "`;` not permitted here",
-							"match": ";",
-							"name": "invalid.source.powershell"
+							"begin": "\\G\\(",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.group.begin.powershell"
+								}
+							},
+							"contentName": "meta.switch-value.powershell",
+							"end": "(?=\\))",
+							"patterns": [
+								{
+									"comment": "`;` not permitted here",
+									"match": ";",
+									"name": "invalid.source.powershell"
+								},
+								{
+									"include": "#command_mode"
+								}
+							]
 						},
 						{
-							"include": "#command_mode"
-						}
-					]
-				},
-				{
-					"begin": "{",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.begin.powershell"
-						}
-					},
-					"end": "}",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.end.powershell"
-						}
-					},
-					"name": "meta.switch-conditions.powershell",
-					"patterns": [
-						{
-							"begin": "(?:\\G|(?<=\\}))(?![,;&|)}])",
+							"begin": "\\)",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.group.end.powershell"
+								}
+							},
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
-									"end": "(?!\\G)",
-									"name": "meta.argument.switch-condition.powershell",
-									"patterns": [
-										{
-											"comment": "default: only in switch",
-											"match": "(?i:default)(?![^\\s{(,;&|)}])",
-											"name": "keyword.control.$0.powershell"
-										},
-										{
-											"include": "#argument"
+									"begin": "{",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.begin.powershell"
 										}
-									]
-								},
-								{
-									"include": "#advanceToToken"
-								}
-							]
-						},
-						{
-							"begin": "{",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.begin.powershell"
-								}
-							},
-							"end": "}",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.end.powershell"
-								}
-							},
-							"name": "meta.statements.switch-condition.powershell",
-							"patterns": [
-								{
-									"include": "$self"
-								}
-							]
-						},
-						{
-							"include": "#notCode"
-						},
-						{
-							"comment": "very limited what is permitted here",
-							"match": "[^{()}]",
-							"name": "invalid.source.powershell"
-						}
-					]
-				},
-				{
-					"comment": "only allow switch arguments before the `(` or `{`",
-					"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
-					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
-					"patterns": [
-						{
-							"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
-							"name": "entity.name.parameter.switch-$0.powershell"
-						},
-						{
-							"comment": "-file is special case, needs file argument, no condition expression",
-							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(:)?",
-							"beginCaptures": {
-								"1": {
-									"name": "entity.name.parameter.switch-file.powershell"
-								},
-								"2": {
-									"name": "punctuation.separator.parameter-value.powershell"
-								}
-							},
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"begin": "\\G(?![,;&|)}<>])",
-									"end": "(?=.|$)",
-									"applyEndPatternLast": true,
+									},
+									"end": "}",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.end.powershell"
+										}
+									},
+									"name": "meta.switch-conditions.powershell",
 									"patterns": [
 										{
-											"begin": "(?<=[\\s]|\\G)(?![\\s#,;&|)}<>]|<#|$)",
-											"end": "(?!\\G)",
-											"name": "meta.argument.switch-file.powershell",
+											"begin": "(?:\\G|(?<=\\}))(?![,;&|)}])",
+											"end": "(?=.|$)",
+											"applyEndPatternLast": true,
 											"patterns": [
 												{
-													"include": "#argument"
+													"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
+													"end": "(?!\\G)",
+													"name": "meta.argument.switch-condition.powershell",
+													"patterns": [
+														{
+															"comment": "default: only in switch",
+															"match": "(?i:default)(?![^\\s{(,;&|)}])",
+															"name": "keyword.control.$0.powershell"
+														},
+														{
+															"include": "#argument"
+														}
+													]
+												},
+												{
+													"include": "#advanceToToken"
 												}
 											]
 										},
 										{
-											"include": "#advanceToToken"
+											"begin": "{",
+											"beginCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.begin.powershell"
+												}
+											},
+											"end": "}",
+											"endCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.end.powershell"
+												}
+											},
+											"name": "meta.statements.switch-condition.powershell",
+											"patterns": [
+												{
+													"include": "$self"
+												}
+											]
+										},
+										{
+											"include": "#notCode"
+										},
+										{
+											"comment": "very limited what is permitted here",
+											"match": "[^{()}]",
+											"name": "invalid.source.powershell"
 										}
 									]
 								}
 							]
+						},
+						{
+							"comment": "only allow switch arguments before the `(` or `{`",
+							"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
+							"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
+							"patterns": [
+								{
+									"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
+									"name": "entity.name.parameter.switch-$0.powershell"
+								},
+								{
+									"comment": "-file is special case, needs file argument, no condition expression",
+									"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(:)?",
+									"beginCaptures": {
+										"1": {
+											"name": "entity.name.parameter.switch-file.powershell"
+										},
+										"2": {
+											"name": "punctuation.separator.parameter-value.powershell"
+										}
+									},
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"begin": "\\G(?![,;&|)}<>])",
+											"end": "(?=.|$)",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"begin": "(?<=[\\s]|\\G)(?![\\s#,;&|)}<>]|<#|$)",
+													"end": "(?!\\G)",
+													"name": "meta.argument.switch-file.powershell",
+													"patterns": [
+														{
+															"include": "#argument"
+														}
+													]
+												},
+												{
+													"include": "#advanceToToken"
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"comment": "`,`, `<` and `>` not permitted here",
+							"match": "[,<>]",
+							"name": "invalid.source.powershell"
+						},
+						{
+							"include": "#notCode"
 						}
 					]
-				},
-				{
-					"comment": "`,`, `<` and `>` not permitted here",
-					"match": "[,<>]",
-					"name": "invalid.source.powershell"
-				},
-				{
-					"include": "#notCode"
 				}
 			]
 		},
@@ -989,7 +1013,7 @@
 						},
 						{
 							"comment": "if numeric constant didn't advanced, try finishing command mode with a command name",
-							"begin": "\\G(?!$(?=\\n)|[;|)}\\]])",
+							"begin": "(?!$(?=\\n)|[;|)}\\]])",
 							"end": "$(?=\\n)|(?=[;|)}\\]])",
 							"patterns": [
 								{
@@ -1412,7 +1436,7 @@
 											"patterns": [
 												{
 													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-													"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?!$(?=\\n)|[,;&|)}\\]])",
+													"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
 													"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 													"patterns": [
 														{
@@ -1425,6 +1449,16 @@
 												},
 												{
 													"include": "#operators_preUnary"
+												},
+												{
+													"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
+													"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[;&|)}\\]])",
+													"patterns": [
+														{
+															"include": "#expression_mode"
+														}
+													]
 												}
 											]
 										}
@@ -1586,7 +1620,7 @@
 							"patterns": [
 								{
 									"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-									"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?!$(?=\\n)|[,;&|)}\\]])",
+									"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
 									"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 									"patterns": [
 										{
@@ -1599,6 +1633,16 @@
 								},
 								{
 									"include": "#operators_preUnary"
+								},
+								{
+									"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
+									"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+									"end": "$(?=\\n)|(?=[;&|)}\\]])",
+									"patterns": [
+										{
+											"include": "#expression_mode"
+										}
+									]
 								}
 							]
 						}
