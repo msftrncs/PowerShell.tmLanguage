@@ -2015,7 +2015,11 @@
 							"include": "#type_SubType"
 						},
 						{
-							"match": "(?<!])[^\\s\\[\\]+]+"
+							"ignore": "(?<!])[^\\s\\[\\]+]+"
+						},
+						{
+							"match": ",",
+							"name": "punctuation.separator.comma.powershell"
 						}
 					]
 				},

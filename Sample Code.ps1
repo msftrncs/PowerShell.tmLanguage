@@ -420,7 +420,7 @@ $dict = New-Object System.Collections.Generic.Dictionary``2[System.String,System
 $dict = [System.Collections.Generic.Dictionary``2[[System.String],[System.String]]]::new()
 $dict.Add('FirstName', 'Grant')
 
-[System.Collections.ArrayList]$1st_AL =[System.Collections.ArrayList]::new()
+[System.Collections.ArrayList]$1st_AL = [System.Collections.ArrayList]::new()
 
 [System.Collections.Generic.Dictionary``2+ValueCollection[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Collections.Generic.List``1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]]::new()
 
