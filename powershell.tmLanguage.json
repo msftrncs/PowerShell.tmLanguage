@@ -894,7 +894,7 @@
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
-			"comment": "else,elsif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
+			"comment": "else,elseif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
 			"match": "(?i:begin|catch|data|dynamicparam|else|elseif|end|exit|finally|if|inlinescript|parallel|param|process|sequence|throw|trap|try|until)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
@@ -998,6 +998,10 @@
 							"include": "#command_mode"
 						}
 					]
+				},
+				{
+					"match": "`(?!\\n)\\s",
+					"name": "invalid.character.escape.powershell"
 				},
 				{
 					"include": "#command_name"
