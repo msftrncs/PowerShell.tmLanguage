@@ -66,23 +66,22 @@ for (
 class HexConverter {
     static [byte] FromChar( [char]$char ) {
         return [byte]$(
-            if ($char -ge [char]'A' ) {
+            if ($char -ge [char]'A' -and $char -le [char]'f' -and ($char -le [char]'F' -or $char -ge [char]'a')) {
                 # handle both upper and lowercase A-F, limit at F
-                [MATH]::Min(([byte]$char -band 0x5F) - 0x37, 15)
+                ([byte]$char -band 0x5F) - 0x37
             }
-            elseif ($char -ge [char]'0') {
-                [MATH]::Min([byte]$char - 0x30, 9)
+            elseif ($char -ge [char]'0' -and $char -le [char]'9') {
+                [byte]$char - 0x30
             }
             else {
-                0
+                throw "[HexConverter] Input character not in range for hex digit, 0-9, A-F, a-f!"
             }
         )
     }
 
     static [byte] FromCharPair( [char]$char1, [char]$char2 ) {
-        return ([HexConverter]::FromChar($char1) -shl 4 ) + [HexConverter]::FromChar($char2)
+        return ([HexConverter]::FromChar($char1) -shl 4) + [HexConverter]::FromChar($char2)
     }
-
 }
 
 enum HexSRecType : byte {
@@ -172,16 +171,16 @@ class HexSRecord {
     }
 
     hidden [uint16] GetAddress16 () {
-        return [uint16](([HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
+        return [uint16](([uint16][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
             [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7]))
     }
     hidden [uint32] GetAddress24 () {
-        return [uint32](((([HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
+        return [uint32](((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
                     [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) +
             [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9]))
     }
     hidden [uint32] GetAddress32 () {
-        return [uint32](((((([HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
+        return [uint32](((((([uint32][HexConverter]::FromCharPair($this.SRecord[4], $this.SRecord[5]) -shl 8) +
                             [HexConverter]::FromCharPair($this.SRecord[6], $this.SRecord[7])) -shl 8) +
                     [HexConverter]::FromCharPair($this.SRecord[8], $this.SRecord[9])) -shl 8) +
             [HexConverter]::FromCharPair($this.SRecord[10], $this.SRecord[11]))
@@ -347,7 +346,7 @@ $variable:hello
 
 function z:\crazyfunction.com {}
 
-function r@$%^*[]<>my#crazyfunction.com {}
+function r@$%^*[]<>my#crazy`nfunction.com {}
 
 function :local:me {}
 
