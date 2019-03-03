@@ -9,9 +9,7 @@
 	"scopeName": "source.powershell",
 	"patterns": [
 		{
-			"include": "#scriptblock"
-		},
-		{
+			"comment": "type without accessor or attribute needed in statement mode, mostly for [flags()] before an `enum`.",
 			"include": "#type"
 		},
 		{
@@ -380,7 +378,7 @@
 											]
 										},
 										{
-											"include": "#comment_block"
+											"include": "#commentBlock"
 										}
 									]
 								},
@@ -1304,7 +1302,7 @@
 				}
 			},
 			"end": "$(?=(\\n)?)",
-			"ignore-endCaptures": {
+			"endCaptures": {
 				"1": {
 					"name": "comment.line.powershell"
 				}
@@ -2019,9 +2017,6 @@
 							"include": "#type_SubType"
 						},
 						{
-							"ignore": "(?<!])[^\\s\\[\\]+]+"
-						},
-						{
 							"match": ",",
 							"name": "punctuation.separator.comma.powershell"
 						}
@@ -2098,7 +2093,7 @@
 					"name": "keyword.type.powershell"
 				},
 				{
-					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml)(?![\\w-])",
+					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml|enum)(?![\\w-])",
 					"name": "support.class.powershell"
 				}
 			]
@@ -2831,9 +2826,7 @@
 					]
 				},
 				{
-					"ignoreBegin": "(?<=^(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])@|(?<=\\g<1>))(?=\\.(?!\\.)|::|\\[)",
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"ignoreEnd": "(?=[^\\s\\p{L}]|\\n)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
