@@ -880,7 +880,7 @@
 													]
 												},
 												{
-													"begin": "(?i:elsif)(?![^\\s{(,;&|)}])",
+													"begin": "(?i:elseif)(?![^\\s{(,;&|)}])",
 													"beginCaptures": {
 														"0": {
 															"name": "keyword.control.if-elseif.powershell"
@@ -895,7 +895,7 @@
 														{
 															"begin": "(?=\\()",
 															"end": "(?=\\S)|(?<=})",
-															"applyEndPatternLast": false,
+															"applyEndPatternLast": true,
 															"patterns": [
 																{
 																	"begin": "\\G\\(",
