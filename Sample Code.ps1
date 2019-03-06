@@ -429,4 +429,11 @@ Write-Host " Breaking to check logs" break
 
 ` hello
 
-switch (test) { test <##> {command} }
+switch -file ` test { test <##> {command} }
+
+
+.\procedure.ps1 `
+   -arg1 $variableforarg1 ` #this syntax highlighting should not resemble a comment
+   -arg2 $variableforarg2 ` <#this syntax highlight should not resemble a comment because it's invalid to add a comment here #>
+   -arg3 $variableforarg3 <#this syntax higlight should be correct#>`
+   -arg4 $variableforarg4

@@ -1410,17 +1410,25 @@
 			]
 		},
 		"unquotedArgument": {
-			"begin": "(?=[^\\s{(,;&|)}])",
-			"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
-			"end": "(?=[\\s{(,;&|)}])",
-			"contentName": "string.unquoted.argument.powershell",
 			"patterns": [
 				{
-					"match": "\\G`[\\x{2013}-\\x{2015}-]",
-					"name": "constant.character.escape.powershell"
+					"match": "`(?!\\n)\\s",
+					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"include": "#unquotedStrings_text"
+					"begin": "(?=[^\\s{(,;&|)}])",
+					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
+					"end": "(?=[\\s{(,;&|)}])",
+					"contentName": "string.unquoted.argument.powershell",
+					"patterns": [
+						{
+							"match": "\\G`[\\x{2013}-\\x{2015}-]",
+							"name": "constant.character.escape.powershell"
+						},
+						{
+							"include": "#unquotedStrings_text"
+						}
+					]
 				}
 			]
 		},
