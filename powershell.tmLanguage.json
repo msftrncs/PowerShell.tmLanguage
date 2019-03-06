@@ -792,7 +792,8 @@
 								},
 								{
 									"begin": "(?<=\\))",
-									"end": "(?![\\s#\\({]|<#)|(?<=})|$(?=\\n)",
+									"ignoreend": "(?![\\s#\\({]|<#)|(?<=})|$(?=\\n)",
+									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
@@ -820,7 +821,8 @@
 										},
 										{
 											"begin": "(?<=})",
-											"end": "(?![\\s#\\({]|<#)|$(?=\\n)",
+											"ignoreend": "(?![\\s#\\({]|<#)|$(?=\\n)",
+											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
@@ -833,7 +835,8 @@
 															"name": "keyword.control.if-else.powershell"
 														}
 													},
-													"end": "(?![\\s#\\({]|<#)|$(?=\\n)",
+													"ignoreend": "(?![\\s#\\({]|<#)|$(?=\\n)",
+													"end": "(?=.|$)",
 													"applyEndPatternLast": true,
 													"patterns": [
 														{
@@ -860,15 +863,15 @@
 															]
 														},
 														{
-															"begin": "(?<=\\})(?![,;&|)}]|$)",
-															"end": "(?=.|$)",
+															"ignorebegin": "(?<=\\})(?![,;&|)}]|$)",
+															"ignoreend": "(?=.|$)",
 															"applyEndPatternLast": true,
 															"patterns": [
 																{
-																	"include": "#advanceToToken"
+																	"ignoreinclude": "#advanceToToken"
 																},
 																{
-																	"include": "$self"
+																	"ignore": "$self"
 																}
 															]
 														},
