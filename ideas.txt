@@ -1,0 +1,97 @@
+IF statement logic
+
+
+FOR         (commands;)     {statements}
+
+WHILE       (condition)     {statements}
+
+
+IF          (condition)     {statements}
+
+    ELSEIF  (condition)     {statements}   ...
+
+    ELSE                    {statements}
+
+
+DO
+                            {statements}
+WHILE/UNTIL (condition)
+
+after detecting the keyword, 
+    BEGIN with "\G" (and not any invalid chars)
+    END with "\(" (or any invalid chars, maybe just any "\S")
+    PATTERNS 
+        available switches
+        notCode
+
+This will these items to just immediately after the keyword.
+
+
+begin when a `(` is coming
+end with any character not processed or an end of line
+    begin with the `(` (with \G)
+    end when the `)` is coming
+        process inner condition in command_mode
+    begin with the `)`
+    end with any character not processed or an end of line
+        advancedToToken
+        begin when a `{` is coming
+        end with any character not processed or an end of line
+            begin with the `{` (with \G)
+            end with the `}`
+                process inner condition in $self
+            begin when just past `}` AND NOT followed by `}`
+            end with any character not processed or an end of line
+                advancedToToken
+                begin with `elseif`
+                end with any character not processed or an end of line
+                    advancedToToken
+                    begin when a `(` is coming
+                    end with any character not processed or an end of line
+                        begin with the `(` (with \G)
+                        end when the `)` is coming
+                            process inner condition in command_mode
+                        begin with the `)`
+                        end with any character not processed or an end of line
+                            advancedToToken
+                            begin when a `{` is coming
+                            end with any character not processed or an end of line
+                                begin with the `{` (with \G)
+                                end when the `}` is coming
+                                    process inner condition in $self
+            begin with `else`
+            end with any character not processed or an end of line
+                advancedToToken
+                begin when a `(` is coming
+                end with any character not processed or an end of line
+                    begin with the `(` (with \G)
+                    end when the `)` is coming
+                        process inner condition in command_mode
+                    begin with the `)`
+                    end with any character not processed or an end of line
+                        advancedToToken
+                        begin when a `{` is coming
+                        end any character not processed or an end of line
+                            begin with the `{` (with \G)
+                            end with `}`
+                                process inner condition in $self
+
+ESLEIF needs to loop, be recursive, on its own
+ELSE needs to be the last chance to match, this might beed to be done in the root of IF.
+Need to not get caught on nested IF's that close together, need to make sure to completely close out of one statement, so the end of the next one can be detected!
+
+Its possible that either an expression is ending `)` or a scriptblock is ending `}`.
+Its also possible a new expression `(` or a new scriptblock `{` may follow.
+
+Remember, use begin when something is next, end when !\G to return immediately after the end.
+
+   <------------------------->
+IF (cond) {statements} ELSEIF (cond) {statments} 
+
+AdvanceToToken
+Begin when `(` is next
+End with any character not processed or end of line
+    include common `(cond) {statements} ELSEIF` patterns
+    Begin with `ELSE`
+
+
