@@ -756,6 +756,9 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
+					"include": "#advanceToToken"
+				},
+				{
 					"begin": "(?=\\()",
 					"end": "(?=\\S)|(?<=})",
 					"applyEndPatternLast": true,
@@ -792,7 +795,6 @@
 								},
 								{
 									"begin": "(?<=\\))",
-									"ignoreend": "(?![\\s#\\({]|<#)|(?<=})|$(?=\\n)",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"patterns": [
@@ -800,39 +802,35 @@
 											"include": "#advanceToToken"
 										},
 										{
-											"begin": "{",
-											"beginCaptures": {
-												"0": {
-													"name": "punctuation.section.braces.begin.powershell"
-												}
-											},
-											"end": "}",
-											"endCaptures": {
-												"0": {
-													"name": "punctuation.section.braces.end.powershell"
-												}
-											},
-											"name": "meta.statements.if-condition.powershell",
-											"patterns": [
-												{
-													"include": "$self"
-												}
-											]
-										},
-										{
-											"begin": "(?<=})",
-											"ignoreend": "(?![\\s#\\({]|<#)|$(?=\\n)",
+											"begin": "(?={)",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
-													"include": "#advanceToToken"
-												},
-												{
-													"begin": "(?i:else)(?![^\\s{(,;&|)}])",
+													"begin": "\\G\\{",
 													"beginCaptures": {
 														"0": {
-															"name": "keyword.control.if-else.powershell"
+															"name": "punctuation.section.braces.begin.powershell"
+														}
+													},
+													"end": "}",
+													"endCaptures": {
+														"0": {
+															"name": "punctuation.section.braces.end.powershell"
+														}
+													},
+													"contentName": "meta.statements.if-condition.powershell",
+													"patterns": [
+														{
+															"include": "$self"
+														}
+													]
+												},
+												{
+													"begin": "(?<=})",
+													"beginCaptures": {
+														"0": {
+															"name": "punctuation.section.braces.end.powershell"
 														}
 													},
 													"ignoreend": "(?![\\s#\\({]|<#)|$(?=\\n)",
@@ -843,118 +841,134 @@
 															"include": "#advanceToToken"
 														},
 														{
-															"begin": "{",
+															"begin": "(?i:else)(?![^\\s{(,;&|)}])",
 															"beginCaptures": {
 																"0": {
-																	"name": "punctuation.section.braces.begin.powershell"
+																	"name": "keyword.control.if-else.powershell"
 																}
 															},
-															"end": "}",
-															"endCaptures": {
-																"0": {
-																	"name": "punctuation.section.braces.end.powershell"
-																}
-															},
-															"name": "meta.statements.if-else-condition.powershell",
-															"patterns": [
-																{
-																	"include": "$self"
-																}
-															]
-														},
-														{
-															"ignorebegin": "(?<=\\})(?![,;&|)}]|$)",
-															"ignoreend": "(?=.|$)",
+															"ignoreend": "(?![\\s#\\({]|<#)|$(?=\\n)",
+															"end": "(?=.|$)",
 															"applyEndPatternLast": true,
 															"patterns": [
 																{
-																	"ignoreinclude": "#advanceToToken"
+																	"include": "#advanceToToken"
 																},
 																{
-																	"ignore": "$self"
+																	"begin": "{",
+																	"beginCaptures": {
+																		"0": {
+																			"name": "punctuation.section.braces.begin.powershell"
+																		}
+																	},
+																	"end": "(?=})",
+																	"endCaptures": {
+																		"0": {
+																			"name": "punctuation.section.braces.end.powershell"
+																		}
+																	},
+																	"contentName": "meta.statements.if-else-condition.powershell",
+																	"patterns": [
+																		{
+																			"include": "$self"
+																		}
+																	]
+																},
+																{
+																	"ignorebegin": "(?<=\\})(?![,;&|)}]|$)",
+																	"ignoreend": "(?=.|$)",
+																	"applyEndPatternLast": true,
+																	"patterns": [
+																		{
+																			"ignoreinclude": "#advanceToToken"
+																		},
+																		{
+																			"ignore": "$self"
+																		}
+																	]
+																},
+																{
+																	"comment": "very limited what is permitted here",
+																	"match": "[^\\s{()}]",
+																	"name": "invalid.source.powershell"
 																}
 															]
 														},
 														{
-															"comment": "very limited what is permitted here",
-															"match": "[^\\s{()}]",
-															"name": "invalid.source.powershell"
-														}
-													]
-												},
-												{
-													"begin": "(?i:elseif)(?![^\\s{(,;&|)}])",
-													"beginCaptures": {
-														"0": {
-															"name": "keyword.control.if-elseif.powershell"
-														}
-													},
-													"end": "(?=\\S)|(?<=})",
-													"applyEndPatternLast": true,
-													"patterns": [
-														{
-															"include": "#advanceToToken"
-														},
-														{
-															"begin": "(?=\\()",
+															"begin": "(?i:elseif)(?![^\\s{(,;&|)}])",
+															"beginCaptures": {
+																"0": {
+																	"name": "keyword.control.if-elseif.powershell"
+																}
+															},
 															"end": "(?=\\S)|(?<=})",
 															"applyEndPatternLast": true,
 															"patterns": [
 																{
-																	"begin": "\\G\\(",
-																	"beginCaptures": {
-																		"0": {
-																			"name": "punctuation.section.group.begin.powershell"
-																		}
-																	},
+																	"include": "#advanceToToken"
+																},
+																{
+																	"begin": "(?=\\()",
 																	"end": "(?=\\S)|(?<=})",
 																	"applyEndPatternLast": true,
 																	"patterns": [
 																		{
-																			"begin": "\\G",
-																			"contentName": "meta.if-condition.powershell",
-																			"end": "\\)",
-																			"endCaptures": {
+																			"begin": "\\G\\(",
+																			"beginCaptures": {
 																				"0": {
-																					"name": "punctuation.section.group.end.powershell"
+																					"name": "punctuation.section.group.begin.powershell"
 																				}
 																			},
-																			"patterns": [
-																				{
-																					"comment": "`;` not permitted here",
-																					"match": ";",
-																					"name": "invalid.source.powershell"
-																				},
-																				{
-																					"include": "#command_mode"
-																				}
-																			]
-																		},
-																		{
-																			"begin": "(?<=\\))",
-																			"end": "(?![\\s#\\({]|<#)|(?<=})",
+																			"end": "(?=\\S)|(?<=})",
 																			"applyEndPatternLast": true,
 																			"patterns": [
 																				{
-																					"include": "#advanceToToken"
-																				},
-																				{
-																					"begin": "{",
-																					"beginCaptures": {
-																						"0": {
-																							"name": "punctuation.section.braces.begin.powershell"
-																						}
-																					},
-																					"end": "}",
+																					"begin": "\\G",
+																					"contentName": "meta.if-condition.powershell",
+																					"end": "\\)",
 																					"endCaptures": {
 																						"0": {
-																							"name": "punctuation.section.braces.end.powershell"
+																							"name": "punctuation.section.group.end.powershell"
 																						}
 																					},
-																					"name": "meta.statements.if-condition.powershell",
 																					"patterns": [
 																						{
-																							"include": "$self"
+																							"comment": "`;` not permitted here",
+																							"match": ";",
+																							"name": "invalid.source.powershell"
+																						},
+																						{
+																							"include": "#command_mode"
+																						}
+																					]
+																				},
+																				{
+																					"begin": "(?<=\\))",
+																					"end": "(?![\\s#\\({]|<#)|(?<=})",
+																					"applyEndPatternLast": true,
+																					"patterns": [
+																						{
+																							"include": "#advanceToToken"
+																						},
+																						{
+																							"begin": "{",
+																							"beginCaptures": {
+																								"0": {
+																									"name": "punctuation.section.braces.begin.powershell"
+																								}
+																							},
+																							"end": "(?=})",
+																							"endCaptures": {
+																								"0": {
+																									"name": "punctuation.section.braces.end.powershell"
+																								}
+																							},
+																							"contentName": "meta.statements.if-condition.powershell",
+																							"patterns": [
+																								{
+																									"include": "$self"
+																								}
+																							]
 																						}
 																					]
 																				}
@@ -986,7 +1000,7 @@
 				},
 				{
 					"comment": "`,`, `<` and `>` not permitted here",
-					"match": "[,<>]",
+					"ignore": "[,<>]",
 					"name": "invalid.source.powershell"
 				},
 				{
