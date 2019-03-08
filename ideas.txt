@@ -82,16 +82,21 @@ Need to not get caught on nested IF's that close together, need to make sure to 
 
 Its possible that either an expression is ending `)` or a scriptblock is ending `}`.
 Its also possible a new expression `(` or a new scriptblock `{` may follow.
+Recursive to $SELF is the only way to prevent refire of `(` or `{`
+
+This mean ELSE and ELSEIF must both be found recursively, so the syntax always moves forward until there is a clearly delimiting character (in this case, a line end)
 
 Remember, use begin when something is next, end when !\G to return immediately after the end.
 
-   <------------------------->
-IF (cond) {statements} ELSEIF (cond) {statments} 
+   <---------------------> repeatable
+IF(cond){statements}ELSEIF(cond){statments} 
+                    ^^^^^^ Optional, but terminates repeating without it
+                    ELSE{statements} <- alternate ending
 
 AdvanceToToken
 Begin when `(` is next
 End with any character not processed or end of line
-    include common `(cond) {statements} ELSEIF` patterns
+    include common `(cond){statements}ELSEIF` patterns
     Begin with `ELSE`
 
 

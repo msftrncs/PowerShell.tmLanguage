@@ -752,7 +752,7 @@
 					"name": "keyword.control.if.powershell"
 				}
 			},
-			"end": "(?=\\S)|(?<=})",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -760,8 +760,8 @@
 				},
 				{
 					"begin": "(?=\\()",
-					"end": "(?=\\S)|(?<=})",
-					"applyEndPatternLast": true,
+					"end": "(?!\\G)",
+					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"begin": "\\G\\(",
@@ -770,7 +770,7 @@
 									"name": "punctuation.section.group.begin.powershell"
 								}
 							},
-							"end": "(?=\\S)|(?<=})",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -861,7 +861,7 @@
 																			"name": "punctuation.section.braces.begin.powershell"
 																		}
 																	},
-																	"end": "(?=})",
+																	"end": "}",
 																	"endCaptures": {
 																		"0": {
 																			"name": "punctuation.section.braces.end.powershell"
@@ -875,15 +875,15 @@
 																	]
 																},
 																{
-																	"ignorebegin": "(?<=\\})(?![,;&|)}]|$)",
-																	"ignoreend": "(?=.|$)",
+																	"begin": "(?<=})(?![,;&|)}]|$)",
+																	"end": "(?=.|$)",
 																	"applyEndPatternLast": true,
 																	"patterns": [
 																		{
-																			"ignoreinclude": "#advanceToToken"
+																			"include": "#advanceToToken"
 																		},
 																		{
-																			"ignore": "$self"
+																			"include": "$self"
 																		}
 																	]
 																},
@@ -901,7 +901,7 @@
 																	"name": "keyword.control.if-elseif.powershell"
 																}
 															},
-															"end": "(?=\\S)|(?<=})",
+															"end": "(?=.|$)",
 															"applyEndPatternLast": true,
 															"patterns": [
 																{
@@ -909,8 +909,8 @@
 																},
 																{
 																	"begin": "(?=\\()",
-																	"end": "(?=\\S)|(?<=})",
-																	"applyEndPatternLast": true,
+																	"end": "(?!\\G)",
+																	"applyEndPatternLast": false,
 																	"patterns": [
 																		{
 																			"begin": "\\G\\(",
@@ -919,7 +919,7 @@
 																					"name": "punctuation.section.group.begin.powershell"
 																				}
 																			},
-																			"end": "(?=\\S)|(?<=})",
+																			"end": "(?=.|$)",
 																			"applyEndPatternLast": true,
 																			"patterns": [
 																				{
@@ -957,7 +957,7 @@
 																									"name": "punctuation.section.braces.begin.powershell"
 																								}
 																							},
-																							"end": "(?=})",
+																							"end": "}",
 																							"endCaptures": {
 																								"0": {
 																									"name": "punctuation.section.braces.end.powershell"
@@ -977,6 +977,9 @@
 																	]
 																}
 															]
+														},
+														{
+															"include": "$self"
 														}
 													]
 												}
