@@ -426,14 +426,23 @@ $dict.Add('FirstName', 'Grant')
 Write-Host " Breaking to check logs" break
 
 [byte[ ]] `
+hello
 
 ` hello
 
-switch -file ` test { test <##> {command} }
+switch -file ` test { ` test <##> {command} }
 
 
 .\procedure.ps1 `
-   -arg1 $variableforarg1 ` #this syntax highlighting should not resemble a comment
-   -arg2 $variableforarg2 ` <#this syntax highlight should not resemble a comment because it's invalid to add a comment here #>
-   -arg3 $variableforarg3 <#this syntax higlight should be correct#>`
+   -arg1 $variableforarg1 ` # this is a comment, not a continued line
+   -arg2 $variableforarg2 ` <# this is also a comment, not a continued line #>
+   -arg3 $variableforarg3 <#comment, but line will continue#>`
    -arg4 $variableforarg4
+
+# sample empty pipe
+| hello
+
+6 + `3
+
+"Hello`
+Hello"
