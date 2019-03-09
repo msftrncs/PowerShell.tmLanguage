@@ -13,6 +13,9 @@
 			"include": "#type"
 		},
 		{
+			"include": "#RequiresDirective"
+		},
+		{
 			"begin": "(?i:class)(?![^\\s{(,;&)}])",
 			"beginCaptures": {
 				"0": {
@@ -1330,9 +1333,6 @@
 			"patterns": [
 				{
 					"include": "#commentEmbeddedDocs"
-				},
-				{
-					"include": "#RequiresDirective"
 				}
 			]
 		},
@@ -2844,20 +2844,31 @@
 			"name": "meta.embedded.interpolated.powershell"
 		},
 		"RequiresDirective": {
-			"begin": "(?<=#)(?i:requires)(?=\\s)",
+			"begin": "^\\s*(#)((?i:requires))(?![^\\s{(,;&)}])",
 			"beginCaptures": {
-				"0": {
+				"1": {
+					"name": "punctuation.definition.comment.powershell"
+				},
+				"2": {
 					"name": "keyword.control.requires.powershell"
 				}
 			},
 			"end": "$",
-			"name": "meta.requires.powershell",
+			"name": "comment.line.powershell meta.requires.powershell",
 			"patterns": [
 				{
-					"match": "[\\x{2013}-\\x{2015}-](?i:Modules|PSSnapin|RunAsAdministrator|ShellId|Version)",
-					"name": "keyword.other.powershell"
+					"match": "([\\x{2013}-\\x{2015}-](?i:Modules|PSSnapin|PSEdition|RunAsAdministrator|ShellId|Version)\\b)(:)?",
+					"captures": {
+						"1": {
+							"name": "entity.name.parameter.powershell"
+						},
+						"2": {
+							"name": "punctuation.separator.parameter-value.powershell"
+						}
+					}
 				},
 				{
+					"comment": "needs custom argument handler, single line quoted or unquoted arguments",
 					"match": "(?<!\\x{2013}-\\x{2015}-)\\b\\p{L}+|\\d+(?:\\.\\d+)*",
 					"name": "variable.parameter.powershell"
 				},
@@ -2866,6 +2877,7 @@
 					"name": "punctuation.separator.powershell"
 				},
 				{
+					"comment": "needs custom hashtable that does not auto continue to next line",
 					"include": "#hashtable"
 				},
 				{
