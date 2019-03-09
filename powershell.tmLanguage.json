@@ -16,7 +16,23 @@
 			"include": "#RequiresDirective"
 		},
 		{
-			"begin": "(?i:class)(?![^\\s{(,;&)}])",
+			"comment": "`;` resume's in statement mode.",
+			"begin": ";",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.terminator.statement.powershell"
+				}
+			},
+			"end": "$(?=\\n)|(?=[;)}\\]])",
+			"patterns": [
+				{
+					"comment": "$self may have been combined with other includes, this will insure its just $self now",
+					"include": "$self"
+				}
+			]
+		},
+		{
+			"begin": "(?i:class)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.other.class.powershell"
@@ -183,7 +199,7 @@
 													"end": "(?=[;{])",
 													"patterns": [
 														{
-															"begin": "(?i:base)(?![^\\s{(,;&)}])",
+															"begin": "(?i:base)(?![^\\s{(,;&|)}])",
 															"beginCaptures": {
 																"0": {
 																	"name": "variable.language.super.powershell"
@@ -242,7 +258,7 @@
 			]
 		},
 		{
-			"begin": "((?i:enum))(?![^\\s{(,;&)}])",
+			"begin": "((?i:enum))(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.other.enum.powershell"
@@ -348,14 +364,14 @@
 									"patterns": [
 										{
 											"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-											"begin": "(?![\\s#]|<#)(?!$(?=\\n)|(?=[;|)}\\]]))",
+											"begin": "(?![\\s#]|<#|`\\n)(?!$(?=\\n)|[;&|)}\\]])",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
 													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-													"begin": "(?!\\G)(?!$(?=\\n)|[;&)}\\]])",
-													"end": "$(?=\\n)|(?=[;&)}\\]])",
+													"begin": "(?!\\G)(?!$(?=\\n)|[;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[;&|)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -370,8 +386,8 @@
 												},
 												{
 													"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-													"begin": "(?!$(?=\\n)|[;&)}\\]])",
-													"end": "$(?=\\n)|(?=[;&)}\\]])",
+													"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[;&|)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -406,7 +422,7 @@
 			]
 		},
 		{
-			"begin": "(?i:function|filter|workflow)(?![^\\s{(,;&)}])",
+			"begin": "(?i:function|filter|workflow)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.other.$0.powershell"
@@ -487,7 +503,7 @@
 		},
 		{
 			"comment": "do,for,foreach,while: allow a `:label` that must start the statement; A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!  Here we just see if a valid label appears to be the only useful thing on a single line",
-			"match": "(?>(:)([\\p{L}_]\\w*)(?![^\\s{(,;&)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|while)(?![^\\s{(,;&)}])|#|<#.*$|`?$))",
+			"match": "(?>(:)([\\p{L}_]\\w*)(?![^\\s{(,;&|)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|while)(?![^\\s{(,;&|)}])|#|<#.*$|`?$))",
 			"captures": {
 				"1": {
 					"name": "punctuation.separator.colon.label.powershell"
@@ -506,7 +522,7 @@
 		},
 		{
 			"comment": "break,continue: permit a label following, then revert back to statement mode",
-			"begin": "(?i:break|continue)(?![^\\s{(,;&)}])",
+			"begin": "(?i:break|continue)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -526,7 +542,7 @@
 			]
 		},
 		{
-			"begin": "(?i:return)(?![^\\s{(,;&)}])",
+			"begin": "(?i:return)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -540,7 +556,7 @@
 			]
 		},
 		{
-			"begin": "(?i:foreach)(?![^\\s{(,;&)}])",
+			"begin": "(?i:foreach)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.foreach.powershell"
@@ -630,7 +646,7 @@
 			]
 		},
 		{
-			"begin": "(?i:while)(?![^\\s{(,;&)}])",
+			"begin": "(?i:while)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.while.powershell"
@@ -690,7 +706,7 @@
 			]
 		},
 		{
-			"begin": "(?i:for)(?![^\\s{(,;&)}])",
+			"begin": "(?i:for)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.for.powershell"
@@ -745,11 +761,11 @@
 			]
 		},
 		{
-			"match": "(?i:do)(?![^\\s{(,;&)}])",
+			"match": "(?i:do)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
-			"begin": "(?i:if)(?![^\\s{(,;&)}])",
+			"begin": "(?i:if)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.if.powershell"
@@ -764,7 +780,7 @@
 			]
 		},
 		{
-			"begin": "(?i:switch)(?![^\\s{(,;&)}])",
+			"begin": "(?i:switch)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.switch.powershell"
@@ -909,12 +925,12 @@
 		},
 		{
 			"comment": "from,var,define are reserved; configuration is TODO, needs significant syntax structure work.",
-			"match": "(?i:configuration|define|from|var)(?![^\\s{(,;&)}])",
+			"match": "(?i:configuration|define|from|var)(?![^\\s{(,;&|)}])",
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
 			"comment": "else,elseif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
-			"match": "(?i:begin|catch|data|dynamicparam|end|exit|finally|inlinescript|parallel|param|process|sequence|throw|trap|try|until)(?![^\\s{(,;&)}])",
+			"match": "(?i:begin|catch|data|dynamicparam|end|exit|finally|inlinescript|parallel|param|process|sequence|throw|trap|try|until)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -928,11 +944,6 @@
 					"comment": "`||` and `&&` conditional terminators are reserved.",
 					"match": "\\|\\||&&",
 					"name": "invalid.reserved.powershell"
-				},
-				{
-					"comment": "`;` resume's in statement mode.",
-					"match": ";",
-					"name": "punctuation.terminator.statement.powershell"
 				},
 				{
 					"comment": "(dot) source operator, requires trailing space, or invoke operator",
@@ -1386,7 +1397,7 @@
 									"name": "keyword.operator.assignment.powershell"
 								}
 							},
-							"end": "$(?=\\n)|(?=[,;&)}\\]])",
+							"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 							"patterns": [
 								{
 									"begin": "=",
@@ -1395,21 +1406,21 @@
 											"name": "keyword.operator.assignment.powershell"
 										}
 									},
-									"end": "$(?=\\n)|(?=[,;&)}\\]])",
+									"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 									"patterns": [
 										{
 											"include": "#advanceToToken"
 										},
 										{
 											"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-											"begin": "(?![\\s#]|<#)(?!$(?=\\n)|(?=[;|)}\\]]))",
+											"begin": "(?!$|[;|)}\\]])",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
 													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-													"begin": "(?!\\G)(?!$(?=\\n)|[,;&)}\\]])",
-													"end": "$(?=\\n)|(?=[,;&)}\\]])",
+													"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -1424,8 +1435,8 @@
 												},
 												{
 													"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-													"begin": "(?!$(?=\\n)|[;&)}\\]])",
-													"end": "$(?=\\n)|(?=[;&)}\\]])",
+													"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[;&|)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -1586,14 +1597,14 @@
 						},
 						{
 							"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-							"begin": "(?![\\s#]|<#)(?!$(?=\\n)|(?=[;|)}\\]]))",
+							"begin": "(?!$|[;&|)}\\]])",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
 									"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-									"begin": "(?!\\G)(?!$(?=\\n)|[,;&)}\\]])",
-									"end": "$(?=\\n)|(?=[,;&)}\\]])",
+									"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
+									"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 									"patterns": [
 										{
 											"include": "#expression_mode"
@@ -1741,17 +1752,20 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,;&)}])",
+											"begin": "(?<=})(?![,;&|)}])",
 											"beginCaptures": {
 												"0": {
 													"name": "punctuation.section.braces.end.powershell"
 												}
 											},
-											"end": "(?=[\\S])",
+											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
-													"begin": "(?i:else)(?![^\\s{(,;&)}])",
+													"include": "#advanceToToken"
+												},
+												{
+													"begin": "(?i:else)(?![^\\s{(,;&|)}])",
 													"beginCaptures": {
 														"0": {
 															"name": "keyword.control.if-else.powershell"
@@ -1784,7 +1798,7 @@
 															]
 														},
 														{
-															"begin": "(?<=})(?![,;&)}]|$)",
+															"begin": "(?<=})(?![,;&|)}]|$)",
 															"end": "(?=[\\S])",
 															"applyEndPatternLast": true,
 															"patterns": [
@@ -1801,7 +1815,7 @@
 													]
 												},
 												{
-													"begin": "(?i:elseif)(?![^\\s{(,;&)}])",
+													"begin": "(?i:elseif)(?![^\\s{(,;&|)}])",
 													"beginCaptures": {
 														"0": {
 															"name": "keyword.control.if-elseif.powershell"
@@ -2004,8 +2018,8 @@
 							]
 						},
 						{
-							"begin": "\\G(?=[\\s#.+\\x{2013}-\\x{2015}-]|<#)(?![\\x{2013}-\\x{2015}-]\\p{L}|\\n)",
-							"end": "\\.\\.|\\+\\+?|[\\x{2013}-\\x{2015}-](?!\\p{L})[\\x{2013}-\\x{2015}-]?|$(?=\\n)|(?![\\s#]|<#)",
+							"begin": "\\G(?=[\\s.+\\x{2013}-\\x{2015}-]|<#|`\\n)(?![\\x{2013}-\\x{2015}-]\\p{L}|\\n)",
+							"end": "\\.\\.|\\+\\+?|[\\x{2013}-\\x{2015}-](?!\\p{L})[\\x{2013}-\\x{2015}-]?|$(?=\\n)|(?![\\s]|<#|`\\n|$)",
 							"endCaptures": {
 								"0": {
 									"patterns": [
@@ -2017,10 +2031,11 @@
 							},
 							"patterns": [
 								{
-									"include": "#commentBlock"
+									"match": "`\\n",
+									"name": "constant.character.escape.powershell"
 								},
 								{
-									"include": "#commentLine"
+									"include": "#commentBlock"
 								}
 							]
 						}
@@ -2176,8 +2191,8 @@
 							"include": "#accessors"
 						},
 						{
-							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;|)}\\]]))",
-							"end": "$(?=\\n)|(?=[;|)}\\]])",
+							"begin": "(?!\\G)(?!$(?=\\n)|(?=[;)}\\]]))",
+							"end": "$(?=\\n)|(?=[;)}\\]])",
 							"patterns": [
 								{
 									"include": "#expression_mode"
@@ -2293,10 +2308,14 @@
 		},
 		"advanceToToken": {
 			"comment": "consume spaces and comments and line ends until the next token appears",
-			"begin": "\\G(?=[\\s#]|<#)",
+			"begin": "\\G(?=[\\s#]|<#|`\\n)",
 			"end": "(?!\\s)(?!$)",
 			"applyEndPatternLast": true,
 			"patterns": [
+				{
+					"match": "`\\n",
+					"name": "constant.character.escape.powershell"
+				},
 				{
 					"include": "#commentLine"
 				},
@@ -2490,7 +2509,7 @@
 							"patterns": [
 								{
 									"comment": "default: only in switch",
-									"match": "(?i:default)(?![^\\s{(,;&)}])",
+									"match": "(?i:default)(?![^\\s{(,;&|)}])",
 									"name": "keyword.control.switch-default.powershell"
 								},
 								{
@@ -2844,7 +2863,7 @@
 			"name": "meta.embedded.interpolated.powershell"
 		},
 		"RequiresDirective": {
-			"begin": "^\\s*(#)((?i:requires))(?![^\\s{(,;&)}])",
+			"begin": "^\\s*(#)((?i:requires))(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"1": {
 					"name": "punctuation.definition.comment.powershell"
