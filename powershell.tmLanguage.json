@@ -542,13 +542,13 @@
 			]
 		},
 		{
-			"begin": "(?i:return)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:exit|return|throw)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
 				}
 			},
-			"end": "$(?=\\n)|(?=[;|)}\\]])",
+			"end": "$(?=\\n)|(?=[;)}\\]])",
 			"patterns": [
 				{
 					"include": "#command_mode"
@@ -562,7 +562,7 @@
 					"name": "keyword.control.foreach.powershell"
 				}
 			},
-			"end": "(?=[^\\s])|(?<=})",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -616,7 +616,7 @@
 							]
 						},
 						{
-							"begin": "(?<=\\))",
+							"begin": "(?<=\\))(?![,)}])",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -641,7 +641,7 @@
 													"name": "punctuation.section.braces.end.powershell"
 												}
 											},
-											"name": "meta.foreach-statements.powershell",
+											"name": "meta.statements.foreach-loop.powershell",
 											"patterns": [
 												{
 													"include": "$self"
@@ -649,9 +649,9 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,)}]|$)",
-											"end": "(?=[\\S])",
-											"applyEndPatternLast": true,
+											"begin": "(?<=})(?![,)}])",
+											"end": "\\n",
+											"applyEndPatternLast": false,
 											"patterns": [
 												{
 													"include": "$self"
@@ -733,7 +733,7 @@
 							]
 						},
 						{
-							"begin": "(?<=\\))",
+							"begin": "(?<=\\))(?![,)}])",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -766,9 +766,9 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,)}]|$)",
-											"end": "(?=[\\S])",
-											"applyEndPatternLast": true,
+											"begin": "(?<=})(?![,)}])",
+											"end": "\\n",
+											"applyEndPatternLast": false,
 											"patterns": [
 												{
 													"include": "$self"
@@ -848,7 +848,7 @@
 							]
 						},
 						{
-							"begin": "(?<=\\))",
+							"begin": "(?<=\\))(?![,)}])",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -881,9 +881,9 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,)}]|$)",
-											"end": "(?=[\\S])",
-											"applyEndPatternLast": true,
+											"begin": "(?<=})(?![,)}])",
+											"end": "\\n",
+											"applyEndPatternLast": false,
 											"patterns": [
 												{
 													"include": "$self"
@@ -1072,9 +1072,9 @@
 													]
 												},
 												{
-													"begin": "(?<=\\))(?![,)}]|$)",
-													"end": "(?=[\\S])",
-													"applyEndPatternLast": true,
+													"begin": "(?<=\\))(?![,)}])",
+													"end": "\\n",
+													"applyEndPatternLast": false,
 													"patterns": [
 														{
 															"include": "$self"
@@ -1159,7 +1159,7 @@
 									]
 								},
 								{
-									"begin": "(?<=\\))",
+									"begin": "(?<=\\))(?![,)}])",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"patterns": [
@@ -1239,6 +1239,94 @@
 				{
 					"comment": "`,`, `<` and `>` not permitted here",
 					"match": "[,<>]",
+					"name": "invalid.source.powershell"
+				},
+				{
+					"include": "#notCode"
+				}
+			]
+		},
+		{
+			"begin": "(?i:trap)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.trap.powershell"
+				}
+			},
+			"end": "(?=\\S|$)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"comment": "only one [exception] argument before the `{`",
+					"begin": "\\G(?=[\\s#\\[]|<#)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						},
+						{
+							"begin": "(?=\\[)",
+							"end": "(?!\\G)",
+							"patterns": [
+								{
+									"include": "#type"
+								},
+								{
+									"include": "#notCode"
+								}
+							]
+						},
+						{
+							"include": "#notCode"
+						}
+					]
+				},
+				{
+					"begin": "(?={)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G\\{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.statements.trap.powershell",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"begin": "(?<=})(?![,)}])",
+							"end": "\\n",
+							"applyEndPatternLast": false,
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"comment": "very limited what is permitted here",
+							"ignore": "[^\\s{}]",
+							"name": "invalid.source.powershell"
+						}
+					]
+				},
+				{
+					"comment": "`,`, `<` and `>` not permitted here",
+					"match": "[,\\[\\]<>]",
 					"name": "invalid.source.powershell"
 				},
 				{
@@ -1331,8 +1419,8 @@
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
-			"comment": "catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
-			"match": "(?i:begin|data|dynamicparam|end|exit|inlinescript|parallel|param|process|sequence|throw|trap|try)(?![^\\s{(,;&|)}])",
+			"comment": "parallel,sequence,inlinescript only in a workflow",
+			"match": "(?i:begin|data|dynamicparam|end|inlinescript|parallel|param|process|sequence)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -1769,14 +1857,27 @@
 						{
 							"comment": "only [exception] arguments before the `{`",
 							"begin": "\\G(?=[\\s#\\[]|<#)",
-							"end": "(?![\\s#\\[,]|<#)",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"match": ",",
-									"name": "punctuation.separator.powershell"
+									"include": "#advanceToToken"
 								},
 								{
-									"include": "#type"
+									"begin": "(?=\\[)",
+									"end": "(?![\\s#\\[,]|<#)",
+									"patterns": [
+										{
+											"match": ",",
+											"name": "punctuation.separator.powershell"
+										},
+										{
+											"include": "#type"
+										},
+										{
+											"include": "#notCode"
+										}
+									]
 								},
 								{
 									"include": "#notCode"
@@ -1832,9 +1933,9 @@
 									]
 								},
 								{
-									"begin": "(?<=})(?![,)}]|$)",
-									"end": "(?=[\\S])",
-									"applyEndPatternLast": true,
+									"begin": "(?<=})(?![,)}])",
+									"end": "\\n",
+									"applyEndPatternLast": false,
 									"patterns": [
 										{
 											"include": "$self"
@@ -1852,8 +1953,8 @@
 				},
 				{
 					"begin": "(?![,)}]|$)",
-					"end": "(?=[\\S])",
-					"applyEndPatternLast": true,
+					"end": "\\n",
+					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "$self"
@@ -2274,7 +2375,7 @@
 							]
 						},
 						{
-							"begin": "(?<=\\))",
+							"begin": "(?<=\\))(?![,)}])",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -2348,9 +2449,9 @@
 															]
 														},
 														{
-															"begin": "(?<=})(?![,)}]|$)",
-															"end": "(?=[\\S])",
-															"applyEndPatternLast": true,
+															"begin": "(?<=})(?![,)}])",
+															"end": "\\n",
+															"applyEndPatternLast": false,
 															"patterns": [
 																{
 																	"include": "$self"
@@ -2381,8 +2482,8 @@
 												},
 												{
 													"begin": "(?![,)}]|$)",
-													"end": "(?=[\\S])",
-													"applyEndPatternLast": true,
+													"end": "\\n",
+													"applyEndPatternLast": false,
 													"patterns": [
 														{
 															"include": "$self"
@@ -3115,9 +3216,9 @@
 					]
 				},
 				{
-					"begin": "(?<=})(?![,)}]|$)",
-					"end": "(?=[\\S])",
-					"applyEndPatternLast": true,
+					"begin": "(?<=})(?![,)}])",
+					"end": "\\n",
+					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "$self"
