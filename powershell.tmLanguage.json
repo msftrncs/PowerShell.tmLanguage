@@ -294,15 +294,7 @@
 										"0": {
 											"patterns": [
 												{
-													"include": "#type_keywords"
-												},
-												{
-													"match": "[^\\.]+",
-													"name": "storage.type.powershell"
-												},
-												{
-													"match": "\\.",
-													"name": "punctuation.accessor.type.powershell"
+													"include": "#type_Disolve"
 												}
 											]
 										}
@@ -1396,7 +1388,8 @@
 			]
 		},
 		{
-			"match": "(?i:(using))\\s+(?i:(namespace|module))\\s+(?:((?:\\w+(?:\\.)?)+))",
+			"comment": "the argument is permitted to be quoted; TODO",
+			"match": "(?i:(using))\\s+(?i:(assembly|namespace|module))\\s+((?:[\\p{L}_]\\w*\\.?)+)",
 			"captures": {
 				"1": {
 					"name": "keyword.control.using.powershell"
@@ -1407,7 +1400,7 @@
 				"3": {
 					"patterns": [
 						{
-							"include": "#type_keywords"
+							"include": "#type_Disolve"
 						}
 					]
 				}
@@ -1419,7 +1412,7 @@
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
-			"comment": "parallel,sequence,inlinescript only in a workflow",
+			"comment": "parallel,sequence,inlinescript: only in a workflow; param: only in main body or a function main body",
 			"match": "(?i:begin|data|dynamicparam|end|inlinescript|parallel|param|process|sequence)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
@@ -2859,6 +2852,25 @@
 				}
 			]
 		},
+		"type_Disolve": {
+			"patterns": [
+				{
+					"include": "#type_keywords"
+				},
+				{
+					"match": "[^\\.+]+",
+					"name": "storage.type.powershell"
+				},
+				{
+					"match": "\\.",
+					"name": "punctuation.accessor.type.powershell.powershell"
+				},
+				{
+					"match": "\\+",
+					"name": "keyword.operator.type.powershell"
+				}
+			]
+},
 		"type_SubType": {
 			"patterns": [
 				{
@@ -2887,24 +2899,12 @@
 					]
 				},
 				{
-					"begin": "((?<![\\w-])([\\p{L}_]\\w*(?:\\.\\g<2>?)?)(?:`+\\d+)?(?:\\++\\g<1>)?)",
+					"begin": "(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
 					"beginCaptures": {
 						"0": {
 							"patterns": [
 								{
-									"include": "#type_keywords"
-								},
-								{
-									"match": "[^\\.+]+",
-									"name": "storage.type.powershell"
-								},
-								{
-									"match": "\\.",
-									"name": "punctuation.accessor.type.powershell.powershell"
-								},
-								{
-									"match": "\\+",
-									"name": "keyword.operator.type.powershell"
+									"include": "#type_Disolve"
 								}
 							]
 						}
