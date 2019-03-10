@@ -15,7 +15,13 @@ IF          (condition)     {statements}
 
 DO
                             {statements}
-WHILE/UNTIL (condition)
+    WHILE/UNTIL (condition)
+
+TRY                         {statements}
+    CATCH                   {statements}    ...
+    FINALLY                 {statements}
+
+
 
 after detecting the keyword, 
     BEGIN with "\G" (and not any invalid chars)

@@ -566,49 +566,113 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\(",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.group.begin.powershell"
-						}
-					},
-					"name": "meta.foreach-set.powershell",
-					"end": "\\)",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.group.end.powershell"
-						}
-					},
+					"begin": "(?=\\()",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "(?i:in)",
+							"begin": "\\G\\(",
 							"beginCaptures": {
 								"0": {
-									"name": "keyword.control.foreach-in.powershell"
+									"name": "punctuation.section.group.begin.powershell"
 								}
 							},
-							"end": "(?=[;)])",
+							"name": "meta.foreach-set.powershell",
+							"end": "\\)",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.group.end.powershell"
+								}
+							},
 							"patterns": [
+								{
+									"begin": "(?i:in)",
+									"beginCaptures": {
+										"0": {
+											"name": "keyword.control.foreach-in.powershell"
+										}
+									},
+									"end": "(?=[;)])",
+									"patterns": [
+										{
+											"include": "#command_mode"
+										}
+									]
+								},
+								{
+									"include": "#variableNoProperty"
+								},
+								{
+									"include": "#type"
+								},
 								{
 									"comment": "`;` not permitted here",
 									"match": ";",
 									"name": "invalid.terminator.statement.powershell"
 								},
 								{
-									"include": "#command_mode"
+									"include": "#notCode"
 								}
 							]
 						},
 						{
-							"include": "#variableNoProperty"
-						},
+							"begin": "(?<=\\))",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"begin": "(?={)",
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"begin": "\\G\\{",
+											"beginCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.begin.powershell"
+												}
+											},
+											"end": "}",
+											"endCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.end.powershell"
+												}
+											},
+											"name": "meta.foreach-statements.powershell",
+											"patterns": [
+												{
+													"include": "$self"
+												}
+											]
+										},
+										{
+											"begin": "(?<=})(?![,)}]|$)",
+											"end": "(?=[\\S])",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"include": "$self"
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"comment": "only allow foreach arguments before the `(`",
+					"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"patterns": [
 						{
-							"include": "#type"
-						},
-						{
-							"comment": "`;` not permitted here",
-							"match": ";",
-							"name": "invalid.terminator.statement.powershell"
+							"comment": "-parallel parameter can only be used in a workflow, consider using meta scopes, and an injection to properly catch this",
+							"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)",
+							"name": "entity.name.parameter.foreach-parallel.powershell"
 						},
 						{
 							"include": "#notCode"
@@ -616,29 +680,9 @@
 					]
 				},
 				{
-					"begin": "{",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.begin.powershell"
-						}
-					},
-					"end": "}",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.end.powershell"
-						}
-					},
-					"name": "meta.foreach-statements.powershell",
-					"patterns": [
-						{
-							"include": "$self"
-						}
-					]
-				},
-				{
-					"comment": "-parallel parameter can only be used in a workflow, consider using meta scopes, and an injection to properly catch this",
-					"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)",
-					"name": "entity.name.parameter.powershell"
+					"comment": "`,`, `<` and `>` not permitted here",
+					"match": "[,<>]",
+					"name": "invalid.source.powershell"
 				},
 				{
 					"include": "#notCode"
@@ -652,56 +696,111 @@
 					"name": "keyword.control.while.powershell"
 				}
 			},
-			"end": "(?=[^\\s])|(?<=})",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\(",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.group.begin.powershell"
-						}
-					},
-					"name": "meta.while-condition.powershell",
-					"end": "\\)",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.group.end.powershell"
-						}
-					},
+					"include": "#advanceToToken"
+				},
+				{
+					"begin": "(?=\\()",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"comment": "`;` or `,` not permitted here",
-							"match": "[;,]",
-							"name": "invalid.source.powershell"
+							"begin": "\\G\\(",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.group.begin.powershell"
+								}
+							},
+							"end": "\\)",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.group.end.powershell"
+								}
+							},
+							"name": "meta.while-condition.powershell",
+							"patterns": [
+								{
+									"comment": "`;` not permitted here",
+									"match": ";",
+									"name": "invalid.source.powershell"
+								},
+								{
+									"include": "#command_mode"
+								}
+							]
 						},
 						{
-							"include": "#command_mode"
-						}
-					]
-				},
-				{
-					"begin": "{",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.begin.powershell"
-						}
-					},
-					"end": "}",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.end.powershell"
-						}
-					},
-					"name": "meta.while-statements.powershell",
-					"patterns": [
+							"begin": "(?<=\\))",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"begin": "(?={)",
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"begin": "\\G\\{",
+											"beginCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.begin.powershell"
+												}
+											},
+											"end": "}",
+											"endCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.end.powershell"
+												}
+											},
+											"name": "meta.statements.while-loop.powershell",
+											"patterns": [
+												{
+													"include": "$self"
+												}
+											]
+										},
+										{
+											"begin": "(?<=})(?![,)}]|$)",
+											"end": "(?=[\\S])",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"include": "$self"
+												}
+											]
+										}
+									]
+								},
+								{
+									"comment": "very limited what is permitted here",
+									"ignore": "[^\\s{()}]",
+									"name": "invalid.source.powershell"
+								},
+								{
+									"include": "#notCode"
+								}
+							]
+						},
 						{
-							"include": "$self"
+							"comment": "very limited what is permitted here",
+							"ignore": "[^\\s{]",
+							"name": "invalid.source.powershell"
 						}
 					]
 				},
 				{
-					"include": "#notCode"
+					"comment": "`,`, `<` and `>` not permitted here",
+					"ignore": "[,<>]",
+					"name": "invalid.source.powershell"
+				},
+				{
+					"ignore": "#notCode"
 				}
 			]
 		},
@@ -712,46 +811,284 @@
 					"name": "keyword.control.for.powershell"
 				}
 			},
-			"end": "(?=[^\\s])|(?<=})",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\(",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.group.begin.powershell"
-						}
-					},
-					"name": "meta.for-condition.powershell",
-					"end": "\\)",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.group.end.powershell"
-						}
-					},
+					"include": "#advanceToToken"
+				},
+				{
+					"begin": "(?=\\()",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "#command_mode"
+							"begin": "\\G\\(",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.group.begin.powershell"
+								}
+							},
+							"end": "\\)",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.group.end.powershell"
+								}
+							},
+							"name": "meta.for-condition.powershell",
+							"patterns": [
+								{
+									"comment": "`;` here resumes in command mode",
+									"match": ";",
+									"name": "punctuation.terminator.statement.powershell"
+								},
+								{
+									"include": "#command_mode"
+								}
+							]
+						},
+						{
+							"begin": "(?<=\\))",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"begin": "(?={)",
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"begin": "\\G\\{",
+											"beginCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.begin.powershell"
+												}
+											},
+											"end": "}",
+											"endCaptures": {
+												"0": {
+													"name": "punctuation.section.braces.end.powershell"
+												}
+											},
+											"name": "meta.statements.for-loop.powershell",
+											"patterns": [
+												{
+													"include": "$self"
+												}
+											]
+										},
+										{
+											"begin": "(?<=})(?![,)}]|$)",
+											"end": "(?=[\\S])",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"include": "$self"
+												}
+											]
+										}
+									]
+								},
+								{
+									"comment": "very limited what is permitted here",
+									"ignore": "[^\\s{()}]",
+									"name": "invalid.source.powershell"
+								},
+								{
+									"include": "#notCode"
+								}
+							]
+						},
+						{
+							"comment": "very limited what is permitted here",
+							"ignore": "[^\\s{]",
+							"name": "invalid.source.powershell"
 						}
 					]
 				},
 				{
-					"begin": "{",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.begin.powershell"
-						}
-					},
-					"end": "}",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.end.powershell"
-						}
-					},
-					"name": "meta.for-statements.powershell",
+					"comment": "`,`, `<` and `>` not permitted here",
+					"ignore": "[,<>]",
+					"name": "invalid.source.powershell"
+				},
+				{
+					"ignore": "#notCode"
+				}
+			]
+		},
+		{
+			"comment": "until/while (condition) ends do {statements}",
+			"begin": "(?i:do)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.do.powershell"
+				}
+			},
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#advanceToToken"
+				},
+				{
+					"begin": "(?={)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"include": "$self"
+							"begin": "\\G\\{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.statements.do-loop.powershell",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"begin": "(?<=})(?![,;&|)}])",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"begin": "(?i:while)(?![^\\s{(,;&|)}])",
+									"beginCaptures": {
+										"0": {
+											"name": "keyword.control.do-while.powershell"
+										}
+									},
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#advanceToToken"
+										},
+										{
+											"begin": "(?=\\()",
+											"end": "(?=.|$)",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"begin": "\\G\\(",
+													"beginCaptures": {
+														"0": {
+															"name": "punctuation.section.group.begin.powershell"
+														}
+													},
+													"end": "\\)",
+													"endCaptures": {
+														"0": {
+															"name": "punctuation.section.group.end.powershell"
+														}
+													},
+													"name": "meta.while-condition.powershell",
+													"patterns": [
+														{
+															"comment": "`;` not permitted here",
+															"match": ";",
+															"name": "invalid.source.powershell"
+														},
+														{
+															"include": "#command_mode"
+														}
+													]
+												},
+												{
+													"begin": "(?<=\\))(?![,)}]|$)",
+													"end": "(?=[\\S])",
+													"applyEndPatternLast": true,
+													"patterns": [
+														{
+															"include": "$self"
+														}
+													]
+												}
+											]
+										}
+									]
+								},
+								{
+									"begin": "(?i:until)(?![^\\s{(,;&|)}])",
+									"beginCaptures": {
+										"0": {
+											"name": "keyword.control.do-until.powershell"
+										}
+									},
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#advanceToToken"
+										},
+										{
+											"begin": "(?=\\()",
+											"end": "(?=.|$)",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"begin": "\\G\\(",
+													"beginCaptures": {
+														"0": {
+															"name": "punctuation.section.group.begin.powershell"
+														}
+													},
+													"end": "\\)",
+													"endCaptures": {
+														"0": {
+															"name": "punctuation.section.group.end.powershell"
+														}
+													},
+													"name": "meta.until-condition.powershell",
+													"patterns": [
+														{
+															"comment": "`;` not permitted here",
+															"match": ";",
+															"name": "invalid.source.powershell"
+														},
+														{
+															"include": "#command_mode"
+														}
+													]
+												},
+												{
+													"begin": "(?<=\\))(?![,)}]|$)",
+													"end": "(?=[\\S])",
+													"applyEndPatternLast": true,
+													"patterns": [
+														{
+															"include": "$self"
+														}
+													]
+												}
+											]
+										}
+									]
+								},
+								{
+									"include": "#notCode"
+								}
+							]
 						}
 					]
 				},
@@ -761,10 +1098,7 @@
 			]
 		},
 		{
-			"match": "(?i:do)(?![^\\s{(,;&|)}])",
-			"name": "keyword.control.$0.powershell"
-		},
-		{
+			"comment": "else,elseif: only after if,elseif",
 			"begin": "(?i:if)(?![^\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
@@ -786,12 +1120,12 @@
 					"name": "keyword.control.switch.powershell"
 				}
 			},
-			"end": "(?=\\S)|(?<=})",
+			"end": "(?=.|$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
 					"begin": "(?=\\()",
-					"end": "(?=\\S)|(?<=})",
+					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -801,7 +1135,7 @@
 									"name": "punctuation.section.group.begin.powershell"
 								}
 							},
-							"end": "(?=\\S)|(?<=})",
+							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -826,9 +1160,12 @@
 								},
 								{
 									"begin": "(?<=\\))",
-									"end": "(?![\\s#\\({]|<#)|(?<=})",
-									"applyEndPatternLast": false,
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
 									"patterns": [
+										{
+											"include": "#advanceToToken"
+										},
 										{
 											"include": "#switchConditions"
 										},
@@ -837,7 +1174,7 @@
 										},
 										{
 											"comment": "very limited what is permitted here",
-											"match": "[^\\s{]",
+											"ignore": "[^\\s{]",
 											"name": "invalid.source.powershell"
 										}
 									]
@@ -873,12 +1210,15 @@
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
-									"begin": "\\G(?![,;&)}<>])",
+									"begin": "\\G(?![,;&|)}<>])",
 									"end": "(?=.|$)",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
-											"begin": "(?<=[\\s]|\\G)(?![\\s#,;&)}<>]|<#|$)",
+											"include": "#advanceToToken"
+										},
+										{
+											"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
 											"end": "(?!\\G)",
 											"name": "meta.argument.switch-file.powershell",
 											"patterns": [
@@ -886,9 +1226,6 @@
 													"include": "#argument"
 												}
 											]
-										},
-										{
-											"include": "#advanceToToken"
 										}
 									]
 								}
@@ -910,7 +1247,68 @@
 			]
 		},
 		{
-			"match": "(?i:(using))\\s+(?i:(namespace|module))\\s+(?i:((?:\\w+(?:\\.)?)+))",
+			"comment": "catch/finally only after try",
+			"begin": "(?i:try)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.try.powershell"
+				}
+			},
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#advanceToToken"
+				},
+				{
+					"begin": "(?={)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G\\{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.statements.try.powershell",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"begin": "(?<=})(?![,;&|)}])",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#catchClause"
+								}
+							]
+						}
+					]
+				},
+				{
+					"include": "#notCode"
+				}
+			]
+		},
+		{
+			"match": "(?i:(using))\\s+(?i:(namespace|module))\\s+(?:((?:\\w+(?:\\.)?)+))",
 			"captures": {
 				"1": {
 					"name": "keyword.control.using.powershell"
@@ -919,7 +1317,11 @@
 					"name": "keyword.other.powershell"
 				},
 				"3": {
-					"name": "variable.parameter.powershell"
+					"patterns": [
+						{
+							"include": "#type_keywords"
+						}
+					]
 				}
 			}
 		},
@@ -929,8 +1331,8 @@
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
-			"comment": "else,elseif: only after if,elseif; until: only after do; catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
-			"match": "(?i:begin|catch|data|dynamicparam|end|exit|finally|inlinescript|parallel|param|process|sequence|throw|trap|try|until)(?![^\\s{(,;&|)}])",
+			"comment": "catch,finally: only after try; parallel,sequence,inlinescript only in a workflow",
+			"match": "(?i:begin|data|dynamicparam|end|exit|inlinescript|parallel|param|process|sequence|throw|trap|try)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -1192,9 +1594,9 @@
 					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"begin": "(?=[^\\s{(,;&)}])",
-					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
-					"end": "(?=[\\s{(,;&)}])",
+					"begin": "(?=[^\\s{(,;&|)}])",
+					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[{(,;&|)}$@])|(?<=\\S)(?=[$@<>])",
+					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "string.unquoted.argument.powershell",
 					"patterns": [
 						{
@@ -1302,6 +1704,159 @@
 					"patterns": [
 						{
 							"include": "#accessors"
+						}
+					]
+				}
+			]
+		},
+		"catchClause": {
+			"patterns": [
+				{
+					"include": "#advanceToToken"
+				},
+				{
+					"begin": "(?i:catch)(?![^\\s{(,;&|)}])",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.control.try-catch.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "(?={)",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"begin": "\\G\\{",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.begin.powershell"
+										}
+									},
+									"end": "}",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.end.powershell"
+										}
+									},
+									"name": "meta.statements.try-catch.powershell",
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"begin": "(?<=})(?![,)}]|$)",
+									"end": "(?=[\\S])",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#catchClause"
+										}
+									]
+								},
+								{
+									"comment": "very limited what is permitted here",
+									"ignore": "[^\\s{}]",
+									"name": "invalid.source.powershell"
+								}
+							]
+						},
+						{
+							"comment": "only [exception] arguments before the `{`",
+							"begin": "\\G(?=[\\s#\\[]|<#)",
+							"end": "(?![\\s#\\[,]|<#)",
+							"patterns": [
+								{
+									"match": ",",
+									"name": "punctuation.separator.powershell"
+								},
+								{
+									"include": "#type"
+								},
+								{
+									"include": "#notCode"
+								}
+							]
+						},
+						{
+							"comment": "`,`, `<` and `>` not permitted here",
+							"match": "[,<>]",
+							"name": "invalid.source.powershell"
+						},
+						{
+							"include": "#notCode"
+						}
+					]
+				},
+				{
+					"begin": "(?i:finally)(?![^\\s{(,;&|)}])",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.control.try-finally.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						},
+						{
+							"begin": "(?={)",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"begin": "\\G\\{",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.begin.powershell"
+										}
+									},
+									"end": "}",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.end.powershell"
+										}
+									},
+									"name": "meta.statements.try-finally.powershell",
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"begin": "(?<=})(?![,)}]|$)",
+									"end": "(?=[\\S])",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"comment": "very limited what is permitted here",
+									"ignore": "[^\\s{}]",
+									"name": "invalid.source.powershell"
+								}
+							]
+						}
+					]
+				},
+				{
+					"begin": "(?![,)}]|$)",
+					"end": "(?=[\\S])",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "$self"
 						}
 					]
 				}
@@ -1706,7 +2261,7 @@
 									"name": "punctuation.section.group.end.powershell"
 								}
 							},
-							"contentName": "meta.if-condition.powershell",
+							"name": "meta.if-condition.powershell",
 							"patterns": [
 								{
 									"comment": "`;` not permitted here",
@@ -1744,7 +2299,7 @@
 													"name": "punctuation.section.braces.end.powershell"
 												}
 											},
-											"contentName": "meta.statements.if-condition.powershell",
+											"name": "meta.statements.if-condition.powershell",
 											"patterns": [
 												{
 													"include": "$self"
@@ -1752,12 +2307,7 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,;&|)}])",
-											"beginCaptures": {
-												"0": {
-													"name": "punctuation.section.braces.end.powershell"
-												}
-											},
+											"begin": "(?<=})(?![,)}])",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
@@ -1790,7 +2340,7 @@
 																	"name": "punctuation.section.braces.end.powershell"
 																}
 															},
-															"contentName": "meta.statements.if-else-condition.powershell",
+															"name": "meta.statements.if-else-condition.powershell",
 															"patterns": [
 																{
 																	"include": "$self"
@@ -1798,7 +2348,7 @@
 															]
 														},
 														{
-															"begin": "(?<=})(?![,;&|)}]|$)",
+															"begin": "(?<=})(?![,)}]|$)",
 															"end": "(?=[\\S])",
 															"applyEndPatternLast": true,
 															"patterns": [
@@ -1830,7 +2380,14 @@
 													]
 												},
 												{
-													"include": "$self"
+													"begin": "(?![,)}]|$)",
+													"end": "(?=[\\S])",
+													"applyEndPatternLast": true,
+													"patterns": [
+														{
+															"include": "$self"
+														}
+													]
 												}
 											]
 										}
@@ -2483,47 +3040,12 @@
 			]
 		},
 		"switchConditions": {
-			"begin": "{",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.section.braces.begin.powershell"
-				}
-			},
-			"end": "}",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.section.braces.end.powershell"
-				}
-			},
-			"name": "meta.switch-conditions.powershell",
+			"begin": "(?={)",
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?:\\G|(?<=\\}))(?![,;&)}])",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&)}<>]|<#)",
-							"end": "(?!\\G)",
-							"name": "meta.argument.switch-condition.powershell",
-							"patterns": [
-								{
-									"comment": "default: only in switch",
-									"match": "(?i:default)(?![^\\s{(,;&|)}])",
-									"name": "keyword.control.switch-default.powershell"
-								},
-								{
-									"include": "#argument"
-								}
-							]
-						},
-						{
-							"include": "#advanceToToken"
-						}
-					]
-				},
-				{
-					"begin": "{",
+					"begin": "\\G\\{",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.section.braces.begin.powershell"
@@ -2535,20 +3057,72 @@
 							"name": "punctuation.section.braces.end.powershell"
 						}
 					},
-					"name": "meta.statements.switch-condition.powershell",
+					"name": "meta.switch-conditions.powershell",
+					"patterns": [
+						{
+							"begin": "(?:\\G|(?<=\\}))(?![,;&|)}])",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#)",
+									"end": "(?!\\G)",
+									"name": "meta.argument.switch-condition.powershell",
+									"patterns": [
+										{
+											"comment": "default: only in switch",
+											"match": "(?i:default)(?![^\\s{(,;&|)}])",
+											"name": "keyword.control.switch-default.powershell"
+										},
+										{
+											"include": "#argument"
+										}
+									]
+								}
+							]
+						},
+						{
+							"begin": "{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.statements.switch-condition.powershell",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"include": "#notCode"
+						},
+						{
+							"comment": "very limited what is permitted here",
+							"match": "[^\\s{()}]",
+							"name": "invalid.source.powershell"
+						}
+					]
+				},
+				{
+					"begin": "(?<=})(?![,)}]|$)",
+					"end": "(?=[\\S])",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "$self"
 						}
 					]
-				},
-				{
-					"include": "#notCode"
-				},
-				{
-					"comment": "very limited what is permitted here",
-					"match": "[^\\s{()}]",
-					"name": "invalid.source.powershell"
 				}
 			]
 		},
@@ -3495,14 +4069,18 @@
 					"patterns": [
 						{
 							"begin": "\\G(?![;&|)}]|$)",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
+							"end": "(?![\\s#]|<#|`\\n)|$",
+							"applyEndPatternLast": false,
 							"patterns": [
 								{
-									"include": "#advanceToToken"
+									"match": "`\\n",
+									"name": "constant.character.escape.powershell"
 								},
 								{
-									"begin": "(?![\\s#;&|)}]|<#|$)",
+									"include": "#commentBlock"
+								},
+								{
+									"begin": "(?![\\s#;&|)}]|<#|$|`\\n)",
 									"end": "(?!\\G)",
 									"name": "meta.argument.redirect-file.powershell",
 									"patterns": [
