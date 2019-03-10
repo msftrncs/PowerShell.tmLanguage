@@ -156,7 +156,7 @@
 					"contentName": "meta.class.powershell",
 					"patterns": [
 						{
-							"match": "((?i:hidden|static))(?=\\s)",
+							"match": "((?i:hidden|static))(?![^\\s{(,;&|)}])",
 							"name": "storage.modifier.powershell"
 						},
 						{
@@ -650,7 +650,7 @@
 										},
 										{
 											"begin": "(?<=})(?![,)}])",
-											"end": "\\n",
+											"end": "\\n|(?=[,})\\]])",
 											"applyEndPatternLast": false,
 											"patterns": [
 												{
@@ -767,7 +767,7 @@
 										},
 										{
 											"begin": "(?<=})(?![,)}])",
-											"end": "\\n",
+											"end": "\\n|(?=[,})\\]])",
 											"applyEndPatternLast": false,
 											"patterns": [
 												{
@@ -882,7 +882,7 @@
 										},
 										{
 											"begin": "(?<=})(?![,)}])",
-											"end": "\\n",
+											"end": "\\n|(?=[,})\\]])",
 											"applyEndPatternLast": false,
 											"patterns": [
 												{
@@ -1073,7 +1073,7 @@
 												},
 												{
 													"begin": "(?<=\\))(?![,)}])",
-													"end": "\\n",
+													"end": "\\n|(?=[,})\\]])",
 													"applyEndPatternLast": false,
 													"patterns": [
 														{
@@ -1309,7 +1309,7 @@
 						},
 						{
 							"begin": "(?<=})(?![,)}])",
-							"end": "\\n",
+							"end": "\\n|(?=[,})\\]])",
 							"applyEndPatternLast": false,
 							"patterns": [
 								{
@@ -1934,8 +1934,7 @@
 								},
 								{
 									"begin": "(?<=})(?![,)}])",
-									"end": "\\n",
-									"applyEndPatternLast": false,
+									"end": "\\n|(?=[,})\\]])",
 									"patterns": [
 										{
 											"include": "$self"
@@ -1953,8 +1952,7 @@
 				},
 				{
 					"begin": "(?![,)}]|$)",
-					"end": "\\n",
-					"applyEndPatternLast": false,
+					"end": "\\n|(?=[,})\\]])",
 					"patterns": [
 						{
 							"include": "$self"
@@ -2450,7 +2448,7 @@
 														},
 														{
 															"begin": "(?<=})(?![,)}])",
-															"end": "\\n",
+															"end": "\\n|(?=[,})\\]])",
 															"applyEndPatternLast": false,
 															"patterns": [
 																{
@@ -2482,7 +2480,7 @@
 												},
 												{
 													"begin": "(?![,)}]|$)",
-													"end": "\\n",
+													"end": "\\n|(?=[,})\\]])",
 													"applyEndPatternLast": false,
 													"patterns": [
 														{
@@ -3217,7 +3215,7 @@
 				},
 				{
 					"begin": "(?<=})(?![,)}])",
-					"end": "\\n",
+					"end": "\\n|(?=[,})\\]])",
 					"applyEndPatternLast": false,
 					"patterns": [
 						{
