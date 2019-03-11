@@ -18,7 +18,7 @@ DO
     WHILE/UNTIL (condition)
 
 TRY                         {statements}
-    CATCH                   {statements}    ...
+    CATCH       [exception],{statements}    ...
     FINALLY                 {statements}
 
 

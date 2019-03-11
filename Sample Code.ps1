@@ -97,11 +97,11 @@ enum HexSRecType : byte {
 }
 
 class HexSRecord {
-    hidden [string]$SRecord
-    hidden [int]$Length
-    [HexSRecType]$RecType
+    hidden [string] $SRecord
+    hidden [int] $Length
+    [HexSRecType] $RecType
     $Address
-    [byte[]]$DataBytes
+    [byte[]] $DataBytes
 
     HexSRecord ([string]$SRecord) {
         $this.Compile($SRecord)
@@ -123,7 +123,7 @@ class HexSRecord {
         if ($this.SRecord.Length -lt $this.Length * 2 + 4) {
             throw "invalid SREC format, insufficient length for data!"
         }
-        if (!$this.IsCheckSumValid()) {
+        if (-not $this.IsCheckSumValid()) {
             throw "SREC checksum failed!"
         }
         $this.Address = $this.GetAddress()
