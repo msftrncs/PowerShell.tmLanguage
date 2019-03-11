@@ -1388,6 +1388,185 @@
 			]
 		},
 		{
+			"comment": "data: parameter `-supportedCommand` is array of cmdlets (function names)",
+			"begin": "(?i:data)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.$0.powershell"
+				}
+			},
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"comment": "only allow data parameters before the `{`",
+					"begin": "\\G(?=[\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
+					"patterns": [
+						{
+							"comment": "-supportedcommand is special case, array of arguments",
+							"begin": "((?i:[\\x{2013}-\\x{2015}-]supportedcommand))(:)?",
+							"beginCaptures": {
+								"1": {
+									"name": "entity.name.parameter.data-supportedcommand.powershell"
+								},
+								"2": {
+									"name": "punctuation.separator.parameter-value.powershell"
+								}
+							},
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"match": ",",
+									"name": "punctuation.separator.powershell"
+								},
+								{
+									"begin": "(?:\\G|(?<=,))(?![;&|)}<>])",
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#advanceToToken"
+										},
+										{
+											"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
+											"end": "(?!\\G)",
+											"name": "meta.argument.data-supportedcommand.powershell",
+											"patterns": [
+												{
+													"include": "#argument"
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"include": "#notCode"
+						}
+					]
+				},
+				{
+					"begin": "(?={)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G\\{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.statements.data-section.powershell",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"begin": "(?<=})(?![,)}])",
+							"end": "\\n|(?=[,})\\]])",
+							"applyEndPatternLast": false,
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"comment": "very limited what is permitted here",
+							"ignore": "[^\\s{}]",
+							"name": "invalid.source.powershell"
+						}
+					]
+				},
+				{
+					"comment": "`,`, `<` and `>` not permitted here",
+					"match": "[,\\[\\]<>]",
+					"name": "invalid.source.powershell"
+				},
+				{
+					"include": "#notCode"
+				}
+			]
+		},
+		{
+			"comment": "inlinescript,parallel,sequence: only in workflow; ",
+			"begin": "(?i:begin|dynamicparam|end|inlinescript|parallel|process|sequence)(?![^\\s{(,;&|)}])",
+			"beginCaptures": {
+				"0": {
+					"name": "keyword.control.$0.powershell"
+				}
+			},
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"include": "#advanceToToken"
+				},
+				{
+					"begin": "(?={)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G\\{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.statement-block.powershell",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"begin": "(?<=})(?![,)}])",
+							"end": "\\n|(?=[,})\\]])",
+							"applyEndPatternLast": false,
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						},
+						{
+							"comment": "very limited what is permitted here",
+							"ignore": "[^\\s{}]",
+							"name": "invalid.source.powershell"
+						}
+					]
+				},
+				{
+					"comment": "`,`, `<` and `>` not permitted here",
+					"match": "[,\\[\\]<>]",
+					"name": "invalid.source.powershell"
+				},
+				{
+					"include": "#notCode"
+				}
+			]
+		},
+		{
 			"comment": "the argument is permitted to be quoted; TODO",
 			"match": "(?i:(using))\\s+(?i:(assembly|namespace|module))\\s+((?:[\\p{L}_]\\w*\\.?)+)",
 			"captures": {
@@ -1412,8 +1591,8 @@
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
-			"comment": "parallel,sequence,inlinescript: only in a workflow; param: only in main body or a function main body",
-			"match": "(?i:begin|data|dynamicparam|end|inlinescript|parallel|param|process|sequence)(?![^\\s{(,;&|)}])",
+			"comment": "param: only in main body or a function main body, and only if followed by parameter declaration",
+			"match": "(?i:param)(?![^\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
