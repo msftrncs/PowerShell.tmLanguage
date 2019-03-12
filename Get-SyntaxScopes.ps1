@@ -26,21 +26,21 @@ function getscopes ($grammar) {
 
     # build a hashtable/PSCustomObject containing a list of scope names used 
     # in each repository item, $self and $base
+    $scopes = @{}
     foreach ($rule in $grammar.'repository'.PSObject.Properties) {
-        @{ $rule.Name = @( getscopes_recurse $rule.Value ) }
+        $scopes[$rule.Name] = @( getscopes_recurse $rule.Value )
     }
-    , @{ '$self' = @(
-            foreach ($rule in $grammar.'patterns') {
-                # recurse the contained patterns
-                getscopes_recurse $rule
-            }
-        )
-    }
-    , @{ '$base' = @(
-            $grammar.'scopeName'
-        )
-    }
+    $scopes['$self'] = @(
+        foreach ($rule in $grammar.'patterns') {
+            # recurse the contained patterns
+            getscopes_recurse $rule
+        }
+    )
+    $scopes['$base'] = @(
+        $grammar.'scopeName'
+    )
 
+    $scopes
 }
 
 $grammar_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json

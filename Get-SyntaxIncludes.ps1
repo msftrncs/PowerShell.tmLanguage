@@ -27,19 +27,19 @@ function getincludes ($grammar) {
 
     # build a hashtable/PSCustomObject containing a list of includes used 
     # in each repository item, $self and $base
+    $includes = @{}
     foreach ($rule in $grammar.'repository'.PSObject.Properties) {
-        @{ $rule.Name = @( getincludes_recurse $rule.Value ) }
+        $includes[$rule.Name] = @( getincludes_recurse $rule.Value )
     }
-    , @{ '$self' = @( 
-            foreach ($rule in $grammar.'patterns') {
-                # recurse the contained patterns
-                getincludes_recurse $rule
-            }
-        )
-    }
-    , @{ '$base' = @( '$self' )
-    }
+    $includes['$self'] = @( 
+        foreach ($rule in $grammar.'patterns') {
+            # recurse the contained patterns
+            getincludes_recurse $rule
+        }
+    )
+    $includes['$base'] = @( '$self' )
 
+    $includes
 }
 
 $grammar_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json
