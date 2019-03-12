@@ -8,7 +8,6 @@ function getincludes ($grammar) {
             if ($ruleprop.Name -cin 'include') {
                 # return the specified include
                 $ruleprop.value
-                continue
             }
             elseif ($ruleprop.Name -cin 'patterns') {
                 foreach ($rule in $ruleprop.Value) {
@@ -31,13 +30,13 @@ function getincludes ($grammar) {
     foreach ($rule in $grammar.'repository'.PSObject.Properties) {
         $includes[$rule.Name] = @( getincludes_recurse $rule.Value )
     }
-    $includes['$self'] = @( 
+    $includes.'$self' = @( 
         foreach ($rule in $grammar.'patterns') {
             # recurse the contained patterns
             getincludes_recurse $rule
         }
     )
-    $includes['$base'] = @( '$self' )
+    $includes.'$base' = @( '$self' )
 
     $includes
 }
