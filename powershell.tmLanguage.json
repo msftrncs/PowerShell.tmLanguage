@@ -390,6 +390,11 @@
 										},
 										{
 											"include": "#commentBlock"
+										},
+										{
+											"comment": "normally provided by command mode, but thats not available here",
+											"match": "`\\n",
+											"name": "constant.character.escape.powershell"
 										}
 									]
 								},
@@ -1633,7 +1638,34 @@
 					"patterns": [
 						{
 							"comment": "Next token needs to be an operand for the operator, not the actual command, but an expression or unquoted expandable string that describes the command's name.",
-							"include": "#argument_mode"
+							"begin": "\\G(?![,;&|)}<>])",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
+									"end": "(?!\\G)",
+									"name": "meta.argument.invoke-or-source.powershell",
+									"patterns": [
+										{
+											"include": "#argument"
+										}
+									]
+								}
+							]
+						},
+						{
+							"comment": "Next token needs to be an operand for the operator, not the actual command, but an expression or unquoted expandable string that describes the command's name.",
+							"begin": "(?![\\n;)}\\]])",
+							"end": "$(?=\\n)|(?=[;)}\\]])",
+							"patterns": [
+								{
+									"include": "#argument_mode"
+								}
+							]
 						}
 					]
 				},
@@ -1704,6 +1736,11 @@
 				},
 				{
 					"include": "#command_name"
+				},
+				{
+					"comment": "catch that which didn't match elsewhere",
+					"match": "[^\\s]",
+					"name": "invalid.source.powershell"
 				}
 			]
 		},
@@ -1907,11 +1944,11 @@
 					"include": "#operators"
 				},
 				{
-					"include": "#notCode"
+					"ignore": "`",
+					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"match": "`",
-					"name": "invalid.character.escape.powershell"
+					"include": "#notCode"
 				}
 			]
 		},
@@ -4297,9 +4334,8 @@
 				},
 				{
 					"comment": "when nothing else matches in usual tokenizing, consume it to prevent other patterns from striking in the middle of what might be a command name.",
-					"begin": "(?=[^\\[\\s{(,;&)}])",
-					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[(){},;&|$@])|(?<=\\S)(?=[$@<>])",
-					"end": "(?=[\\s{(,;&)}])",
+					"begin": "(?=[^\\[\\s{(,;&|)}])",
+					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "invalid.source.powershell",
 					"patterns": [
 						{
