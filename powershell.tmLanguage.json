@@ -3766,46 +3766,58 @@
 			"name": "meta.embedded.interpolated.powershell"
 		},
 		"RequiresDirective": {
-			"begin": "^\\s*(#)((?i:requires))(?![^\\s{(,;&|)}])",
-			"beginCaptures": {
+			"comment": "requires directive must be on single line, so capture and tokenize, current PS <= 6.2 allow `requires` keyword without delimiter, but the parameters must follow with a delimiter!",
+			"oldbegin": "^\\s*(#)((?i:requires))(?![^\\s{(,;&|)}])",
+			"match": "^\\s*(#)((?i:requires))(.?)(.*)$",
+			"captures": {
 				"1": {
 					"name": "punctuation.definition.comment.powershell"
 				},
 				"2": {
 					"name": "keyword.control.requires.powershell"
+				},
+				"3": {
+					"patterns": [
+						{
+							"match": "\\S",
+							"name": "invalid.source.powershell"
+						}
+					]
+				},
+				"4": {
+					"patterns": [
+						{
+							"match": "([\\x{2013}-\\x{2015}-](?i:Modules|PSSnapin|PSEdition|RunAsAdministrator|ShellId|Version)\\b)(:)?",
+							"captures": {
+								"1": {
+									"name": "entity.name.parameter.powershell"
+								},
+								"2": {
+									"name": "punctuation.separator.parameter-value.powershell"
+								}
+							}
+						},
+						{
+							"comment": "needs custom argument handler, single line quoted or unquoted arguments",
+							"match": "(?<!\\x{2013}-\\x{2015}-)\\b\\p{L}+|\\d+(?:\\.\\d+)*",
+							"name": "variable.parameter.powershell"
+						},
+						{
+							"match": ",",
+							"name": "punctuation.separator.powershell"
+						},
+						{
+							"comment": "needs custom hashtable that does not auto continue to next line",
+							"include": "#hashtable"
+						},
+						{
+							"include": "#notCode"
+						}
+					]
 				}
 			},
-			"end": "$",
-			"name": "comment.line.powershell meta.requires.powershell",
-			"patterns": [
-				{
-					"match": "([\\x{2013}-\\x{2015}-](?i:Modules|PSSnapin|PSEdition|RunAsAdministrator|ShellId|Version)\\b)(:)?",
-					"captures": {
-						"1": {
-							"name": "entity.name.parameter.powershell"
-						},
-						"2": {
-							"name": "punctuation.separator.parameter-value.powershell"
-						}
-					}
-				},
-				{
-					"comment": "needs custom argument handler, single line quoted or unquoted arguments",
-					"match": "(?<!\\x{2013}-\\x{2015}-)\\b\\p{L}+|\\d+(?:\\.\\d+)*",
-					"name": "variable.parameter.powershell"
-				},
-				{
-					"match": ",",
-					"name": "punctuation.separator.powershell"
-				},
-				{
-					"comment": "needs custom hashtable that does not auto continue to next line",
-					"include": "#hashtable"
-				},
-				{
-					"include": "#notCode"
-				}
-			]
+			"oldend": "$",
+			"name": "comment.line.powershell meta.requires.powershell"
 		},
 		"hashtable": {
 			"begin": "(?=@\\{)",
