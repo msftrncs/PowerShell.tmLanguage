@@ -494,8 +494,8 @@
 			]
 		},
 		{
-			"comment": "do,for,foreach,while: allow a `:label` that must start the statement; A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!  Here we just see if a valid label appears to be the only useful thing on a single line",
-			"match": "(?>(:)([\\p{L}_]\\w*)(?![^\\s{(,;&|)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|while)(?![^\\s{(,;&|)}])|#|<#.*$|`?$))",
+			"comment": "do,for,foreach,switch,while: allow a `:label` that must start the statement; A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!  Here we just see if a valid label appears to be the only useful thing on a single line",
+			"match": "(?>(:)([\\p{L}_]\\w*)(?![^\\s{(,;&|)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|switch|while)(?![^\\s{(,;&|)}])|#|<#.*$|`?$))",
 			"captures": {
 				"1": {
 					"name": "punctuation.separator.colon.label.powershell"
@@ -663,8 +663,15 @@
 					"patterns": [
 						{
 							"comment": "-parallel parameter can only be used in a workflow, consider using meta scopes, and an injection to properly catch this",
-							"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)",
-							"name": "entity.name.parameter.foreach-parallel.powershell"
+							"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)(?:(:)?|(?![^\\s{(,;&|)}]))",
+							"beginCaptures": {
+								"1": {
+									"name": "entity.name.parameter.foreach-parallel.powershell"
+								},
+								"2": {
+									"name": "punctuation.separator.parameter-value.powershell"
+								}
+							}
 						},
 						{
 							"include": "#notCode"
@@ -1184,12 +1191,19 @@
 					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
-							"match": "(?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive))",
-							"name": "entity.name.parameter.switch-$0.powershell"
+							"match": "((?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive)))(?:(:)?|(?![^\\s{(,;&|)}]))",
+							"captures": {
+								"1": {
+									"name": "entity.name.parameter.switch-$2.powershell"
+								},
+								"3": {
+									"name": "punctuation.separator.parameter-value.powershell"
+								}
+							}
 						},
 						{
 							"comment": "-file is special case, needs file argument, no condition expression",
-							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(:)?",
+							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(?:(:)?|(?![^\\s{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.switch-file.powershell"
@@ -1405,7 +1419,7 @@
 					"patterns": [
 						{
 							"comment": "-supportedcommand is special case, array of arguments",
-							"begin": "((?i:[\\x{2013}-\\x{2015}-]supportedcommand))(:)?",
+							"begin": "((?i:[\\x{2013}-\\x{2015}-]supportedcommand))(?:(:)?|(?![^\\s{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.data-supportedcommand.powershell"
