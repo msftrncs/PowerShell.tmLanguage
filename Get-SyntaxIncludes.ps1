@@ -1,8 +1,14 @@
 # FYI, this script partially handles tmLanguage syntaxes that possess sub-repositories, at this time.
 function getincludes ($grammar) {
 
-    function getincludes_recurse($ruleset) {
+    function getincludes_recurserules ($ruleset) {
+        foreach ($rule in $ruleset) {
+            # recurse the contained patterns
+            getincludes_recurse $rule
+        }
+    }
 
+    function getincludes_recurse ($ruleset) {
         # iterate through the rule set and capture the possible includes
         foreach ($ruleprop in $ruleset.psobject.Properties) {
             if ($ruleprop.Name -cin 'include') {
@@ -10,10 +16,8 @@ function getincludes ($grammar) {
                 $ruleprop.value
             }
             elseif ($ruleprop.Name -cin 'patterns') {
-                foreach ($rule in $ruleprop.Value) {
-                    # recurse the contained patterns
-                    getincludes_recurse $rule
-                }
+                # iterate and recurse the contained rules
+                getincludes_recurserules $ruleprop.Value
             }
             elseif ($ruleprop.Name -cin 'beginCaptures', 'captures', 'endCaptures', 'repository') {
                 foreach ($rule in $ruleprop.Value.PSObject.Properties) {
@@ -25,22 +29,27 @@ function getincludes ($grammar) {
     }
 
     # build a hashtable/PSCustomObject containing a list of includes used 
-    # in each repository item, $self and $base
-    $includes = @{}
-    foreach ($rule in $grammar.'repository'.PSObject.Properties) {
-        $includes[$rule.Name] = @( getincludes_recurse $rule.Value )
+    # in each repository and injections item, $self and $base
+    $includes = [ordered]@{}
+    foreach ($rule in $(
+            if ($grammar.'repository') {$grammar.'repository'.PSObject.Properties}
+            if ($grammar.'injections') {$grammar.'injections'.PSObject.Properties}
+        )) {
+        $includes[$rule.Name] = @(getincludes_recurse $rule.Value)
     }
     $includes.'$self' = @( 
-        foreach ($rule in $grammar.'patterns') {
-            # recurse the contained patterns
-            getincludes_recurse $rule
-        }
+        if ($grammar.'patterns') {getincludes_recurserules $grammar.'patterns'}
     )
-    $includes.'$base' = @( '$self' )
+    $includes.'$base' = @('$self')
 
     $includes
 }
 
-$grammar_json = Get-Content "powershell.tmlanguage.json" | ConvertFrom-Json
+try {
+    $grammar_json = Get-Content "powershell.tmlanguage.json" -ErrorAction Stop | ConvertFrom-Json
 
-getincludes $grammar_json
+    getincludes $grammar_json
+}
+catch {
+    throw # forward the error
+}
