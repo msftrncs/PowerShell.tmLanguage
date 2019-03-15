@@ -382,8 +382,8 @@ maxvalue
 enum crazy {
     assignment1 # must end at end of line
     assignment2 = 3 #must still end at end of line
-    assignment3 = `
-    4 # was allowed to continue because of PowerShell's line continuation marker, but now ends here
+    assignment3 =  6 `
+    + 4 # was allowed to continue because of PowerShell's line continuation marker, but now ends here
     assignment5 = 5 -bxor #doesn't end yet, because an operator automatically continues the line
     7 # but now it must end
     assignment6 = #this line is an error because '=' does not continue the line
@@ -446,3 +446,11 @@ switch -file ` test { ` test <##> {command} }
 
 "Hello`
 Hello"
+
+& -hello -there
+
+[int]::@'
+minvalue
+'@.tostring()
+
+'length'.length[1]
