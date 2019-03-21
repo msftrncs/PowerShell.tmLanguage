@@ -147,11 +147,12 @@ class HexSRecord {
 
     hidden [byte[]] GetBytes () {
         # collect the data bytes from the record
+        $c = [byte[]]::new($this.Length - $(switch ($this.RecType.value__) {0 {3} 1 {3} 2 {4} 3 {5} 5 {3} 6 {4} 7 {5} 8 {4} 9 {3}}) )
         for (
-            ($i = $this.GetDataStartPos()), ($c = [byte[]]@())
+            ($i = $this.GetDataStartPos()), ($k = 0)
             $i -lt $this.Length * 2 + 2
         ) {
-            $c += , [byte][HexConverter]::FromCharPair($this.SRecord[$i++], $this.SRecord[$i++])
+            $c[$k++] = [byte][HexConverter]::FromCharPair($this.SRecord[$i++], $this.SRecord[$i++])
         }
         return $c
     }
