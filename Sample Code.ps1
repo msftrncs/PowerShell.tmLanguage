@@ -55,6 +55,8 @@ for (
 "16#{0:X}" -f [int][char]'w'
 "16#{0:X}" -f [int]'w'[0]
 
+('save'.ToCharArray() | % {"{0:X2}" -f [byte]$_ }) -join ' '
+
 <#
     Should consider a class that can store memory blocks from S19/S28/S37 files, each memory block would posses a property
     of start address, and an array of lines which are an array of bytes.   The array of lines (themselves an array of bytes)
