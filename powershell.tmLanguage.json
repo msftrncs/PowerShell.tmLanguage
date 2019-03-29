@@ -646,8 +646,9 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,)}])",
-											"end": "\\n|(?=[,})\\]])",
+											"comment": "next statement, return when safe to exit",
+											"begin": "(?<=})(?![,)}\\]])",
+											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
 											"applyEndPatternLast": false,
 											"patterns": [
 												{
@@ -770,8 +771,9 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,)}])",
-											"end": "\\n|(?=[,})\\]])",
+											"comment": "next statement, return when safe to exit",
+											"begin": "(?<=})(?![,)}\\]])",
+											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
 											"applyEndPatternLast": false,
 											"patterns": [
 												{
@@ -885,8 +887,9 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?![,)}])",
-											"end": "\\n|(?=[,})\\]])",
+											"comment": "next statement, return when safe to exit",
+											"begin": "(?<=})(?![,)}\\]])",
+											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
 											"applyEndPatternLast": false,
 											"patterns": [
 												{
@@ -1076,8 +1079,9 @@
 													]
 												},
 												{
-													"begin": "(?<=\\))(?![,)}])",
-													"end": "\\n|(?=[,})\\]])",
+													"comment": "next statement, return when safe to exit",
+													"begin": "(?<=\\))(?![,)}\\]])",
+													"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
 													"applyEndPatternLast": false,
 													"patterns": [
 														{
@@ -1315,8 +1319,9 @@
 													]
 												},
 												{
-													"begin": "(?<=})(?![,)}])",
-													"end": "\\n|(?=[,})\\]])",
+													"comment": "next statement, return when safe to exit",
+													"begin": "(?<=})(?![,)}\\]])",
+													"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
 													"applyEndPatternLast": false,
 													"patterns": [
 														{
@@ -1369,8 +1374,9 @@
 							]
 						},
 						{
-							"begin": "(?<=})(?![,)}])",
-							"end": "\\n|(?=[,})\\]])",
+							"comment": "next statement, return when safe to exit",
+							"begin": "(?<=})(?![,)}\\]])",
+							"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
 							"applyEndPatternLast": false,
 							"patterns": [
 								{
@@ -1538,8 +1544,9 @@
 							]
 						},
 						{
-							"begin": "(?<=})(?![,)}])",
-							"end": "\\n|(?=[,})\\]])",
+							"comment": "next statement, return when safe to exit",
+							"begin": "(?<=})(?![,)}\\]])",
+							"end": "(?<!})(?=\\n)|(?=[,})\\]])",
 							"applyEndPatternLast": false,
 							"patterns": [
 								{
@@ -1604,8 +1611,9 @@
 							]
 						},
 						{
-							"begin": "(?<=})(?![,)}])",
-							"end": "\\n|(?=[,})\\]])",
+							"comment": "next statement, return when safe to exit",
+							"begin": "(?<=})(?![,)}\\]])",
+							"end": "(?<!})(?=\\n)|(?=[,})\\]])",
 							"applyEndPatternLast": false,
 							"patterns": [
 								{
@@ -2201,8 +2209,9 @@
 									]
 								},
 								{
-									"begin": "(?<=})(?![,)}])",
-									"end": "\\n|(?=[,})\\]])",
+									"comment": "next statement, return when safe to exit",
+									"begin": "(?<=})(?![,)}\\]])",
+									"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
 									"patterns": [
 										{
 											"include": "$self"
@@ -2219,8 +2228,9 @@
 					]
 				},
 				{
-					"begin": "(?![,)}]|$)",
-					"end": "\\n|(?=[,})\\]])",
+					"comment": "next statement, return when safe to exit",
+					"begin": "(?![,)}\\]]|$)",
+					"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
 					"patterns": [
 						{
 							"include": "$self"
@@ -2715,8 +2725,9 @@
 															]
 														},
 														{
-															"begin": "(?<=})(?![,)}])",
-															"end": "\\n|(?=[,})\\]])",
+															"comment": "next statement, return when safe to exit",
+															"begin": "(?<=})(?![,)}\\]])",
+															"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
 															"applyEndPatternLast": false,
 															"patterns": [
 																{
@@ -2747,8 +2758,9 @@
 													]
 												},
 												{
-													"begin": "(?![,)}])",
-													"end": "\\n|(?=[,})\\]])",
+													"comment": "next statement, return when safe to exit",
+													"begin": "(?![,)}\\]])",
+													"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
 													"applyEndPatternLast": false,
 													"patterns": [
 														{
@@ -3489,8 +3501,9 @@
 					]
 				},
 				{
-					"begin": "(?<=})(?![,)}])",
-					"end": "\\n|(?=[,})\\]])",
+					"comment": "next statement, return when safe to exit",
+					"begin": "(?<=})(?![,)}\\]])",
+					"end": "(?<!})(?=\\n)|(?=[,})\\]])",
 					"applyEndPatternLast": false,
 					"patterns": [
 						{
