@@ -4081,6 +4081,18 @@
 							"include": "#functionName"
 						}
 					]
+				},
+				{
+					"begin": "\\$\\{",
+					"end": "}",
+					"patterns": [
+						{
+							"match": "\\$"
+						},
+						{
+							"include": "#functionName"
+						}
+					]
 				}
 			]
 		},
