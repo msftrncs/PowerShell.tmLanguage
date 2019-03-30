@@ -1866,22 +1866,62 @@
 					"include": "#expressionGroup"
 				},
 				{
-					"include": "#substatement"
-				},
-				{
 					"include": "#hashtable"
 				},
 				{
 					"include": "#array"
 				},
 				{
-					"include": "#variable"
-				},
-				{
 					"include": "#quotedStrings_Members"
 				},
 				{
 					"include": "#numericConstant_argumentMode"
+				},
+				{
+					"comment": "could be variable reference, if it doesn't have member reference, its the start of an unquoted expandable string",
+					"begin": "(?=\\$(?!\\())",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"comment": "check out the first variable reference",
+							"begin": "\\G(?=\\$)",
+							"end": "(?!\\G)",
+							"patterns": [
+								{
+									"include": "#variableNoProperty"
+								}
+							]
+						},
+						{
+							"comment": "if a member access doesn't occur after variable, finish as an unquoted expandable string argument.",
+							"begin": "(?=[^\\s{(,;&|)}])(?!(?=\\.(?!\\.)|::|\\[))",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#unquotedArgument"
+								}
+							]
+						},
+						{
+							"begin": "(?=\\.(?!\\.)|::|\\[)",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#accessors"
+								},
+								{
+									"comment": "attempt another argument after member access",
+									"include": "#argument"
+								}
+							]
+						}
+					]
+				},
+				{
+					"include": "#substatement"
 				},
 				{
 					"include": "#unquotedArgument"
@@ -1956,6 +1996,10 @@
 				{
 					"match": "`(?!\\n)\\s",
 					"name": "invalid.character.escape.powershell"
+				},
+				{
+					"match": "\\.(?=\\$)",
+					"name": "string.unquoted.argument.powershell"
 				},
 				{
 					"begin": "(?=[^\\s{(,;&|)}])",
@@ -3746,11 +3790,11 @@
 			"patterns": [
 				{
 					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
+					"end": "(?!\\G)",
+					"applyEndPatternLast": false,
 					"patterns": [
 						{
-							"begin": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])(?=\\.(?!\\.)|::|\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -3769,7 +3813,7 @@
 							]
 						},
 						{
-							"match": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
+							"match": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
 							"captures": {
 								"0": {
 									"patterns": [
@@ -3787,7 +3831,7 @@
 				},
 				{
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
+					"match": "\\G(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -3802,11 +3846,11 @@
 		},
 		"variableNoProperty": {
 			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
-			"end": "(?=.|$)",
-			"applyEndPatternLast": true,
+			"end": "(?!\\G)",
+			"applyEndPatternLast": false,
 			"patterns": [
 				{
-					"match": "\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
+					"match": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
 					"captures": {
 						"0": {
 							"patterns": [

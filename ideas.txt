@@ -106,3 +106,11 @@ End with any character not processed or end of line
     Begin with `ELSE`
 
 
+
+complex argument scoping.
+arguments that start with a variable reference need to process first variable, if it posses a member or index reference, the argument ends at the end of the reference.  If there is no reference, then the argument is an unquoted expandable string, for which further embedded variables cannot reference members.
+arguments that start with a `.$` actually represent two arguments. `.` becomes its own argument.
+All other unquoted arguments are expandable strings.  Embedded variables cannot reference variables.
+An argument that starts with a substatement, the substatement is its own argument.
+ 
+
