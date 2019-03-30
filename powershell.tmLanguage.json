@@ -1681,7 +1681,7 @@
 				},
 				{
 					"comment": "(dot) source operator, requires trailing space, or invoke operator",
-					"begin": "&|\\.(?=\\*?[\\s,;&|{}\\(\\)]|\\$[\\p{L}$?^:_{])",
+					"begin": "&|\\.(?=[\\s{(,;&|)}\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}]|\\$[\\p{L}$?^:_{(])",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.invoke-or-source.powershell"
