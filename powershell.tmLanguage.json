@@ -1767,7 +1767,7 @@
 				},
 				{
 					"comment": "patterns that indicate an expression, might be able to simplify this to include expression_mode and then see if the cursor advanced, sorta, don't forget about 'notCode', maybe check operand/operator only first, as redirect could also be a problem.",
-					"begin": "(?=\\$[{(\\w:$?^]|@?[({]|(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))[^~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+\\x{2013}-\\x{2015}-]|[,\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
+					"begin": "(?=[$@][{(\\w:$?^]|[({]|[,\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
 					"end": "$(?=\\n)|(?=[;)}\\]])",
 					"patterns": [
 						{
@@ -1922,6 +1922,19 @@
 				},
 				{
 					"include": "#substatement"
+				},
+				{
+					"comment": "splatting cannot have members and certain characters following, including no line comment",
+					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
+					"captures": {
+						"0": {
+							"patterns": [
+								{
+									"include": "#variable_inner"
+								}
+							]
+						}
+					}
 				},
 				{
 					"include": "#unquotedArgument"
@@ -3831,16 +3844,8 @@
 				},
 				{
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "\\G(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
-					"captures": {
-						"0": {
-							"patterns": [
-								{
-									"include": "#variable_inner"
-								}
-							]
-						}
-					}
+					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))",
+					"name": "invalid.splat.powershell"
 				}
 			]
 		},
