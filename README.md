@@ -24,6 +24,8 @@ I have made significant changes, based on PowerShell/EditorSyntax commit 472c944
 - In many places, invalid text will be so marked.
 - There are still issues being worked out, so some valid text/keywords may be marked as invalid.
 
+For more information, reference [PowerShell/EditorSyntax PR #156](https://github.com/PowerShell/EditorSyntax/pull/156).  Changes made here are also being posted to that PR.
+
 Included are some scripts for conversion of the JSON file to PList format, and for interogating the scopes used within the syntax.
 
 I am sure there are lots of new problems, along with tons that this doesn't fix yet.
