@@ -2352,96 +2352,108 @@
 			]
 		},
 		"attribute": {
-			"begin": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?=\\())|ordered(?![.\\w`])",
-			"beginCaptures": {
-				"0": {
-					"name": "support.function.attribute.powershell"
-				}
-			},
-			"end": "(?!\\G\\()",
-			"name": "meta.attribute.powershell",
 			"patterns": [
 				{
-					"begin": "\\(",
+					"begin": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?=\\())",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.section.group.begin.powershell"
+							"name": "support.function.attribute.powershell"
 						}
 					},
-					"end": "\\)",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.group.end.powershell"
-						}
-					},
+					"end": "(?!\\G\\()",
+					"name": "meta.attribute.powershell",
 					"patterns": [
 						{
-							"comment": "`key` for DscProperty attribute",
-							"begin": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase|key)\\b",
+							"begin": "\\(",
 							"beginCaptures": {
-								"1": {
-									"name": "variable.parameter.attribute.powershell"
-								},
-								"2": {
-									"name": "keyword.operator.assignment.powershell"
+								"0": {
+									"name": "punctuation.section.group.begin.powershell"
 								}
 							},
-							"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+							"end": "\\)",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.group.end.powershell"
+								}
+							},
 							"patterns": [
 								{
-									"begin": "=",
+									"comment": "`key` for DscProperty attribute",
+									"begin": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase|key)\\b",
 									"beginCaptures": {
-										"0": {
+										"1": {
+											"name": "variable.parameter.attribute.powershell"
+										},
+										"2": {
 											"name": "keyword.operator.assignment.powershell"
 										}
 									},
 									"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 									"patterns": [
 										{
-											"include": "#advanceToToken"
-										},
-										{
-											"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-											"begin": "(?!$|[;|)}\\]])",
-											"end": "(?=.|$)",
-											"applyEndPatternLast": true,
+											"begin": "=",
+											"beginCaptures": {
+												"0": {
+													"name": "keyword.operator.assignment.powershell"
+												}
+											},
+											"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 											"patterns": [
 												{
-													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-													"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
-													"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+													"include": "#advanceToToken"
+												},
+												{
+													"comment": "begin at the first token in the expression, to test for numeric and unary operators",
+													"begin": "(?!$|[;|)}\\]])",
+													"end": "(?=.|$)",
+													"applyEndPatternLast": true,
 													"patterns": [
 														{
-															"include": "#expression_mode"
-														}
-													]
-												},
-												{
-													"include": "#numericConstant"
-												},
-												{
-													"include": "#operators_preUnary"
-												},
-												{
-													"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-													"begin": "(?!$(?=\\n)|[;&|)}\\]])",
-													"end": "$(?=\\n)|(?=[;&|)}\\]])",
-													"patterns": [
+															"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
+															"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
+															"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+															"patterns": [
+																{
+																	"include": "#expression_mode"
+																}
+															]
+														},
 														{
-															"include": "#expression_mode"
+															"include": "#numericConstant"
+														},
+														{
+															"include": "#operators_preUnary"
+														},
+														{
+															"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
+															"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+															"end": "$(?=\\n)|(?=[;&|)}\\]])",
+															"patterns": [
+																{
+																	"include": "#expression_mode"
+																}
+															]
 														}
 													]
 												}
 											]
 										}
 									]
+								},
+								{
+									"include": "#expression_mode"
 								}
 							]
-						},
-						{
-							"include": "#expression_mode"
 						}
 					]
+				},
+				{
+					"match": "(?<![.\\w-])(?i:ordered)(?![.\\w+`\\[-])",
+					"name": "support.function.attribute.powershell"
+				},
+				{
+					"match": "(?<![.\\w-])(?i:ref)(?![.\\w+`\\[-])",
+					"name": "storage.modifier.powershell"
 				}
 			]
 		},
@@ -3140,7 +3152,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\[",
+					"begin": "\\G\\[",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.section.bracket.begin.powershell"
@@ -3155,10 +3167,6 @@
 					"applyEndPatternLast": true,
 					"name": "meta.attribute-or-type-reference.powershell",
 					"patterns": [
-						{
-							"match": "(?i:ref)(?=\\])",
-							"name": "storage.modifier.powershell"
-						},
 						{
 							"include": "#attribute"
 						},
