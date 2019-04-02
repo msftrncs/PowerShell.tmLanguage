@@ -3179,7 +3179,8 @@
 					]
 				},
 				{
-					"begin": "(?=\\.(?!\\.)|::|\\[)",
+					"comment": "index access is not permitted here",
+					"begin": "(?=\\.(?!\\.)|::)",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.section.bracket.end.powershell"

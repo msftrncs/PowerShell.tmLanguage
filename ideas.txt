@@ -113,4 +113,12 @@ arguments that start with a `.$` actually represent two arguments. `.` becomes i
 All other unquoted arguments are expandable strings.  Embedded variables cannot reference variables.
 An argument that starts with a substatement, the substatement is its own argument.
  
+ Redesign Expression Mode
+
+ Expression mode should be a multi-tier mode.  Root tier should look for prefix operators before arguments
+    finding a prefix operator then searches for continued prefix operators, whhich is an even smaller list of operators, or an operand.
+    finding an operand then searches for postfix operators, and then general operators
+        finding a general operator starts back over with the root.
+
+[prefix [cont prefix]] operand [postfix] [operator [...]]
 
