@@ -122,3 +122,28 @@ An argument that starts with a substatement, the substatement is its own argumen
 
 [prefix [cont prefix]] operand [postfix] [operator [...]]
 
+
+### Types and Attributes
+
+[
+    type_or_attribute
+        [
+            subtype
+        ],
+        [
+            subtype
+        ]
+
+    OR
+
+        (
+            Attribute arguments list [, more ...]
+        )
+]
+
+In an attribute arguments, 
+    named_argument = [argument value] [, ...]
+    argument_value [, ...]
+
+named_argument follows typical property name rules
+argument_value must be constant expression (expression mode)

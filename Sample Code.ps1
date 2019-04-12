@@ -457,3 +457,33 @@ minvalue
 '@.tostring()
 
 'length'.length[1]
+
+configuration Name {
+    # One can evaluate expressions to get the node list
+    # E.g: $AllNodes.Where("Role -eq Web").NodeName
+    node ("Node1","Node2","Node3")
+    {
+        # Call Resource Provider
+        # E.g: WindowsFeature, File
+        WindowsFeature FriendlyName
+        {
+            Ensure = "Present"
+            Name = "Feature Name"
+        }
+
+        File FriendlyName
+        {
+            Ensure = "Present"
+            SourcePath = $SourcePath
+            DestinationPath = $DestinationPath
+            Type = "Directory"
+            DependsOn = "[WindowsFeature]FriendlyName"
+        }
+    }
+}
+
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'ParamName')]$a
+
+[Parameter(ValueFromPipeline = $true)]$a
+[Parameter(ValueFromPipeline <# hello #> = -not 1 + 2)]$a
+[Parameter( <# hello #> -not 1 + 2)]$a

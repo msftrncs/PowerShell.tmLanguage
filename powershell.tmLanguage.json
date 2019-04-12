@@ -2383,9 +2383,6 @@
 									"beginCaptures": {
 										"1": {
 											"name": "variable.parameter.attribute.powershell"
-										},
-										"2": {
-											"name": "keyword.operator.assignment.powershell"
 										}
 									},
 									"end": "$(?=\\n)|(?=[,;&|)}\\]])",
@@ -2828,7 +2825,7 @@
 												},
 												{
 													"comment": "next statement, return when safe to exit",
-													"begin": "(?![,)}\\]])",
+													"begin": "(?<=[}\\)])(?![,)}\\]])",
 													"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
 													"applyEndPatternLast": false,
 													"patterns": [
@@ -3158,7 +3155,7 @@
 							"name": "punctuation.section.bracket.begin.powershell"
 						}
 					},
-					"end": "]",
+					"end": "]|(?=\\n)",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.section.bracket.end.powershell"
@@ -3168,13 +3165,106 @@
 					"name": "meta.attribute-or-type-reference.powershell",
 					"patterns": [
 						{
-							"include": "#attribute"
+							"ignore include": "#attribute",
+							"match": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?![.\\w+`-]))",
+							"name": "support.function.attribute.powershell"
+						},
+						{
+							"begin": "(?=\\()",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"begin": "\\G\\(",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.group.attribute-argument-set.begin.powershell"
+										}
+									},
+									"end": "\\)",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation..group.attribute-argument-set.end.powershell"
+										}
+									},
+									"applyEndPatternLast": true,
+									"name": "meta.attribute-argument-set.powershell",
+									"patterns": [
+										{
+											"begin": "\\b([\\p{L}_]\\w*)",
+											"beginCaptures": {
+												"1": {
+													"name": "variable.parameter.attribute.powershell"
+												}
+											},
+											"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+											"patterns": [
+												{
+													"begin": "=",
+													"beginCaptures": {
+														"0": {
+															"name": "keyword.operator.assignment.attribute-argument.powershell"
+														}
+													},
+													"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+													"patterns": [
+														{
+															"include": "#advanceToToken"
+														},
+														{
+															"comment": "begin at the first token in the expression, to test for numeric and unary operators",
+															"begin": "(?!$|[;|)}\\]])",
+															"end": "(?=.|$)",
+															"applyEndPatternLast": true,
+															"patterns": [
+																{
+																	"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
+																	"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
+																	"end": "$(?=\\n)|(?=[,;&|)}\\]])",
+																	"patterns": [
+																		{
+																			"include": "#expression_mode"
+																		}
+																	]
+																},
+																{
+																	"include": "#numericConstant"
+																},
+																{
+																	"include": "#operators_preUnary"
+																},
+																{
+																	"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
+																	"begin": "(?!$(?=\\n)|[;&|)}\\]])",
+																	"end": "$(?=\\n)|(?=[;&|)}\\]])",
+																	"patterns": [
+																		{
+																			"include": "#expression_mode"
+																		}
+																	]
+																}
+															]
+														}
+													]
+												},
+												{
+													"include": "#notCode"
+												}
+											]
+										},
+										{
+											"match": "=",
+											"name": "invalid.source.powershell"
+										},
+										{
+											"include": "#expression_mode"
+										}
+									]
+								}
+							]
 						},
 						{
 							"include": "#type_SubType"
-						},
-						{
-							"comment": "[^\\s\\W]+"
 						}
 					]
 				},
@@ -3959,7 +4049,7 @@
 					"name": "meta.hashtable.powershell",
 					"patterns": [
 						{
-							"match": "\\b(\\w+)(?=\\s*=)",
+							"match": "\\b([\\p{L}_]\\w*)(?=\\s*=)",
 							"name": "entity.name.variable.property.powershell"
 						},
 						{
