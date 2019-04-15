@@ -3165,6 +3165,9 @@
 					"name": "meta.attribute-or-type-reference.powershell",
 					"patterns": [
 						{
+							"include": "#advanceToToken"
+						},
+						{
 							"ignore include": "#attribute",
 							"match": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?![.\\w+`-]))",
 							"name": "support.function.attribute.powershell"

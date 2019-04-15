@@ -321,21 +321,24 @@ ${local:} #not valid!  no variable reference following scope/drive delimiter
 
 $a[$b].hello###### .notes
 
-–—―‒
+–not —not ―not 1 # different dashes
+‒not 1 # but ‒ is not a valid dash
+–—$a # different dashes combined
+—―$b # different dashes combined
 
-„hello" ‚hello '
+„hello" + ‚hello '
 
-" “”„" " ‟ "
+" “”„" " + " '‟' is not a valid quote "
 
-‛’‚‘
-'
-"
+‛’‚‘ + '‚
+
+$‟hello # ‟ is neither a quote, nor a valid variable character
+
 - ($a)+32-35
 -hello
 
 
-[flags()] enum WineSweetness : byte # requires PS 6.2
-{
+[flags()] enum WineSweetness : byte { # requires PS 6.2
     VeryDry
     Dry
     Moderate
@@ -343,7 +346,7 @@ $a[$b].hello###### .notes
     VerySweet
 }
 
-[winesweetness].getenumvalues().foreach({[pscustomobject]@{Element=$_; Value=$_.value__}})
+[winesweetness].getenumvalues().foreach( { [pscustomobject]@{Element = $_; Value = $_.value__ } })
 
 $variable:hello
 
@@ -375,12 +378,12 @@ Invoke-Expression ([IO.StreamReader]::new([IO.Compression.DeflateStream]::new([I
 [CrazyEnums]::hello3.hello.hello-shr 2345
 
 [
-int32]::
+int32 <# hello #>]::
 minvalue..[
 int32]::
 maxvalue
 
-[int32]::minvalue..[int32]::maxvalue-shr $hello
+[int32]::minvalue..[int32]::maxvalue-shr$hello
 
 enum crazy {
     assignment1 # must end at end of line
