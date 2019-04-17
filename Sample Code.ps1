@@ -461,6 +461,16 @@ minvalue
 
 'length'.length[1]
 
+filter quoteStringWithSpecialChars {
+    if ($_ -and ($_ -match '[\s#@$;,''{}()]')) {
+        "'$($_ -replace "'", "''")'"
+    }
+    else {
+        $_
+    }
+}
+
+
 configuration Name {
     # One can evaluate expressions to get the node list
     # E.g: $AllNodes.Where("Role -eq Web").NodeName
