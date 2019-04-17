@@ -448,6 +448,10 @@ switch -file ` test { ` test <##> {command} }
 # sample empty pipe
 | hello
 
+hello |
+get-content a-file |
+write-output
+
 6 + `3
 
 "Hello`
