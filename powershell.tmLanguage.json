@@ -3701,7 +3701,7 @@
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "(([$@])(?i:(:?(?:Error|ExecutionContext|Host|Home|PID|PsHome|PsVersionTable|ShellID)$)))"
+					"match": "(([$@])(?i:(:?(?:Error|ExecutionContext|Is(?:CoreCLR|Linux|MacOS|Windows)|Host|Home|PID|PsHome|PsVersionTable|ShellID)$)))"
 				},
 				{
 					"captures": {
@@ -4588,8 +4588,11 @@
 							"name": "punctuation.separator.job.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[;)}\\]])",
+					"end": "$(?=\\n)(?!\\G)|(?=[;)}\\]])",
 					"patterns": [
+						{
+							"include": "#advanceToToken"
+						},
 						{
 							"include": "$self"
 						}
@@ -4603,8 +4606,11 @@
 							"name": "punctuation.separator.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[;&)}\\]])",
+					"end": "$(?=\\n)(?!\\G)|(?=[;&)}\\]])",
 					"patterns": [
+						{
+							"include": "#advanceToToken"
+						},
 						{
 							"include": "#command_mode"
 						}
