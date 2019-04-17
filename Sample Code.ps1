@@ -474,6 +474,12 @@ filter quoteStringWithSpecialChars {
     }
 }
 
+function testfun {$input}
+measure-command {1..50000 | testfun}
+measure-command {1..50000 | % { 1 | testfun}}
+filter testfil {$_}
+measure-command {1..50000 | testfil}
+measure-command {1..50000 | % { 1 | testfil}}
 
 configuration Name {
     # One can evaluate expressions to get the node list
