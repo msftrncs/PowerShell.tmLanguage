@@ -3341,6 +3341,10 @@
 						{
 							"match": ",",
 							"name": "punctuation.separator.comma.powershell"
+						},
+						{
+							"match": "[^\\s\\[\\]+,]+",
+							"name": "invalid.character.powershell"
 						}
 					]
 				},
@@ -3381,7 +3385,7 @@
 							"name": "punctuation.separator.comma.powershell"
 						},
 						{
-							"match": "(?<!])[^\\s\\[\\]+,]+",
+							"match": "(?<!])[^\\s\\[\\]\\(+,]+",
 							"name": "invalid.character.powershell"
 						}
 					]
