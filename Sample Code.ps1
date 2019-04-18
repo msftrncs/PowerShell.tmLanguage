@@ -511,4 +511,4 @@ configuration Name {
 [Parameter(ValueFromPipeline <# hello #> = -not 1 + 2)]$a
 [Parameter( <# hello #> -not 1 + 2)]$a
 
-Invoke-Command -ComputerName . { $using:foo; $using:global:foo; $using:function:foo }
+{ $using:foo; $using:global:foo; $using:function:foo }
