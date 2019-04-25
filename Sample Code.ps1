@@ -512,3 +512,18 @@ configuration Name {
 [Parameter( <# hello #> -not 1 + 2)]$a
 
 { $using:foo; $using:global:foo; $using:function:foo }
+
+@'
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>foo</title>
+  </head>
+  <body>
+    <div>Hello</div>
+  </body>
+</html>
+'@ > `
+.'.test.html' <#test #>
+.test.html > <#test #>  <#test #> `   'hello<#>#>'hello <# test #> hello
+switch -file bello {hello {} }

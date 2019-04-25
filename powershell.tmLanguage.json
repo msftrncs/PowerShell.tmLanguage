@@ -2011,12 +2011,12 @@
 					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"match": "\\.(?=\\$)",
+					"match": "\\.(?=['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s{(,;&|)}$])",
 					"name": "string.unquoted.argument.powershell"
 				},
 				{
 					"begin": "(?=[^\\s{(,;&|)}])",
-					"alternateBegin": "(?=[^\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[{(,;&|)}$@])|(?<=\\S)(?=[$@<>])",
+					"alternateBegin": "(?=[^'\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[{(,;&|)}$@])|(?<=\\S)(?=[$@<>])",
 					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "string.unquoted.argument.powershell",
 					"patterns": [
@@ -2297,22 +2297,29 @@
 			]
 		},
 		"commentBlock": {
-			"begin": "<#",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.definition.comment.block.begin.powershell"
-				}
-			},
-			"end": "#>",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.definition.comment.block.end.powershell"
-				}
-			},
-			"name": "comment.block.powershell",
+			"comment": "commentBlock will consume all whitespace (but not newline) that follows to ease other matches",
+			"begin": "(?=<#)",
+			"end": "(?<=#>)(?:(?!\\n)\\s)*",
 			"patterns": [
 				{
-					"include": "#commentEmbeddedDocs"
+					"begin": "<#",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.block.begin.powershell"
+						}
+					},
+					"end": "#>",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.block.end.powershell"
+						}
+					},
+					"name": "comment.block.powershell",
+					"patterns": [
+						{
+							"include": "#commentEmbeddedDocs"
+						}
+					]
 				}
 			]
 		},
@@ -3412,15 +3419,40 @@
 				}
 			]
 		},
+		"advanceToArgument": {
+			"comment": "consume spaces and comments (but not unescaped line ends) until the next token appears",
+			"begin": "\\G(?=[\\s]|<#|`\\s)",
+			"end": "(?!\\s)(?!$)|$(?=\\n)",
+			"applyEndPatternLast": true,
+			"patterns": [
+				{
+					"match": "`\\n",
+					"name": "constant.character.escape.powershell"
+				},
+				{
+					"comment": "useless escape, and doesn't count as a token",
+					"match": "`\\s",
+					"name": "invalid.character.escape.powershell"
+				},
+				{
+					"include": "#commentBlock"
+				}
+			]
+		},
 		"advanceToToken": {
 			"comment": "consume spaces and comments and line ends until the next token appears",
-			"begin": "\\G(?=[\\s#]|<#|`\\n)",
+			"begin": "\\G(?=[\\s#]|<#|`\\s)",
 			"end": "(?!\\s)(?!$)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
 					"match": "`\\n",
 					"name": "constant.character.escape.powershell"
+				},
+				{
+					"comment": "useless escape, and doesn't count as a token",
+					"match": "`\\s",
+					"name": "invalid.character.escape.powershell"
 				},
 				{
 					"include": "#commentLine"
@@ -4639,31 +4671,20 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\G(?![;&|)}]|$)",
-							"end": "(?![\\s#]|<#|`\\n)|$",
-							"applyEndPatternLast": false,
+							"include": "#advanceToArgument"
+						},
+						{
+							"begin": "(?<=[\\s>]|\\G|^)(?![\\s#;&|)}]|<#|$|`\\s)",
+							"end": "(?!\\G)",
+							"name": "meta.argument.redirect-file.powershell",
 							"patterns": [
 								{
-									"match": "`\\n",
-									"name": "constant.character.escape.powershell"
+									"comment": "`,`, `<` and `>` not permitted here",
+									"match": "[,<>]",
+									"name": "invalid.source.powershell"
 								},
 								{
-									"include": "#commentBlock"
-								},
-								{
-									"begin": "(?![\\s#;&|)}]|<#|$|`\\n)",
-									"end": "(?!\\G)",
-									"name": "meta.argument.redirect-file.powershell",
-									"patterns": [
-										{
-											"comment": "`,`, `<` and `>` not permitted here",
-											"match": "[,<>]",
-											"name": "invalid.source.powershell"
-										},
-										{
-											"include": "#argument"
-										}
-									]
+									"include": "#argument"
 								}
 							]
 						}
