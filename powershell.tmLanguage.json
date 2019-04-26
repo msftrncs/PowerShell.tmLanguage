@@ -3263,6 +3263,16 @@
 											"include": "#expression_mode"
 										}
 									]
+								},
+								{
+									"begin": "(?<=\\))(?![;&|)}\\]])",
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#advanceToToken"
+										}
+									]
 								}
 							]
 						},
@@ -3359,7 +3369,7 @@
 							]
 						}
 					},
-					"end": "(?=[^\\s])|(?<=])",
+					"end": "(?=[^\\s]|\\n)|(?<=])",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
