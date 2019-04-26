@@ -2297,29 +2297,22 @@
 			]
 		},
 		"commentBlock": {
-			"comment": "commentBlock will consume all whitespace (but not newline) that follows to ease other matches",
-			"begin": "(?=<#)",
-			"end": "(?<=#>)(?:(?!\\n)\\s)*",
+			"begin": "<#",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.comment.block.begin.powershell"
+				}
+			},
+			"end": "#>",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.comment.block.end.powershell"
+				}
+			},
+			"name": "comment.block.powershell",
 			"patterns": [
 				{
-					"begin": "<#",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.definition.comment.block.begin.powershell"
-						}
-					},
-					"end": "#>",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.definition.comment.block.end.powershell"
-						}
-					},
-					"name": "comment.block.powershell",
-					"patterns": [
-						{
-							"include": "#commentEmbeddedDocs"
-						}
-					]
+					"include": "#commentEmbeddedDocs"
 				}
 			]
 		},
