@@ -2554,7 +2554,7 @@
 		"doubleQuotedHereStringEscapes": {
 			"patterns": [
 				{
-					"match": "`[`0abefnrtv\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$]",
+					"match": "`[`0abefnrtv]|^`[\"\\x{201C}-\\x{201E}](?=@)",
 					"name": "constant.character.escape.powershell"
 				},
 				{
