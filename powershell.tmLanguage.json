@@ -4138,12 +4138,14 @@
 			]
 		},
 		"quotedStrings_Members": {
-			"begin": "(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))",
+			"comment": "detect all quoted strings (arguments or expressions) starting here",
+			"begin": "(?=@?['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])",
 			"end": "(?!\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "['\\x{2018}-\\x{201B}]",
+					"comment": "single quoted strings",
+					"begin": "\\G['\\x{2018}-\\x{201B}]",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.powershell"
@@ -4165,9 +4167,28 @@
 					]
 				},
 				{
-					"begin": "@(?:[\"\\x{201C}-\\x{201E}])(?=\\s*$)",
-					"end": "^(?:[\"\\x{201C}-\\x{201E}])@",
-					"name": "string.quoted.double.heredoc.powershell",
+					"comment": "double quoted here-strings",
+					"begin": "\\G@[\"\\x{201C}-\\x{201E}]",
+					"beginCaptures": {
+						"0": {
+							"name": "string.quoted.double.heredoc.powershell punctuation.definition.heredoc.begin.powershell"
+						}
+					},
+					"end": "^([\"\\x{201C}-\\x{201E}]@)|\\G((?:\\s*\\S+)+)(?:(?!\\n)\\s)*$",
+					"endCaptures": {
+						"1": {
+							"name": "string.quoted.double.heredoc.powershell punctuation.definition.heredoc.end.powershell"
+						},
+						"2": {
+							"patterns": [
+								{
+									"match": "\\S+",
+									"name": "invalid.source.powershell"
+								}
+							]
+						}
+					},
+					"contentName": "string.quoted.double.heredoc.powershell",
 					"patterns": [
 						{
 							"include": "#variableNoProperty"
@@ -4181,12 +4202,32 @@
 					]
 				},
 				{
-					"begin": "@['\\x{2018}-\\x{201B}](?=\\s*$)",
-					"end": "^['\\x{2018}-\\x{201B}]@",
-					"name": "string.quoted.single.heredoc.powershell"
+					"comment": "single quoted here-strings",
+					"begin": "\\G@['\\x{2018}-\\x{201B}]",
+					"beginCaptures": {
+						"0": {
+							"name": "string.quoted.single.heredoc.powershell punctuation.definition.heredoc.begin.powershell"
+						}
+					},
+					"end": "^(['\\x{2018}-\\x{201B}]@)|\\G((?:\\s*\\S+)+)(?:(?!\\n)\\s)*$",
+					"endCaptures": {
+						"1": {
+							"name": "string.quoted.single.heredoc.powershell punctuation.definition.heredoc.end.powershell"
+						},
+						"2": {
+							"patterns": [
+								{
+									"match": "\\S+",
+									"name": "invalid.source.powershell"
+								}
+							]
+						}
+					},
+					"contentName": "string.quoted.single.heredoc.powershell"
 				},
 				{
-					"begin": "(?:[\"\\x{201C}-\\x{201E}])",
+					"comment": "double quoted strings",
+					"begin": "\\G(?:[\"\\x{201C}-\\x{201E}])",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.powershell"
