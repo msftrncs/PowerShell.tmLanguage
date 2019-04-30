@@ -1767,7 +1767,7 @@
 				},
 				{
 					"comment": "patterns that indicate an expression, might be able to simplify this to include expression_mode and then see if the cursor advanced, sorta, don't forget about 'notCode', maybe check operand/operator only first, as redirect could also be a problem.",
-					"begin": "(?=[$@][{(\\w:$?^]|[({]|[,\\[\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}])|(?=@?(['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])(?:(?<!@\\g<1>)|\\s*$))|(?=[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/=\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\x{2013}-\\x{2015}-])",
+					"begin": "(?=[$@][{(\\w:$?^]|[({\\[,]|@?['\"\\x{2018}-\\x{201E}]|[\\x{2013}-\\x{2015}-][\\s#{(,;|)}<>.!+%*/='\"\\x{2018}-\\x{201E}\\x{2013}-\\x{2015}-])",
 					"end": "$(?=\\n)|(?=[;)}\\]])",
 					"patterns": [
 						{
@@ -2011,12 +2011,12 @@
 					"name": "invalid.character.escape.powershell"
 				},
 				{
-					"match": "\\.(?=['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s{(,;&|)}$])",
+					"match": "\\.(?=['\"\\x{2018}-\\x{201E}\\s{(,;&|)}$])",
 					"name": "string.unquoted.argument.powershell"
 				},
 				{
 					"begin": "(?=[^\\s{(,;&|)}])",
-					"alternateBegin": "(?=[^'\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}\\s\\[{(,;&|)}$@])|(?<=\\S)(?=[$@<>])",
+					"alternateBegin": "(?=[^'\"\\x{2018}-\\x{201E}\\s\\[{(,;&|)}$@])|(?<=\\S)(?=[$@<>])",
 					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "string.unquoted.argument.powershell",
 					"patterns": [
@@ -4139,7 +4139,7 @@
 		},
 		"quotedStrings_Members": {
 			"comment": "detect all quoted strings (arguments or expressions) starting here",
-			"begin": "(?=@?['\\x{2018}-\\x{201B}\"\\x{201C}-\\x{201E}])",
+			"begin": "(?=@?['\"\\x{2018}-\\x{201E}])",
 			"end": "(?!\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
