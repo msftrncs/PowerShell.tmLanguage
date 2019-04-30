@@ -347,7 +347,7 @@ $‟hello # ‟ is neither a quote, nor a valid variable character
     VerySweet
 }
 
-[winesweetness].getenumvalues().foreach( { [pscustomobject]@{Element = $_; Value = $_.value__ } })
+[winesweetness].getenumvalues().foreach( { [pscustomobject]@{Element = $_; Value = $_.value__ } } )
 
 $variable:hello
 
@@ -524,6 +524,20 @@ configuration Name {
 [Parameter(ValueFromPipeline = $true)]$a
 [Parameter(ValueFromPipeline <# hello #> = -not 1 + 2)]$a
 [Parameter( <# hello #> -not 1 + 2)]$a
+
+Param(
+    # Specifies a path to one or more locations to search for ResX files. Wildcards are permitted.
+    [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+    [Alias('Path')]
+    [SupportsWildCards()]
+    [string[]] $SearchPath = '.',
+
+    # Recurse the path(s) to find files.
+    [switch] $Recurse,
+
+    # Depth of recursion allowed to find files.
+    [uint32] $Depth
+)
 
 { $using:foo; $using:global:foo; $using:function:foo }
 

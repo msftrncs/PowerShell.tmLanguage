@@ -2393,7 +2393,7 @@
 												},
 												{
 													"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-													"begin": "(?!$|[;|)}\\]])",
+													"begin": "(?!$|[,;|)}\\]])",
 													"end": "(?=.|$)",
 													"applyEndPatternLast": true,
 													"patterns": [
@@ -2415,8 +2415,8 @@
 														},
 														{
 															"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-															"begin": "(?!$(?=\\n)|[;&|)}\\]])",
-															"end": "$(?=\\n)|(?=[;&|)}\\]])",
+															"begin": "(?!$(?=\\n)|[,;&|)}\\]])",
+															"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 															"patterns": [
 																{
 																	"include": "#expression_mode"
