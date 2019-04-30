@@ -276,7 +276,8 @@ class myclass : float
 
 "@).count
 
-'<?xml version="1.0"' + (if ($encoding) {' encoding="' + $encoding + '"'}) + '?>' | get-command
+'<?xml version="1.0"' + (if ($encoding) {' encoding="' + $encoding + '"'}) + '?>'
+'<?xml version="1.0"' + $(if ($encoding) {' encoding="' + $encoding + '"'}) + '?>'
 
 $(hello).test
 
@@ -429,7 +430,9 @@ $dict.Add('FirstName', 'Grant')
 
 [System.Collections.Generic.Dictionary``2+ValueCollection[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Collections.Generic.List``1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]]::new()
 
+Write-Host(" Breaking to check logs") break; break
 Write-Host " Breaking to check logs" break
+break
 
 [byte[ ]] `
 hello
@@ -524,17 +527,33 @@ configuration Name {
 
 { $using:foo; $using:global:foo; $using:function:foo }
 
-@'
+@'   
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>foo</title>
+    <title>''foo''</title>
   </head>
   <body>
     <div>Hello</div>
   </body>
 </html>
-'@ > `
+'@ > <# hello #>`
 .'.test.html' <#test #>
 .test.html > <#test #>  <#test #> `   'hello<#>#>'hello <# test #> hello
-switch -file bello {hello {} }
+switch -file $bello {hello {} }
+
+#echo `''hello there'
+echo `""hello there"
+
+@"   
+""here here""
+"@
+
+
+"""this is a string"""
+[Parameter(ParameterSetName="")]$a
+
+@"
+`" `' `
+`"@ hello there
+"@
