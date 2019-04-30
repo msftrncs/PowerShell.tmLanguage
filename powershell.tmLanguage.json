@@ -649,7 +649,6 @@
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
 											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
-											"applyEndPatternLast": false,
 											"patterns": [
 												{
 													"include": "$self"
@@ -774,7 +773,6 @@
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
 											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
-											"applyEndPatternLast": false,
 											"patterns": [
 												{
 													"include": "$self"
@@ -890,7 +888,6 @@
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
 											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
-											"applyEndPatternLast": false,
 											"patterns": [
 												{
 													"include": "$self"
@@ -1082,7 +1079,6 @@
 													"comment": "next statement, return when safe to exit",
 													"begin": "(?<=\\))(?![,)}\\]])",
 													"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
-													"applyEndPatternLast": false,
 													"patterns": [
 														{
 															"include": "$self"
@@ -1322,7 +1318,6 @@
 													"comment": "next statement, return when safe to exit",
 													"begin": "(?<=})(?![,)}\\]])",
 													"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
-													"applyEndPatternLast": false,
 													"patterns": [
 														{
 															"include": "$self"
@@ -1377,7 +1372,6 @@
 							"comment": "next statement, return when safe to exit",
 							"begin": "(?<=})(?![,)}\\]])",
 							"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
-							"applyEndPatternLast": false,
 							"patterns": [
 								{
 									"include": "$self"
@@ -1547,7 +1541,6 @@
 							"comment": "next statement, return when safe to exit",
 							"begin": "(?<=})(?![,)}\\]])",
 							"end": "(?<!})(?=\\n)|(?=[,})\\]])",
-							"applyEndPatternLast": false,
 							"patterns": [
 								{
 									"include": "$self"
@@ -1614,7 +1607,6 @@
 							"comment": "next statement, return when safe to exit",
 							"begin": "(?<=})(?![,)}\\]])",
 							"end": "(?<!})(?=\\n)|(?=[,})\\]])",
-							"applyEndPatternLast": false,
 							"patterns": [
 								{
 									"include": "$self"
@@ -2464,7 +2456,7 @@
 							"name": "support.function.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[;&)}\\]])",
+					"end": "$(?=\\n)|(?=[;)}\\]])",
 					"patterns": [
 						{
 							"include": "#argument_mode"
@@ -2479,7 +2471,7 @@
 							"name": "support.function.$0.powershell"
 						}
 					},
-					"end": "$(?=\\n)|(?=[;&)}\\]])",
+					"end": "$(?=\\n)|(?=[;)}\\]])",
 					"patterns": [
 						{
 							"include": "#argument_mode"
@@ -2794,7 +2786,6 @@
 															"comment": "next statement, return when safe to exit",
 															"begin": "(?<=})(?![,)}\\]])",
 															"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
-															"applyEndPatternLast": false,
 															"patterns": [
 																{
 																	"include": "$self"
@@ -2827,7 +2818,6 @@
 													"comment": "next statement, return when safe to exit",
 													"begin": "(?<=[}\\)])(?![,)}\\]])",
 													"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
-													"applyEndPatternLast": false,
 													"patterns": [
 														{
 															"include": "$self"
@@ -3702,7 +3692,6 @@
 					"comment": "next statement, return when safe to exit",
 					"begin": "(?<=})(?![,)}\\]])",
 					"end": "(?<!})(?=\\n)|(?=[,})\\]])",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"include": "$self"
@@ -3945,7 +3934,6 @@
 				{
 					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
 					"end": "(?!\\G)",
-					"applyEndPatternLast": false,
 					"patterns": [
 						{
 							"begin": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])(?=\\.(?!\\.)|::|\\[)",
@@ -3993,7 +3981,6 @@
 		"variableNoProperty": {
 			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
 			"end": "(?!\\G)",
-			"applyEndPatternLast": false,
 			"patterns": [
 				{
 					"match": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
@@ -4665,7 +4652,7 @@
 					"begin": "&(?!&)",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.separator.job.powershell"
+							"name": "keyword.operator.other.job.powershell"
 						}
 					},
 					"end": "$(?=\\n)(?!\\G)|(?=[;)}\\]])",
@@ -4683,7 +4670,7 @@
 					"begin": "\\|(?!\\|)",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.separator.powershell"
+							"name": "keyword.operator.other.pipe.powershell"
 						}
 					},
 					"end": "$(?=\\n)(?!\\G)|(?=[;&)}\\]])",
