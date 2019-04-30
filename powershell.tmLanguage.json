@@ -363,7 +363,7 @@
 												{
 													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
 													"begin": "(?!\\G)(?!$(?=\\n)|[;&|)}\\]])",
-													"end": "$(?=\\n)|(?=[;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[;)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -379,7 +379,7 @@
 												{
 													"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
 													"begin": "(?!$(?=\\n)|[;&|)}\\]])",
-													"end": "$(?=\\n)|(?=[;&|)}\\]])",
+													"end": "$(?=\\n)|(?=[;)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -429,7 +429,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&)}])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\s{(,;&)}<>@#\\]]|`(?!\\s)))",
+					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}<>@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -1673,7 +1673,7 @@
 				},
 				{
 					"comment": "(dot) source operator, requires trailing space, or invoke operator",
-					"begin": "&|\\.(?=[\\s{(,;&|)}\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}]|\\$[\\p{L}$?^:_{(])",
+					"begin": "&|\\.(?=[\\s{(,;&|)}'\"\\x{2018}-\\x{201E}$@])",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.invoke-or-source.powershell"
@@ -1802,7 +1802,7 @@
 				},
 				{
 					"comment": "command names are allowed to start with < or >, without a backtick, but `function` requires a backtick.  See below!",
-					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&|)}])|(?=[^`\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}\\s{(,;&)}@#\\]]|`(?!\\s)))",
+					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&|)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -1917,7 +1917,7 @@
 				},
 				{
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}+-])",
+					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/'\"\\x{2018}-\\x{201E}+-])",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -2331,7 +2331,7 @@
 		"argumentModeEscapes": {
 			"patterns": [
 				{
-					"match": "`[`0abefnrtv\"\\x{201C}-\\x{201E}'\\x{2018}-\\x{201B}$@#{(,;&|)}<>\\n]",
+					"match": "`[`0abefnrtv'\"\\x{2018}-\\x{201E}$@#{(,;&|)}<>\\n]",
 					"name": "constant.character.escape.powershell"
 				},
 				{
