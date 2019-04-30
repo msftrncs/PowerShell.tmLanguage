@@ -465,6 +465,17 @@ minvalue
 
 'length'.length[1]
 
+function quoteStringWithSpecialChars {
+    $Input | foreach-object {
+        if ($_ -and ($_ -match '[\s#@$;,''{}()]')) {
+            "'$($_ -replace "'", "''")'"
+        }
+        else {
+            $_
+        }
+    }
+}
+
 filter quoteStringWithSpecialChars {
     if ($_ -and ($_ -match '[\s#@$;,''{}()]')) {
         "'$($_ -replace "'", "''")'"
