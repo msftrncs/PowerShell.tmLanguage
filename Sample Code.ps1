@@ -571,3 +571,5 @@ echo `""hello there"
 `" `' `
 `"@ hello there
 "@
+
+& test$a | write-output & another function # note the `&` are each in different scopes
