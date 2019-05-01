@@ -2343,109 +2343,6 @@
 				}
 			]
 		},
-		"attribute": {
-			"patterns": [
-				{
-					"begin": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?=\\())",
-					"beginCaptures": {
-						"0": {
-							"name": "support.function.attribute.powershell"
-						}
-					},
-					"end": "(?!\\G\\()",
-					"name": "meta.attribute.powershell",
-					"patterns": [
-						{
-							"begin": "\\(",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.section.group.begin.powershell"
-								}
-							},
-							"end": "\\)",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.section.group.end.powershell"
-								}
-							},
-							"patterns": [
-								{
-									"comment": "`key` for DscProperty attribute",
-									"begin": "(?i)\\b(mandatory|valuefrom(?:pipeline(?:bypropertyname)?|remainingarguments)|position(?:albinding)?|(?:default)?parametersetname|supports(?:shouldprocess|paging|transactions)|help(?:uri|message)|confirmimpact|ignorecase|key)\\b",
-									"beginCaptures": {
-										"1": {
-											"name": "variable.parameter.attribute.powershell"
-										}
-									},
-									"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-									"patterns": [
-										{
-											"begin": "=",
-											"beginCaptures": {
-												"0": {
-													"name": "keyword.operator.assignment.powershell"
-												}
-											},
-											"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-											"patterns": [
-												{
-													"include": "#advanceToToken"
-												},
-												{
-													"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-													"begin": "(?!$|[,;|)}\\]])",
-													"end": "(?=.|$)",
-													"applyEndPatternLast": true,
-													"patterns": [
-														{
-															"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-															"begin": "(?!\\G)(?!$(?=\\n)|[,;&|)}\\]])",
-															"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-															"patterns": [
-																{
-																	"include": "#expression_mode"
-																}
-															]
-														},
-														{
-															"include": "#numericConstant"
-														},
-														{
-															"include": "#operators_preUnary"
-														},
-														{
-															"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-															"begin": "(?!$(?=\\n)|[,;&|)}\\]])",
-															"end": "$(?=\\n)|(?=[,;&|)}\\]])",
-															"patterns": [
-																{
-																	"include": "#expression_mode"
-																}
-															]
-														}
-													]
-												}
-											]
-										}
-									]
-								},
-								{
-									"include": "#expression_mode"
-								}
-							]
-						}
-					]
-				},
-				{
-					"match": "(?<![.\\w-])(?i:ordered)(?![.\\w+`\\[-])",
-					"name": "support.function.attribute.powershell"
-				},
-				{
-					"match": "(?<![.\\w-])(?i:ref)(?![.\\w+`\\[-])",
-					"name": "storage.modifier.powershell"
-				}
-			]
-		},
 		"commands": {
 			"patterns": [
 				{
@@ -3158,7 +3055,6 @@
 							"include": "#advanceToToken"
 						},
 						{
-							"ignore include": "#attribute",
 							"match": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?![.\\w+`-]))",
 							"name": "support.function.attribute.powershell"
 						},
@@ -3206,7 +3102,7 @@
 														},
 														{
 															"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-															"begin": "(?!$|[;|)}\\]])",
+															"begin": "(?!$|[,;|)}\\]])",
 															"end": "(?=.|$)",
 															"applyEndPatternLast": true,
 															"patterns": [
@@ -3228,8 +3124,8 @@
 																},
 																{
 																	"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-																	"begin": "(?!$(?=\\n)|[;&|)}\\]])",
-																	"end": "$(?=\\n)|(?=[;&|)}\\]])",
+																	"begin": "(?!$(?=\\n)|[,;&|)}\\]])",
+																	"end": "$(?=\\n)|(?=[,;&|)}\\]])",
 																	"patterns": [
 																		{
 																			"include": "#expression_mode"
@@ -3237,6 +3133,9 @@
 																	]
 																}
 															]
+														},
+														{
+															"include": "#notCode"
 														}
 													]
 												},
@@ -3246,10 +3145,12 @@
 											]
 										},
 										{
+											"comment": "this makes `=` invalid without an argument name",
 											"match": "=",
 											"name": "invalid.source.powershell"
 										},
 										{
+											"comment": "this gets the comma as well as quoted or numeric literals",
 											"include": "#expression_mode"
 										}
 									]
@@ -3409,6 +3310,14 @@
 				{
 					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml|enum)(?![\\w-])",
 					"name": "support.class.powershell"
+				},
+				{
+					"match": "(?<![.\\w-])(?i:ordered)(?![.\\w+`\\[-])",
+					"name": "support.function.attribute.powershell"
+				},
+				{
+					"match": "(?<![.\\w-])(?i:ref)(?![.\\w+`\\[-])",
+					"name": "storage.modifier.powershell"
 				}
 			]
 		},
