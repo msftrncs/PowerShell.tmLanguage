@@ -334,7 +334,7 @@
 					"patterns": [
 						{
 							"match": ";",
-							"name": "punctuation.terminator.statement.powershell"
+							"name": "punctuation.terminator.assignment.enum-member.powershell"
 						},
 						{
 							"begin": "([\\p{L}_]\\w*)",
@@ -1667,9 +1667,7 @@
 		"command_mode": {
 			"patterns": [
 				{
-					"comment": "`||` and `&&` conditional terminators are reserved.",
-					"match": "\\|\\||&&",
-					"name": "invalid.reserved.powershell"
+					"include": "#terminators"
 				},
 				{
 					"comment": "(dot) source operator, requires trailing space, or invoke operator",
@@ -3055,7 +3053,7 @@
 							"include": "#advanceToToken"
 						},
 						{
-							"match": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property))(?![.\\w+`-]))",
+							"match": "(?i)(?:(?:cmdletbinding|alias|flags|outputtype|parameter|validate(?:not(?:null(?:orempty)?)|count|set|script|range|pattern|length)|allow(?:null|empty(?:collection|string))|supportswildcards|dsc(?:resource|property)|psdefaultvalue)(?![.\\w+`-]))",
 							"name": "support.function.attribute.powershell"
 						},
 						{
@@ -4014,7 +4012,8 @@
 							]
 						},
 						{
-							"include": "#terminators"
+							"match": ";",
+							"name": "punctuation.terminator.assignment.hashtable-member.powershell"
 						},
 						{
 							"include": "#notCode"
@@ -4297,14 +4296,9 @@
 		"terminators": {
 			"patterns": [
 				{
-					"comment": "`;` resume's in statement mode.",
-					"match": ";",
-					"name": "punctuation.terminator.statement.powershell"
-				},
-				{
-					"comment": "`,` just continues current mode",
-					"match": ",",
-					"name": "punctuation.separator.powershell"
+					"comment": "`||` and `&&` conditional terminators are reserved.",
+					"match": "\\|\\||&&",
+					"name": "invalid.reserved.powershell"
 				}
 			]
 		},
@@ -4557,8 +4551,11 @@
 		"redirection": {
 			"patterns": [
 				{
+					"include": "#terminators"
+				},
+				{
 					"comment": "`&` resume's in statement mode",
-					"begin": "&(?!&)",
+					"begin": "&",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.other.job.powershell"
