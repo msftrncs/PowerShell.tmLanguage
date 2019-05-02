@@ -4004,8 +4004,11 @@
 									"name": "keyword.operator.assignment.hashtable-member.powershell"
 								}
 							},
-							"end": "(?=[;}\\n])",
+							"end": "(?=[;}]|(?!\\G)\\n)",
 							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
 								{
 									"include": "#command_mode"
 								}
