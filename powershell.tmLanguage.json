@@ -4360,7 +4360,19 @@
 					]
 				},
 				{
-					"reserve": "#numericConstant"
+					"begin": "[\\x{2013}-\\x{2015}-]((?i:join|[ic]?(?:split)))(?!\\p{L})",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.unary.string-$1.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						}
+					]
 				},
 				{
 					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.))|(!))(?!\\p{L})|(\\+)",
