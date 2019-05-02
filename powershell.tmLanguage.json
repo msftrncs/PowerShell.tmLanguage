@@ -668,7 +668,7 @@
 					"patterns": [
 						{
 							"comment": "-parallel parameter can only be used in a workflow, consider using meta scopes, and an injection to properly catch this",
-							"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)(?:(:)?|(?![^\\s{(,;&|)}]))",
+							"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.foreach-parallel.powershell"
@@ -1196,7 +1196,7 @@
 					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
-							"match": "((?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive)))(?:(:)?|(?![^\\s{(,;&|)}]))",
+							"match": "((?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive)))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"captures": {
 								"1": {
 									"name": "entity.name.parameter.switch-$2.powershell"
@@ -1208,7 +1208,7 @@
 						},
 						{
 							"comment": "-file is special case, needs file argument, no condition expression",
-							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(?:(:)?|(?![^\\s{(,;&|)}]))",
+							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.switch-file.powershell"
@@ -1469,7 +1469,7 @@
 					"patterns": [
 						{
 							"comment": "-supportedcommand is special case, array of arguments",
-							"begin": "((?i:[\\x{2013}-\\x{2015}-]supportedcommand))(?:(:)?|(?![^\\s{(,;&|)}]))",
+							"begin": "((?i:[\\x{2013}-\\x{2015}-]supportedcommand))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.data-supportedcommand.powershell"
@@ -1979,7 +1979,8 @@
 					]
 				},
 				{
-					"match": "([\\x{2013}-\\x{2015}-]\\p{L}\\w*)(:)?",
+					"match": "([\\x{2013}-\\x{2015}-]\\p{L}[^\\s\\[{(,;&|)}'\"\\x{2018}-\\x{201E}]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
+					"old match": "([\\x{2013}-\\x{2015}-]\\p{L}[\\w~`!@#$%^*<?>\\]\\\\/=+-]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 					"captures": {
 						"1": {
 							"name": "entity.name.parameter.powershell"
@@ -2042,6 +2043,10 @@
 				{
 					"comment": "Once an operator has matched, subsequently #operators_preunary should be checked first until the next non operator token is found.  However, an operator might have matched before we've even gotten here (pre-unary)",
 					"include": "#operators"
+				},
+				{
+					"match": "`\\n",
+					"name": "constant.character.escape.powershell"
 				},
 				{
 					"ignore": "`",
@@ -3346,10 +3351,6 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"match": "`\\n",
-					"name": "constant.character.escape.powershell"
-				},
-				{
 					"comment": "useless escape, and doesn't count as a token",
 					"match": "`\\s",
 					"name": "invalid.character.escape.powershell"
@@ -3998,13 +3999,13 @@
 							"include": "#quotedStrings_Members"
 						},
 						{
-							"begin": "=",
+							"begin": "(=)\\n?",
 							"beginCaptures": {
-								"0": {
+								"1": {
 									"name": "keyword.operator.assignment.hashtable-member.powershell"
 								}
 							},
-							"end": "(?=[;}]|(?!\\G)\\n)",
+							"end": "(?=[;}\\n])",
 							"patterns": [
 								{
 									"include": "#advanceToToken"
