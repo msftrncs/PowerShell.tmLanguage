@@ -1818,12 +1818,12 @@
 						{
 							"comment": "at the begining of a command name, `<`, `>` or `>>` are the entire command name.",
 							"match": "\\G(?:<|>>?)",
-							"name": "variable.function.powershell"
+							"name": "entity.name.function.powershell"
 						},
 						{
 							"begin": "\\G(?=[^\\n{(,;&|)}])",
 							"end": "(?=[\\s{(,;&|)}])",
-							"name": "variable.function.powershell",
+							"name": "entity.name.function.powershell",
 							"patterns": [
 								{
 									"comment": "function names that start with `:` are treated differently",
@@ -2827,7 +2827,7 @@
 							"name": "punctuation.section.group.begin.powershell"
 						}
 					},
-					"name": "meta.group.substatement-expression.powershell",
+					"contentName": "meta.group.substatement-expression.powershell",
 					"end": "\\)",
 					"endCaptures": {
 						"0": {
@@ -2853,21 +2853,17 @@
 			]
 		},
 		"substatementNoProperty": {
-			"begin": "(\\$)(\\()",
+			"begin": "\\$\\(",
 			"beginCaptures": {
-				"1": {
-					"name": "keyword.other.substatement.powershell"
-				},
-				"2": {
-					"name": "punctuation.section.group.begin.powershell"
+				"0": {
+					"name": "punctuation.section.embedded.begin.powershell"
 				}
 			},
-			"name": "meta.embedded.substatement.powershell",
-			"contentName": "interpolated.complex.source.powershell",
+			"contentName": "meta.embedded.substatement.powershell interpolated.complex.source.powershell",
 			"end": "\\)",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.group.end.powershell"
+					"name": "punctuation.section.embedded.end.powershell"
 				}
 			},
 			"patterns": [
@@ -3503,7 +3499,7 @@
 							"name": "support.function.$1.powershell"
 						},
 						"2": {
-							"name": "variable.function.method.powershell"
+							"name": "entity.name.function.method.powershell"
 						}
 					},
 					"end": "(?!\\G)|(?=\\))",
