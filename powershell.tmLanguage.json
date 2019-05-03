@@ -32,7 +32,7 @@
 			]
 		},
 		{
-			"begin": "(?i:class)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:class)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.other.class.powershell"
@@ -47,7 +47,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "[\\p{L}_]\\w*",
+					"begin": "[\\p{L}_]\\w*(?=[\\s\\[{(,;&|)}:#<>])",
 					"beginCaptures": {
 						"0": {
 							"name": "entity.name.type.class.powershell"
@@ -156,7 +156,7 @@
 					"contentName": "meta.class.powershell",
 					"patterns": [
 						{
-							"match": "((?i:hidden|static))(?![^\\s{(,;&|)}])",
+							"match": "((?i:hidden|static))(?=[\\s{(,;&|)}])",
 							"name": "storage.modifier.powershell"
 						},
 						{
@@ -199,7 +199,7 @@
 													"end": "(?=[;{])",
 													"patterns": [
 														{
-															"begin": "(?i:base)(?![^\\s{(,;&|)}])",
+															"begin": "(?i:base)(?=[\\s{(,;&|)}])",
 															"beginCaptures": {
 																"0": {
 																	"name": "variable.language.super.powershell"
@@ -258,7 +258,7 @@
 			]
 		},
 		{
-			"begin": "((?i:enum))(?![^\\s{(,;&|)}])",
+			"begin": "((?i:enum))(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.other.enum.powershell"
@@ -268,7 +268,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "([\\p{L}_]\\w*)",
+					"begin": "([\\p{L}_]\\w*)(?=[\\s\\[{(,;&|)}:#<>])",
 					"beginCaptures": {
 						"1": {
 							"name": "entity.name.type.enum.powershell"
@@ -419,7 +419,7 @@
 			]
 		},
 		{
-			"begin": "(?i:function|filter|workflow)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:function|filter|workflow)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.other.$0.powershell"
@@ -500,7 +500,7 @@
 		},
 		{
 			"comment": "do,for,foreach,switch,while: allow a `:label` that must start the statement; A `:label` before a loop looks just like a function, and its possible to put the loop keyword on a later line!  Here we just see if a valid label appears to be the only useful thing on a single line",
-			"match": "(?>(:)([\\p{L}_]\\w*)(?![^\\s{(,;&|)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|switch|while)(?![^\\s{(,;&|)}])|#|<#.*$|`?$))",
+			"match": "(?>(:)([\\p{L}_]\\w*)(?=[\\s{(,;&|)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|switch|while)(?=[\\s{(,;&|)}])|#|<#.*$|`?$))",
 			"captures": {
 				"1": {
 					"name": "punctuation.separator.colon.label.powershell"
@@ -519,7 +519,7 @@
 		},
 		{
 			"comment": "break,continue: permit a label following, then revert back to statement mode",
-			"begin": "(?i:break|continue)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:break|continue)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -539,7 +539,7 @@
 			]
 		},
 		{
-			"begin": "(?i:exit|return|throw)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:exit|return|throw)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -553,7 +553,7 @@
 			]
 		},
 		{
-			"begin": "(?i:foreach)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:foreach)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.foreach.powershell"
@@ -694,7 +694,7 @@
 			]
 		},
 		{
-			"begin": "(?i:while)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:while)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.while.powershell"
@@ -809,7 +809,7 @@
 			]
 		},
 		{
-			"begin": "(?i:for)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:for)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.for.powershell"
@@ -925,7 +925,7 @@
 		},
 		{
 			"comment": "until/while (condition) ends do {statements}",
-			"begin": "(?i:do)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:do)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.do.powershell"
@@ -976,7 +976,7 @@
 									"include": "#advanceToToken"
 								},
 								{
-									"begin": "(?i:while)(?![^\\s{(,;&|)}])",
+									"begin": "(?i:while)(?=[\\s{(,;&|)}])",
 									"beginCaptures": {
 										"0": {
 											"name": "keyword.control.do-while.powershell"
@@ -1033,7 +1033,7 @@
 									]
 								},
 								{
-									"begin": "(?i:until)(?![^\\s{(,;&|)}])",
+									"begin": "(?i:until)(?=[\\s{(,;&|)}])",
 									"beginCaptures": {
 										"0": {
 											"name": "keyword.control.do-until.powershell"
@@ -1103,7 +1103,7 @@
 		},
 		{
 			"comment": "else,elseif: only after if,elseif",
-			"begin": "(?i:if)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:if)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.if.powershell"
@@ -1118,7 +1118,7 @@
 			]
 		},
 		{
-			"begin": "(?i:switch)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:switch)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.switch.powershell"
@@ -1258,7 +1258,7 @@
 			]
 		},
 		{
-			"begin": "(?i:trap)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:trap)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.trap.powershell"
@@ -1392,7 +1392,7 @@
 		},
 		{
 			"comment": "catch/finally only after try",
-			"begin": "(?i:try)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:try)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.try.powershell"
@@ -1453,7 +1453,7 @@
 		},
 		{
 			"comment": "data: parameter `-supportedCommand` is array of cmdlets (function names)",
-			"begin": "(?i:data)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:data)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -1566,7 +1566,7 @@
 		},
 		{
 			"comment": "inlinescript,parallel,sequence: only in workflow; ",
-			"begin": "(?i:begin|dynamicparam|end|inlinescript|parallel|process|sequence)(?![^\\s{(,;&|)}])",
+			"begin": "(?i:begin|dynamicparam|end|inlinescript|parallel|process|sequence)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.$0.powershell"
@@ -1651,12 +1651,12 @@
 		},
 		{
 			"comment": "from,var,define are reserved; configuration is TODO, needs significant syntax structure work.",
-			"match": "(?i:configuration|define|from|var)(?![^\\s{(,;&|)}])",
+			"match": "(?i:configuration|define|from|var)(?=[\\s{(,;&|)}])",
 			"name": "invalid.reserved.keyword.control.$0.powershell"
 		},
 		{
 			"comment": "param: only in main body or a function main body, and only if followed by parameter declaration",
-			"match": "(?i:param)(?![^\\s{(,;&|)}])",
+			"match": "(?i:param)(?=[\\s{(,;&|)}])",
 			"name": "keyword.control.$0.powershell"
 		},
 		{
@@ -1800,7 +1800,7 @@
 				},
 				{
 					"comment": "command names are allowed to start with < or >, without a backtick, but `function` requires a backtick.  See below!",
-					"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&|)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}@#\\]]|`(?!\\s)))",
+					"begin": "(?:(global|local|script|private)(`)?(:)(?![\\s{(,;&|)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}@#\\]]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -1885,7 +1885,7 @@
 						},
 						{
 							"comment": "if a member access doesn't occur after variable, finish as an unquoted expandable string argument.",
-							"begin": "(?=[^\\s{(,;&|)}])(?!(?=\\.(?!\\.)|::|\\[))",
+							"begin": "(?![\\s{(,;&|)}])(?!(?=\\.(?!\\.)|::|\\[))",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -2006,7 +2006,7 @@
 					"name": "string.unquoted.argument.powershell"
 				},
 				{
-					"begin": "(?=[^\\s{(,;&|)}])",
+					"begin": "(?![\\s{(,;&|)}])",
 					"alternateBegin": "(?=[^'\"\\x{2018}-\\x{201E}\\s\\[{(,;&|)}$@])|(?<=\\S)(?=[$@<>])",
 					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "string.unquoted.argument.powershell",
@@ -2131,7 +2131,7 @@
 					"include": "#advanceToToken"
 				},
 				{
-					"begin": "(?i:catch)(?![^\\s{(,;&|)}])",
+					"begin": "(?i:catch)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.control.try-catch.powershell"
@@ -2223,7 +2223,7 @@
 					]
 				},
 				{
-					"begin": "(?i:finally)(?![^\\s{(,;&|)}])",
+					"begin": "(?i:finally)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.control.try-finally.powershell"
@@ -2403,10 +2403,70 @@
 							"name": "keyword.operator.documentation.powershell"
 						},
 						"3": {
-							"name": "keyword.operator.documentation.powershell"
+							"name": "constant.character.documentation.powershell"
 						}
 					},
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(PARAMETER|FORWARDHELP(?:CATEGORY|TARGETNAME)|REMOTEHELPRUNSPACE|EXTERNALHELP)\\s+([\\w-]+))",
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(EXTERNALHELP)\\s+(.+))",
+					"name": "comment.documentation.embedded.powershell"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.string.documentation.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.documentation.powershell"
+						},
+						"3": {
+							"name": "variable.other.documentation.powershell"
+						}
+					},
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(REMOTEHELPRUNSPACE)\\s+(.+))",
+					"name": "comment.documentation.embedded.powershell"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.string.documentation.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.documentation.powershell"
+						},
+						"3": {
+							"name": "variable.other.property.documentation.powershell"
+						}
+					},
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(FORWARDHELPCATEGORY)\\s+(Alias|Cmdlet|HelpFile|Function|General|Provider|FAQ|Glossary|ScriptCommand|ExternalScript|Filter|All)\\s*$)",
+					"name": "comment.documentation.embedded.powershell"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.string.documentation.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.documentation.powershell"
+						},
+						"3": {
+							"name": "entity.name.function.documentation.powershell"
+						}
+					},
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(FORWARDHELPTARGETNAME)\\s+(.+))",
+					"name": "comment.documentation.embedded.powershell"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.string.documentation.powershell"
+						},
+						"2": {
+							"name": "keyword.operator.documentation.powershell"
+						},
+						"3": {
+							"name": "entity.name.parameter.documentation.powershell"
+						}
+					},
+					"match": "(?:^|\\G)(?i:\\s*(\\.)(PARAMETER)\\s+(.+))",
 					"name": "comment.documentation.embedded.powershell"
 				}
 			]
@@ -2650,7 +2710,7 @@
 													"include": "#advanceToToken"
 												},
 												{
-													"begin": "(?i:else)(?![^\\s{(,;&|)}])",
+													"begin": "(?i:else)(?=[\\s{(,;&|)}])",
 													"beginCaptures": {
 														"0": {
 															"name": "keyword.control.if-else.powershell"
@@ -2700,7 +2760,7 @@
 													]
 												},
 												{
-													"begin": "(?i:elseif)(?![^\\s{(,;&|)}])",
+													"begin": "(?i:elseif)(?=[\\s{(,;&|)}])",
 													"beginCaptures": {
 														"0": {
 															"name": "keyword.control.if-elseif.powershell"
@@ -3556,7 +3616,7 @@
 									"patterns": [
 										{
 											"comment": "default: only in switch",
-											"match": "(?i:default)(?![^\\s{(,;&|)}])",
+											"match": "(?i:default)(?=[\\s{(,;&|)}])",
 											"name": "keyword.control.switch-default.powershell"
 										},
 										{
@@ -3910,7 +3970,7 @@
 		},
 		"RequiresDirective": {
 			"comment": "requires directive must be on single line, so capture and tokenize, current PS <= 6.2 allow `requires` keyword without delimiter, but the parameters must follow with a delimiter!",
-			"oldbegin": "^\\s*(#)((?i:requires))(?![^\\s{(,;&|)}])",
+			"oldbegin": "^\\s*(#)((?i:requires))(?=[\\s{(,;&|)}])",
 			"match": "^\\s*(#)((?i:requires))(.?)(.*)$",
 			"captures": {
 				"1": {
