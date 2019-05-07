@@ -1937,9 +1937,20 @@
 					"include": "#redirection"
 				},
 				{
-					"comment": "`,` just continues current mode",
-					"match": ",",
-					"name": "punctuation.separator.powershell"
+					"comment": "`,` just continues current mode, after advancing to next token",
+					"begin": ",",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						}
+					]
 				},
 				{
 					"include": "#commentBlock"
@@ -2029,9 +2040,20 @@
 					"include": "#redirection"
 				},
 				{
-					"comment": "`,` just continues current mode",
-					"match": ",",
-					"name": "punctuation.separator.powershell"
+					"comment": "`,` just continues current mode, after advancing to next token",
+					"begin": ",",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						}
+					]
 				},
 				{
 					"include": "#type"
