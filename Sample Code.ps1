@@ -584,3 +584,9 @@ echo `""hello there"
 "@
 
 & test$a | write-output & another function # note the `&` are each in different scopes
+
+$a[3] +3&;
+
+3 + ( 3 + 6 &) + 3 + 6;
+
+`$
