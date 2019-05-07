@@ -499,7 +499,8 @@ filter quoteStringWithSpecialChars {
     }
 }
 
-function testfun { $input }
+# demonstrate equivelent function vs filter
+function testfun { $input.foreach{ $_ } }
 Measure-Command { 1..50000 | testfun }
 Measure-Command { 1..50000 | ForEach-Object { 1 | testfun } }
 filter testfil { $_ }
