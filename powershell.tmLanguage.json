@@ -3022,7 +3022,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "(?>(0(?i:x[0-9a-f_]+(l)?))((?i:[kmgtp]b)?))(=!^\\s{(,;|)}])"
+					"match": "(?>(0(?i:x[0-9a-f_]+(l)?))((?i:[kmgtp]b)?))(?=[\\s{(,;&|)}])"
 				},
 				{
 					"captures": {
