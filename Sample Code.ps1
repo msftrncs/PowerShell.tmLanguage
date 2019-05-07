@@ -460,8 +460,8 @@ switch -file ` test { ` test <##> {command} }
 | hello
 
 hello |
-get-content a-file |
-write-output
+    Get-Content a-file |
+    Write-Output
 
 6 + `3
 
@@ -477,7 +477,7 @@ minvalue
 'length'.length[1]
 
 function quoteStringWithSpecialChars {
-    $Input | foreach-object {
+    $Input.foreach{
         if ($_ -and ($_ -match '[\s#@$;,''{}()]')) {
             "'$($_ -replace "'", "''")'"
         }
@@ -487,6 +487,9 @@ function quoteStringWithSpecialChars {
     }
 }
 
+$hello.where{ $_ }
+
+( { hello })
 filter quoteStringWithSpecialChars {
     if ($_ -and ($_ -match '[\s#@$;,''{}()]')) {
         "'$($_ -replace "'", "''")'"
@@ -496,12 +499,12 @@ filter quoteStringWithSpecialChars {
     }
 }
 
-function testfun {$input}
-measure-command {1..50000 | testfun}
-measure-command {1..50000 | % { 1 | testfun}}
-filter testfil {$_}
-measure-command {1..50000 | testfil}
-measure-command {1..50000 | % { 1 | testfil}}
+function testfun { $input }
+Measure-Command { 1..50000 | testfun }
+Measure-Command { 1..50000 | ForEach-Object { 1 | testfun } }
+filter testfil { $_ }
+Measure-Command { 1..50000 | testfil }
+Measure-Command { 1..50000 | ForEach-Object { 1 | testfil } }
 
 configuration Name {
     # One can evaluate expressions to get the node list
