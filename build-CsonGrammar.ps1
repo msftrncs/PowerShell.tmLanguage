@@ -22,7 +22,7 @@ try {
         }
     }
 
-    # write the PList document.
+    # write the CSON document.
     $grammar_cson | ConvertTo-Cson -Indent `t -Depth 100 |
         Set-Content out\PowerShell.cson -Encoding UTF8
 }
