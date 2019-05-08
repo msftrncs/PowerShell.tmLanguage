@@ -588,6 +588,11 @@ echo `""hello there"
 
 $a[3] +3&;
 
-3 + ( 3 + 6 &) + 3 + 6;
+3 + ( 3 + 6 &) + 3 + 6,
+hello; 3+ 4 + hello
 
 `$
+
+echo hello,
+goodbye
+
