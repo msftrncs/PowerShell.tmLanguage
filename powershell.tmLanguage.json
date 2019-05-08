@@ -2497,7 +2497,7 @@
 			"comment": "`u{xxxx} added in PowerShell 6.0",
 			"patterns": [
 				{
-					"match": "`u\\{(?:(?:10)?([0-9a-fA-F]){,4}|0?\\g<1>{1,5})}",
+					"match": "`u\\{(?:(?:10)?([0-9a-fA-F]){1,4}|0?\\g<1>{1,5})}",
 					"name": "constant.character.escape.powershell"
 				},
 				{
