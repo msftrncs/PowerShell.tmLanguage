@@ -232,7 +232,7 @@ S3140010003C000000000000000000000000383839F6
 S3140010004B38380000000000000000000000000020
 S3140010005A00003230313830383131303034310027
 S31400100069000000000000000000FFFFFFFFFFFF78
-'@ -split '\n').trim().where({$_ -ne ''}) | ForEach-Object { [hexsrecord]::new($_) }
+'@ -split '\n').trim().where({ $_ -ne '' }) | ForEach-Object { [hexsrecord]::new($_) }
 
 # create a crazy random password
 ((Get-Random (1..100) -count 9) +
@@ -282,8 +282,8 @@ class myclass : float
 
 "@).count
 
-'<?xml version="1.0"' + (if ($encoding) {' encoding="' + $encoding + '"'}) + '?>'
-'<?xml version="1.0"' + $(if ($encoding) {' encoding="' + $encoding + '"'}) + '?>'
+'<?xml version="1.0"' + (if ($encoding) { ' encoding="' + $encoding + '"' }) + '?>'
+'<?xml version="1.0"' + $(if ($encoding) { ' encoding="' + $encoding + '"' }) + '?>'
 
 $(hello).test
 
@@ -596,3 +596,4 @@ hello; 3+ 4 + hello
 echo hello,
 goodbye
 
+$a.-split$b # actually valid, but results in $null

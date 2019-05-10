@@ -25,8 +25,7 @@ try {
 
     # write the PList document.
     $grammar_plist | ConvertTo-Plist -Indent `t -StateEncodingAs UTF-8 |
-        Set-Content out\PowerShellSyntax.tmLanguage -Encoding UTF8
-}
-catch {
+    Set-Content out\PowerShellSyntax.tmLanguage -Encoding UTF8
+} catch {
     throw # error occured, give it forward to the user
 }
