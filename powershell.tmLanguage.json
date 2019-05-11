@@ -4,7 +4,7 @@
 		"If you want to provide a fix or improvement, please create a pull request against the original repository.",
 		"Once accepted there, we are happy to receive an update request."
 	],
-	"version": "CUSTOM -  NOT FROM PowerShell/EditorSyntax",
+	"version": "https://github.com/PowerShell/EditorSyntax/commit/12b7d7257eb493e45a9af0af9094ec0c2a996712",
 	"name": "PowerShell",
 	"scopeName": "source.powershell",
 	"patterns": [
@@ -411,8 +411,7 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"comment":"these embedded doc keywords do not support arguements, must be the only thing on the line",
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|ROLE|SYNOPSIS))(?:\\s*$)",
+					"match": "^(?i:(?:\\s?|#)+(\\.)(COMPONENT|DESCRIPTION|EXAMPLE|EXTERNALHELP|FORWARDHELPCATEGORY|FORWARDHELPTARGETNAME|FUNCTIONALITY|INPUTS|LINK|NOTES|OUTPUTS|REMOTEHELPRUNSPACE|ROLE|SYNOPSIS))",
 					"name": "comment.documentation.embedded.powershell"
 				},
 				{
@@ -427,8 +426,7 @@
 							"name": "keyword.operator.documentation.powershell"
 						}
 					},
-					"comment":"these embedded doc keywords require arguments though the type required may be inconsistent, they may not all be able to use the same argument match",
-					"match": "(?:^|\\G)(?i:\\s*(\\.)(EXTERNALHELP|FORWARDHELPCATEGORY|FORWARDHELPTARGETNAME|PARAMETER|REMOTEHELPRUNSPACE)\\s+([a-z0-9-_]+))",
+					"match": "(?i:\\s?(\\.)(PARAMETER|FORWARDHELPTARGETNAME|FORWARDHELPCATEGORY|REMOTEHELPRUNSPACE|EXTERNALHELP)\\s+([a-z0-9-_]+))",
 					"name": "comment.documentation.embedded.powershell"
 				}
 			]
