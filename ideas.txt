@@ -115,12 +115,31 @@ An argument that starts with a substatement, the substatement is its own argumen
  
  Redesign Expression Mode
 
- Expression mode should be a multi-tier mode.  Root tier should look for prefix operators before arguments
-    finding a prefix operator then searches for continued prefix operators, whhich is an even smaller list of operators, or an operand.
-    finding an operand then searches for postfix operators, and then general operators
-        finding a general operator starts back over with the root.
+Expression Mode =
 
-[prefix [cont prefix]] operand [postfix] [operator [...]]
+    expression [;,|,&,,]
+
+expression =
+
+    operand [post-unary operator] [operator expression]
+
+        or
+
+    operand assignment command
+
+note: assignment is a special case operator that is technically equivelent to a post unary operator, but is binary, and accepts a result from a command (which can in turn be an expression which could lead to another assignment).
+
+operand = 
+
+    [pre-unary operator] operand [acessor operand]
+
+Note: operand is recursive, thus multiple pre-unary operators may appear before a single operand.
+Also: operand is reusable for sub-operands like argument is.
+
+Post unary operators must only detect once after an operand.
+
+Consider: Accessors are a form of post unary operator.  It would probably simplify things if accessors were patterns of operand, because the entire accessor expression can then have a post unary operator applied.
+
 
 
 ### Types and Attributes
