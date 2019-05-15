@@ -668,12 +668,15 @@
 					"patterns": [
 						{
 							"comment": "-parallel parameter can only be used in a workflow, consider using meta scopes, and an injection to properly catch this",
-							"match": "(?i:[\\x{2013}-\\x{2015}-]parallel)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
+							"match": "(?i:([\\x{2013}-\\x{2015}-])parallel)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.foreach-parallel.powershell"
 								},
 								"2": {
+									"name": "punctuation.definition.parameter.powershell"
+								},
+								"3": {
 									"name": "punctuation.separator.parameter-value.powershell"
 								}
 							}
@@ -1196,24 +1199,30 @@
 					"end": "(?![\\s#\\x{2013}-\\x{2015}-]|<#)",
 					"patterns": [
 						{
-							"match": "((?i:[\\x{2013}-\\x{2015}-](regex|wildcard|exact|casesensitive)))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
+							"match": "((?i:([\\x{2013}-\\x{2015}-])(regex|wildcard|exact|casesensitive)))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"captures": {
 								"1": {
 									"name": "entity.name.parameter.switch-$2.powershell"
 								},
 								"3": {
+									"name": "punctuation.definition.parameter.powershell"
+								},
+								"4": {
 									"name": "punctuation.separator.parameter-value.powershell"
 								}
 							}
 						},
 						{
 							"comment": "-file is special case, needs file argument, no condition expression",
-							"begin": "((?i:[\\x{2013}-\\x{2015}-]file))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
+							"begin": "((?i:([\\x{2013}-\\x{2015}-])file))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.switch-file.powershell"
 								},
 								"2": {
+									"name": "punctuation.definition.parameter.powershell"
+								},
+								"3": {
 									"name": "punctuation.separator.parameter-value.powershell"
 								}
 							},
@@ -1469,12 +1478,15 @@
 					"patterns": [
 						{
 							"comment": "-supportedcommand is special case, array of arguments",
-							"begin": "((?i:[\\x{2013}-\\x{2015}-]supportedcommand))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
+							"begin": "((?i:([\\x{2013}-\\x{2015}-])supportedcommand))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 							"beginCaptures": {
 								"1": {
 									"name": "entity.name.parameter.data-supportedcommand.powershell"
 								},
 								"2": {
+									"name": "punctuation.definition.parameter.powershell"
+								},
+								"3": {
 									"name": "punctuation.separator.parameter-value.powershell"
 								}
 							},
@@ -1990,13 +2002,16 @@
 					]
 				},
 				{
-					"match": "([\\x{2013}-\\x{2015}-]\\p{L}[^\\s\\[{(,;&|)}'\"\\x{2018}-\\x{201E}]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
+					"match": "(([\\x{2013}-\\x{2015}-])\\p{L}[^\\s\\[{(,;&|)}'\"\\x{2018}-\\x{201E}]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 					"old match": "([\\x{2013}-\\x{2015}-]\\p{L}[\\w~`!@#$%^*<?>\\]\\\\/=+-]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 					"captures": {
 						"1": {
 							"name": "entity.name.parameter.powershell"
 						},
 						"2": {
+							"name": "punctuation.definition.parameter.powershell"
+						},
+						"3": {
 							"name": "punctuation.separator.parameter-value.powershell"
 						}
 					}
@@ -4002,12 +4017,15 @@
 				"4": {
 					"patterns": [
 						{
-							"match": "([\\x{2013}-\\x{2015}-](?i:Modules|PSSnapin|PSEdition|RunAsAdministrator|ShellId|Version)\\b)(:)?",
+							"match": "(([\\x{2013}-\\x{2015}-])(?i:Modules|PSSnapin|PSEdition|RunAsAdministrator|ShellId|Version)\\b)(:)?",
 							"captures": {
 								"1": {
 									"name": "entity.name.parameter.powershell"
 								},
 								"2": {
+									"name": "punctuation.definition.parameter.powershell"
+								},
+								"3": {
 									"name": "punctuation.separator.parameter-value.powershell"
 								}
 							}
