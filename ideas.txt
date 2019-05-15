@@ -108,7 +108,7 @@ End with any character not processed or end of line
 
 
 complex argument scoping.
-arguments that start with a variable reference need to process first variable, if it posses a member or index reference, the argument ends at the end of the reference.  If there is no reference, then the argument is an unquoted expandable string, for which further embedded variables cannot reference members.
+arguments that start with a variable reference need to process first variable, if it possesses a member or index reference, the argument ends at the end of the reference.  If there is no reference, then the argument is an unquoted expandable string, for which further embedded variables cannot reference members.
 arguments that start with a `.$` actually represent two arguments. `.` becomes its own argument.
 All other unquoted arguments are expandable strings.  Embedded variables cannot reference variables.
 An argument that starts with a substatement, the substatement is its own argument.
@@ -127,6 +127,10 @@ expression =
 
     operand assignment command
 
+        or
+
+    operand range-operator operand [operator expression]
+
 note: assignment is a special case operator that is technically equivelent to a post unary operator, but is binary, and accepts a result from a command (which can in turn be an expression which could lead to another assignment).
 
 operand = 
@@ -135,10 +139,13 @@ operand =
 
 Note: operand is recursive, thus multiple pre-unary operators may appear before a single operand.
 Also: operand is reusable for sub-operands like argument is.
+Also: 
 
-Post unary operators must only detect once after an operand.
+Post unary operators must only detect once after an operand.  This is because they are technically a form of assignment.
 
 Consider: Accessors are a form of post unary operator.  It would probably simplify things if accessors were patterns of operand, because the entire accessor expression can then have a post unary operator applied.
+
+Consider: [type] casts are a form of pre-unary operator.
 
 
 
