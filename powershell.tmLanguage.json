@@ -4378,8 +4378,8 @@
 				}
 			]
 		},
-		"operators_postUnary": {
-			"comment": "expression mode operators that follow operands (cannot have implicit operand on the left).",
+		"operators_post": {
+			"comment": "expression mode operators that follow operands mutually exclusive of each other.",
 			"patterns": [
 				{
 					"match": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
@@ -4405,6 +4405,23 @@
 					"patterns": [
 						{
 							"include": "#advanceToToken"
+						}
+					]
+				},
+				{
+					"begin": "[+%*/\\x{2013}-\\x{2015}-]?=",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.assignment.powershell"
+						}
+					},
+					"end": "(?=\\n)(?!\\G)|(?=[,;&)}\\]])",
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						},
+						{
+							"include": "$self"
 						}
 					]
 				}
@@ -4478,7 +4495,7 @@
 		"operators": {
 			"patterns": [
 				{
-					"include": "#operators_postUnary"
+					"include": "#operators_post"
 				},
 				{
 					"begin": "(?=[\\x{2013}-\\x{2015}-])(?i:(.is(?:not)?)|(.as))(?!\\p{L})",
@@ -4570,23 +4587,6 @@
 					"patterns": [
 						{
 							"include": "#advanceToToken"
-						}
-					]
-				},
-				{
-					"begin": "[+%*/\\x{2013}-\\x{2015}-]?=",
-					"beginCaptures": {
-						"0": {
-							"name": "keyword.operator.assignment.powershell"
-						}
-					},
-					"end": "(?=\\n)(?!\\G)|(?=[,;&)}\\]])",
-					"patterns": [
-						{
-							"include": "#advanceToToken"
-						},
-						{
-							"include": "$self"
 						}
 					]
 				},
