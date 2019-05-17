@@ -3770,6 +3770,7 @@
 		"variable_scopeOrDrive": {
 			"patterns": [
 				{
+					"comment": "workflow scope only available in workflow",
 					"match": "((?i:global|local|private|script|using|workflow))(`)?(:)",
 					"captures": {
 						"1": {
@@ -3787,7 +3788,7 @@
 					"match": "(?i:(Alias|Cert|Env|Function|HKCU|HKLM|Variable|WSMan))(`)?(:)",
 					"captures": {
 						"1": {
-							"name": "keyword.type.drive:powershell"
+							"name": "keyword.type.drive.powershell"
 						},
 						"2": {
 							"name": "invalid.character.escape.powershell"
