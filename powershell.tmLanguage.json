@@ -1927,7 +1927,7 @@
 				},
 				{
 					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))(?![~`!@#$%^*<>\\]\\\\/'\"\\x{2018}-\\x{201E}+-])",
+					"match": "(?>@(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|:))(?![~`!@#$%^*<>\\]\\\\/'\"\\x{2018}-\\x{201E}+-])",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -3735,7 +3735,7 @@
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
-					"match": "(([$@])(?i:((?:[$^?])|:\\?|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)))"
+					"match": "(([$@])(?i:((?:[$^?])|:\\?(?![\\w?:])|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)))"
 				},
 				{
 					"captures": {
@@ -3762,7 +3762,8 @@
 							]
 						}
 					},
-					"match": "(?:([$@])(?:(?>([\\w][\\w?]*:(?!:)|:))?([\\w](?:[\\w?]|(?<!:):(?!:))*|[$^:])))",
+					"comment": "capture all other seemingly valid normal variables",
+					"match": "(?:([$@])(?:(?>([\\w][\\w?]*:(?!:)|:))?.*))",
 					"name": "variable.other.readwrite.powershell"
 				}
 			]
@@ -3928,11 +3929,11 @@
 		"variable": {
 			"patterns": [
 				{
-					"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
+					"begin": "(?=\\$(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|:|\\{))",
 					"end": "(?!\\G)",
 					"patterns": [
 						{
-							"begin": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\G\\$(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:)))(?=\\.(?!\\.)|::|\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -3951,7 +3952,7 @@
 							]
 						},
 						{
-							"match": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
+							"match": "\\G\\$(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|:)",
 							"captures": {
 								"0": {
 									"patterns": [
@@ -3968,18 +3969,18 @@
 					]
 				},
 				{
-					"comment": "splatting cannot have members and certain characters following, including no line comment",
-					"match": "(?>@(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]))",
+					"comment": "splatting cannot be used outside of argument mode, result is invalid source.",
+					"match": "(?>@(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|:))",
 					"name": "invalid.splat.powershell"
 				}
 			]
 		},
 		"variableNoProperty": {
-			"begin": "(?=\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:]|\\{))",
+			"begin": "(?=\\$(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|:|\\{))",
 			"end": "(?!\\G)",
 			"patterns": [
 				{
-					"match": "\\G\\$(?:(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|[$^:])",
+					"match": "\\G\\$(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?](?:[\\w?]|:(?!:))*|:(?!:))|:)",
 					"captures": {
 						"0": {
 							"patterns": [
