@@ -2889,7 +2889,7 @@
 				}
 			]
 		},
-		"substatementNoProperty": {
+		"substatementEmbedded": {
 			"begin": "\\$\\(",
 			"beginCaptures": {
 				"0": {
@@ -4182,7 +4182,7 @@
 							"include": "#doubleQuotedHereStringEscapes"
 						},
 						{
-							"include": "#substatementNoProperty"
+							"include": "#substatementEmbedded"
 						}
 					]
 				},
@@ -4234,7 +4234,7 @@
 							"include": "#doubleQuotedStringEscapes"
 						},
 						{
-							"include": "#substatementNoProperty"
+							"include": "#substatementEmbedded"
 						}
 					]
 				},
@@ -4328,7 +4328,7 @@
 					"include": "#quotedStrings_Members"
 				},
 				{
-					"include": "#substatementNoProperty"
+					"include": "#substatementEmbedded"
 				}
 			]
 		},
