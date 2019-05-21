@@ -1264,7 +1264,96 @@
 				{
 					"include": "#notCode"
 				}
-			]
+			],
+			"repository": {
+				"switchConditions": {
+					"begin": "(?={)",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G\\{",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.begin.powershell"
+								}
+							},
+							"end": "}",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.braces.end.powershell"
+								}
+							},
+							"name": "meta.switch-conditions.powershell",
+							"patterns": [
+								{
+									"begin": "(?:\\G|(?<=\\}))(?![,;&|)}])",
+									"end": "(?=.|$)",
+									"applyEndPatternLast": true,
+									"patterns": [
+										{
+											"include": "#advanceToToken"
+										},
+										{
+											"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#)",
+											"end": "(?!\\G)",
+											"name": "meta.argument.switch-condition.powershell",
+											"patterns": [
+												{
+													"comment": "default: only in switch",
+													"match": "(?i:default)(?=[\\s{(,;&|)}])",
+													"name": "keyword.control.switch-default.powershell"
+												},
+												{
+													"include": "#argument"
+												}
+											]
+										}
+									]
+								},
+								{
+									"begin": "{",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.begin.powershell"
+										}
+									},
+									"end": "}",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.end.powershell"
+										}
+									},
+									"name": "meta.statements.switch-condition.powershell",
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"include": "#notCode"
+								},
+								{
+									"comment": "very limited what is permitted here",
+									"match": "[^\\s{()}]",
+									"name": "invalid.source.powershell"
+								}
+							]
+						},
+						{
+							"comment": "next statement, return when safe to exit",
+							"begin": "(?<=})(?![,)}\\]])",
+							"end": "(?<!})(?=\\n)|(?=[,})\\]])",
+							"patterns": [
+								{
+									"include": "$self"
+								}
+							]
+						}
+					]
+				}
+			}
 		},
 		{
 			"begin": "(?i:trap)(?=[\\s{(,;&|)}])",
@@ -3608,146 +3697,51 @@
 				}
 			]
 		},
-		"switchConditions": {
-			"begin": "(?={)",
-			"end": "(?=.|$)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"begin": "\\G\\{",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.begin.powershell"
-						}
-					},
-					"end": "}",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.section.braces.end.powershell"
-						}
-					},
-					"name": "meta.switch-conditions.powershell",
-					"patterns": [
-						{
-							"begin": "(?:\\G|(?<=\\}))(?![,;&|)}])",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"include": "#advanceToToken"
-								},
-								{
-									"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#)",
-									"end": "(?!\\G)",
-									"name": "meta.argument.switch-condition.powershell",
-									"patterns": [
-										{
-											"comment": "default: only in switch",
-											"match": "(?i:default)(?=[\\s{(,;&|)}])",
-											"name": "keyword.control.switch-default.powershell"
-										},
-										{
-											"include": "#argument"
-										}
-									]
-								}
-							]
-						},
-						{
-							"begin": "{",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.begin.powershell"
-								}
-							},
-							"end": "}",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.end.powershell"
-								}
-							},
-							"name": "meta.statements.switch-condition.powershell",
-							"patterns": [
-								{
-									"include": "$self"
-								}
-							]
-						},
-						{
-							"include": "#notCode"
-						},
-						{
-							"comment": "very limited what is permitted here",
-							"match": "[^\\s{()}]",
-							"name": "invalid.source.powershell"
-						}
-					]
-				},
-				{
-					"comment": "next statement, return when safe to exit",
-					"begin": "(?<=})(?![,)}\\]])",
-					"end": "(?<!})(?=\\n)|(?=[,})\\]])",
-					"patterns": [
-						{
-							"include": "$self"
-						}
-					]
-				}
-			]
-		},
 		"variable_inner": {
 			"comment": "separate the parts of the variable name and scope them",
 			"patterns": [
 				{
 					"match": "[$@][^:]*:$",
-					"name": "invalid.character.variable.powershell"
+					"name": "invalid.variable.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "constant.language.powershell"
-						},
-						"2": {
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
 					"comment": "These are special constants.",
-					"match": "(([$@])(?i:(:?(?:False|Null|True)))$)"
+					"match": "([$@])(?i:(:?(?:False|Null|True)))$",
+					"name": "constant.language.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "variable.language.builtin.powershell"
-						},
-						"2": {
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "(([$@])(?i:(:?(?:Error|ExecutionContext|Is(?:CoreCLR|Linux|MacOS|Windows)|Host|Home|PID|PsHome|PsVersionTable|ShellID)$)))"
+					"match": "([$@])(?i:(:?(?:Error|ExecutionContext|Is(?:CoreCLR|Linux|MacOS|Windows)|Host|Home|PID|PsHome|PsVersionTable|ShellID)$))",
+					"name": "variable.language.builtin.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "variable.language.builtin.powershell"
-						},
-						"2": {
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
-					"match": "(([$@])(?i:((?:[$^?])|:\\?(?![\\w?:])|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)))"
+					"match": "([$@])(?i:((?:[$^?])|:\\?(?![\\w?:])|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$))",
+					"name": "variable.language.builtin.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "variable.language.powershell"
-						},
-						"2": {
 							"name": "punctuation.definition.variable.powershell"
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "(([$@])(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)$)))"
+					"match": "([$@])(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)$))",
+					"name": "variable.language.powershell"
 				},
 				{
 					"captures": {
@@ -3816,6 +3810,10 @@
 						},
 						{
 							"include": "#unicodeEscape"
+						},
+						{
+							"match": "`",
+							"name": "invalid.character.escape.powershell"
 						}
 					]
 				}
@@ -3827,8 +3825,13 @@
 					"comment": "capture a complete variable reference that appears on a single line and attempt to scope language variables"
 				},
 				{
+					"comment": "capture an invalid empty variable name",
+					"match": "\\G(?:[^`}:]|`[^:])*`?:(?=})",
+					"name": "invalid.variable.powershell"
+				},
+				{
 					"comment": "this captures up to the first colon, and then matches up the capture",
-					"match": "\\G(?:(?:[^`{}:]|`[`{}]?+)+:|:)",
+					"match": "\\G(?:[^`}:]|`[^:])*`?:",
 					"captures": {
 						"0": {
 							"patterns": [

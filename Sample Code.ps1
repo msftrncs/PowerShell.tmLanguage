@@ -584,7 +584,7 @@ echo `""hello there"
 `"@ hello there
 "@
 
-& test$a | write-output & another function # note the `&` are each in different scopes
+& test$a | write-output & another -here function # note the `&` are each in different scopes
 
 $a[3] +3&;
 
@@ -596,4 +596,16 @@ hello; 3+ 4 + hello
 echo hello,
 goodbye
 
-$a.-split$b # actually valid, but results in $null
+$a=[PSCustomObject]@{
+    hash = 3
+}
+$b='hash'
+$a.-split$b # actually valid, result = 3
+
+# variable constructs that need to be handled
+${scope`:} # needs scope/drive and (:) to be invalid, bad variable reference, (`:) has no affect
+${`:true} # needs to highlight as language constant
+${local`:true} # needs to highlight as language constant
+$local:true # needs to highlight as a language constant
+${` ` `3`2:`1`2`3`a`f`e`q`q} # backticks need to be invalid when not a valid escape pattern.
+
