@@ -232,7 +232,7 @@ S3140010003C000000000000000000000000383839F6
 S3140010004B38380000000000000000000000000020
 S3140010005A00003230313830383131303034310027
 S31400100069000000000000000000FFFFFFFFFFFF78
-'@ -split '\n').trim().where({ $_ -ne '' }) | ForEach-Object { [hexsrecord]::new($_) }
+'@ -split '\n').trim().where({ $_ -ne '' }).foreach({ [hexsrecord]::new($_) })
 
 # create a crazy random password
 ((Get-Random (1..100) -count 9) +
@@ -584,7 +584,7 @@ echo `""hello there"
 `"@ hello there
 "@
 
-& test$a | write-output & another function # note the `&` are each in different scopes
+& test$a | write-output & another -here function # note the `&` are each in different scopes
 
 $a[3] +3&;
 
@@ -596,4 +596,32 @@ hello; 3+ 4 + hello
 echo hello,
 goodbye
 
-$a.-split$b # actually valid, but results in $null
+$a=[PSCustomObject]@{
+    hash = 3
+}
+$b='hash'
+$a.-split$b # actually valid, result = 3
+
+# variable constructs that need to be handled
+${scope`:} # needs scope/drive and (:) to be invalid, bad variable reference, (`:) has no affect
+${`:true} # needs to highlight as language constant
+${local`:true} # needs to highlight as language constant
+$local:true # needs to highlight as a language constant
+${` ` `3`2:`1`2`3`a`f`e`q`q} # backticks need to be invalid when not a valid escape pattern.
+$:true # colon should still be separator
+${local:args}
+$local:
+${}
+$args
+$:$
+${local:$}
+
+$::hello
+$::??????
+$:????????
+$?:::hello
+'a':::hello
+
+echo hello$(1).goodbye @local:?
+$c:args
+${/:args}

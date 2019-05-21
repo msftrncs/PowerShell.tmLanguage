@@ -2344,6 +2344,26 @@
 			"name": "comment.block.powershell",
 			"patterns": [
 				{
+					"comment": "capture remainder of comment block, preventing #commentEmbeddedDocs from consuming to end of line",
+					"match": ".+?(?=#>)",
+					"captures": {
+						"0": {
+							"patterns": [
+								{
+									"comment": "restore the anchor point",
+									"begin": "(?=.)",
+									"end": "$",
+									"patterns": [
+										{
+											"include": "#commentEmbeddedDocs"
+										}
+									]
+								}
+							]
+						}
+					}
+				},
+				{
 					"include": "#commentEmbeddedDocs"
 				}
 			]
@@ -3696,58 +3716,86 @@
 			]
 		},
 		"variable_inner": {
-			"comment": "separate the parts of the variable name and scope them",
+			"comment": "separate the parts of the variable name and scope them, character validation has already been done",
 			"patterns": [
 				{
-					"match": "[$@][^:]*:$",
-					"name": "invalid.character.variable.powershell"
+					"match": "(?:\\G|[$@])(?:[^`:]|`[^:])*`?:$",
+					"name": "invalid.variable.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "constant.language.powershell"
+							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "punctuation.definition.variable.powershell"
+							"name": "storage.modifier.scope.powershell"
+						},
+						"3": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"4": {
+							"name": "punctuation.separator.colon.powershell"
 						}
 					},
 					"comment": "These are special constants.",
-					"match": "(([$@])(?i:(:?(?:False|Null|True)))$)"
+					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:False|Null|True))$",
+					"name": "constant.language.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "variable.language.builtin.powershell"
+							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "punctuation.definition.variable.powershell"
+							"name": "storage.modifier.scope.powershell"
+						},
+						"3": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"4": {
+							"name": "punctuation.separator.colon.powershell"
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "(([$@])(?i:(:?(?:Error|ExecutionContext|Is(?:CoreCLR|Linux|MacOS|Windows)|Host|Home|PID|PsHome|PsVersionTable|ShellID)$)))"
+					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:Error|ExecutionContext|Is(?:CoreCLR|Linux|MacOS|Windows)|Host|Home|PID|PSHome|PSVersionTable|ShellID)$)",
+					"name": "variable.language.builtin.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "variable.language.builtin.powershell"
+							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "punctuation.definition.variable.powershell"
+							"name": "storage.modifier.scope.powershell"
+						},
+						"3": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"4": {
+							"name": "punctuation.separator.colon.powershell"
 						}
 					},
-					"match": "(([$@])(?i:((?:[$^?])|:\\?(?![\\w?:])|:?(?:_|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PsCmdlet|PsCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PsUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)))"
+					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:[$^?_]|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PSCmdlet|PSCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PSUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)",
+					"name": "variable.language.builtin.powershell"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "variable.language.powershell"
+							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "punctuation.definition.variable.powershell"
+							"name": "storage.modifier.scope.powershell"
+						},
+						"3": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"4": {
+							"name": "punctuation.separator.colon.powershell"
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "(([$@])(?i:(:?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)$)))"
+					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)$)",
+					"name": "variable.language.powershell"
 				},
 				{
 					"captures": {
@@ -3760,10 +3808,17 @@
 									"include": "#variable_scopeOrDrive"
 								}
 							]
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#variable_escapes"
+								}
+							]
 						}
 					},
 					"comment": "capture all other seemingly valid normal variables",
-					"match": "(?:([$@])(?:(?>([^:]*:))?.*))",
+					"match": "(?:\\G|([$@]))(?:([^:]*`?:))?(.*)",
 					"name": "variable.other.readwrite.powershell"
 				}
 			]
@@ -3811,11 +3866,7 @@
 					"name": "storage.type.drive.powershell",
 					"patterns": [
 						{
-							"match": "`(?:[`0abefnrtv{}\\n])",
-							"name": "constant.character.escape.powershell"
-						},
-						{
-							"include": "#unicodeEscape"
+							"include": "#variable_escapes"
 						}
 					]
 				}
@@ -3824,11 +3875,27 @@
 		"variable_bracketed_inside": {
 			"patterns": [
 				{
-					"comment": "capture a complete variable reference that appears on a single line and attempt to scope language variables"
+					"comment": "capture a complete variable reference that appears on a single line and attempt to scope language variables",
+					"match": "\\G(?:(?:[^`}:]|`[^:])*`?:)?(?:[^`}]|`.)*(?=})",
+					"captures": {
+						"0": {
+							"patterns": [
+								{
+									"begin": "(?=.)",
+									"end": "(?!\\G)",
+									"patterns": [
+										{
+											"include": "#variable_inner"
+										}
+									]
+								}
+							]
+						}
+					}
 				},
 				{
 					"comment": "this captures up to the first colon, and then matches up the capture",
-					"match": "\\G(?:(?:[^`{}:]|`[`{}]?+)+:|:)",
+					"match": "\\G(?:[^`}:]|`[^:])*`?:",
 					"captures": {
 						"0": {
 							"patterns": [
@@ -3839,6 +3906,13 @@
 						}
 					}
 				},
+				{
+					"include": "#variable_escapes"
+				}
+			]
+		},
+		"variable_escapes": {
+			"patterns": [
 				{
 					"match": "`(?:[`0abefnrtv{}\\n])",
 					"name": "constant.character.escape.powershell"
@@ -3892,6 +3966,10 @@
 									]
 								}
 							}
+						},
+						{
+							"match": "\\$\\{}",
+							"name": "invalid.variable.powershell"
 						},
 						{
 							"begin": "(?=\\$\\{)",
