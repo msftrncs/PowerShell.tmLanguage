@@ -113,7 +113,7 @@ arguments that start with a `.$` actually represent two arguments. `.` becomes i
 All other unquoted arguments are expandable strings.  Embedded variables cannot reference variables.
 An argument that starts with a substatement, the substatement is its own argument.
  
- Redesign Expression Mode
+### Redesign Expression Mode ###
 
 Expression Mode =
 
@@ -121,7 +121,7 @@ Expression Mode =
 
 expression =
 
-    operand [post-unary operator] [operator expression]
+    operand-expression [operator expression]
 
         or
 
@@ -129,19 +129,26 @@ expression =
 
         or
 
-    operand range-operator operand [operator expression]
+    operand-expression range-operator operand-expression [operator expression]
 
 note: assignment is a special case operator that is technically equivelent to a post unary operator, but is binary, and accepts a result from a command (which can in turn be an expression which could lead to another assignment).
 
+operand-expression = 
+
+    operand [post-unary-operator]
+
 operand = 
 
-    [pre-unary operator] operand [acessor operand]
+    [pre-unary-operator] operand [accessor operand]
 
-Note: operand is recursive, thus multiple pre-unary operators may appear before a single operand.
-Also: operand is reusable for sub-operands like argument is.
-Also: 
+        or
 
-Post unary operators must only detect once after an operand.  This is because they are technically a form of assignment.
+    {scriptblock}, {variable}, {numeric-constant}, {group-expression}, {quotedstring}, {hashtable-expression}, {array-expression}, {substatement}
+
+Note: operand-expression is recursive, thus multiple pre-unary operators may appear before a single operand.
+Also: operand-expression is reusable for sub-operands like argument is, such as for a hashtable key.
+
+Post unary operators must only detect once after an operand expression.  This is because they are technically a form of assignment.
 
 Consider: Accessors are a form of post unary operator.  It would probably simplify things if accessors were patterns of operand, because the entire accessor expression can then have a post unary operator applied.
 
