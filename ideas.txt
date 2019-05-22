@@ -145,7 +145,7 @@ operand =
 
     {scriptblock}, {variable}, {numeric-constant}, {group-expression}, {quotedstring}, {hashtable-expression}, {array-expression}, {substatement}
 
-Note: operand-expression is recursive, thus multiple pre-unary operators may appear before a single operand.
+Note: operand is recursive, thus multiple pre-unary operators may appear before a single operand.
 Also: operand-expression is reusable for sub-operands like argument is, such as for a hashtable key.
 
 Post unary operators must only detect once after an operand expression.  This is because they are technically a form of assignment.

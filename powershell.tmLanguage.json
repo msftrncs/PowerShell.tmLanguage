@@ -1743,20 +1743,10 @@
 							"include": "#numericConstant"
 						},
 						{
-							"comment": "if numeric constant didn't advanced, but it looks like a negative number should have matched, finishing command mode with a command name",
-							"begin": "\\G(?=[\\x{2013}-\\x{2015}-][\\d.])(?!(?=\\n)|[;|)}\\]])",
-							"end": "(?=\\n)|(?=[;)}\\]])",
-							"patterns": [
-								{
-									"include": "#command_name"
-								}
-							]
-						},
-						{
 							"include": "#operators_preUnary"
 						},
 						{
-							"comment": "if numeric constant didn't advanced, try finishing command mode with a command name",
+							"comment": "if neither numeric or a pre-unary operator, try finishing command mode with a command name",
 							"begin": "(?!(?=\\n)|[;)}\\]])",
 							"end": "(?=\\n)|(?=[;)}\\]])",
 							"patterns": [
@@ -2993,6 +2983,11 @@
 							"include": "#numeric_post"
 						}
 					]
+				},
+				{
+					"comment": "capture negative invalid constant construct",
+					"name": "invalid.numeric-constant.powershell",
+					"match": "([\\x{2013}-\\x{2015}-]\\.(?i:(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?[dl]?))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])"
 				},
 				{
 					"captures": {
@@ -4556,7 +4551,7 @@
 					]
 				},
 				{
-					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.))|(!))(?!\\p{L})|(\\+)",
+					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.)(?![\\d.]))|(!))(?!\\p{L})|(\\+)(?![\\d.])",
 					"beginCaptures": {
 						"1": {
 							"name": "keyword.operator.logical.unary.not.powershell"
