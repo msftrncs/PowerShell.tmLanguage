@@ -503,7 +503,7 @@
 			"match": "(?>(:)([\\p{L}_]\\w*)(?=[\\s{(,;&|)}]))(?=(?>(?:`\\s|\\s*<#.*?#>)*)\\s*(?:(?i:do|for(?:each)?|switch|while)(?=[\\s{(,;&|)}])|#|<#.*$|`?$))",
 			"captures": {
 				"1": {
-					"name": "punctuation.separator.colon.label.powershell"
+					"name": "punctuation.definition.label.powershell"
 				},
 				"2": {
 					"name": "entity.name.label.powershell"
