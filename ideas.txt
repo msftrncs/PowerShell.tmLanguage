@@ -117,21 +117,25 @@ An argument that starts with a substatement, the substatement is its own argumen
 
 Expression Mode =
 
-    expression [;,|,&,,]
+    expression [{;} or {|} or {&}]
 
 expression =
 
-    operand-expression [operator expression]
+    operand-expression [operator subexpression]
 
         or
 
-    operand assignment command
+    operand-property assignment command
 
         or
 
-    operand-expression range-operator operand-expression [operator expression]
+    operand-expression range-operator operand-expression [operator subexpression]
 
 note: assignment is a special case operator that is technically equivelent to a post unary operator, but is binary, and accepts a result from a command (which can in turn be an expression which could lead to another assignment).
+
+subexpression = 
+
+    operand-expression [operator subexpression]
 
 operand-expression = 
 
@@ -139,13 +143,17 @@ operand-expression =
 
 operand = 
 
-    [pre-unary-operator] operand [accessor operand]
+    [pre-unary-operator] operand
 
         or
 
-    {scriptblock}, {variable}, {numeric-constant}, {group-expression}, {quotedstring}, {hashtable-expression}, {array-expression}, {substatement}
+    operand-property
 
-Note: operand is recursive, thus multiple pre-unary operators may appear before a single operand.
+operand-property
+
+    {{scriptblock} or {variable} or {numeric-constant} or {group-expression} or {quotedstring} or {hashtable-expression} or {array-expression} or {substatement}} [accessor operand]
+
+Note: operand is recursive, thus multiple pre-unary operators may appear before a single operand, an operand is complete once an operand-property is detected.
 Also: operand-expression is reusable for sub-operands like argument is, such as for a hashtable key.
 
 Post unary operators must only detect once after an operand expression.  This is because they are technically a form of assignment.
