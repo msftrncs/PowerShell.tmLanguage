@@ -4,15 +4,21 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "testing",
+            "type": "shell",
+            "command": "echo \\\"Hello World\\\"",
+            "problemMatcher": []
+        },
+        {
             "label": "install",
             "type": "shell",
-            "command": "Set-ExecutionPolicy Unrestricted -Scope Process -Force; ./install.ps1",
+            "command": "Set-ExecutionPolicy Bypass Process -Force; ./install.ps1",
             "problemMatcher": []
         },
         {
             "label": "Build PList",
             "type": "shell",
-            "command": "Set-ExecutionPolicy Unrestricted -Scope Process -Force; ./build-plistGrammar.ps1",
+            "command": "Set-ExecutionPolicy Bypass Process -Force; ./build-plistGrammar.ps1",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -22,7 +28,7 @@
         {
             "label": "Build CSON",
             "type": "shell",
-            "command": "Set-ExecutionPolicy Unrestricted -Scope Process -Force; ./build-CsonGrammar.ps1",
+            "command": "Set-ExecutionPolicy Bypass Process -Force; ./build-CsonGrammar.ps1",
             "group": "build",
             "problemMatcher": []
         }
