@@ -1,5 +1,8 @@
 # convert the VS Code JSON PowerShell grammar to the XML PList format grammar file the EditorSyntax repository uses.
 try {
+    # scope in a PList build tool
+    . .\modules\PwshJSONtoPList\ConvertTo-PList.ps1
+
     # create output folder if it doesn't exist
     if (-not (Test-Path out -PathType Container)) {
         New-Item out -ItemType Directory | Out-Null

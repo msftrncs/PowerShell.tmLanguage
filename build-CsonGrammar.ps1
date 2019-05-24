@@ -1,5 +1,8 @@
 # convert the VS Code JSON PowerShell grammar to the CSON format grammar file the Atom PowerShell repository uses.
 try {
+    # scope in a CSON build tool
+    . .\modules\PwshOutCSON\ConvertTo-CSON.ps1
+    
     # create output folder if it doesn't exist
     if (-not (Test-Path out -PathType Container)) {
         New-Item out -ItemType Directory | Out-Null
