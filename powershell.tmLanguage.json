@@ -23,7 +23,7 @@
 					"name": "punctuation.terminator.statement.powershell"
 				}
 			},
-			"end": "(?=\\n)|(?=[;)}\\]])",
+			"end": "(?=[\\n;)}\\]])",
 			"patterns": [
 				{
 					"comment": "$self may have been combined with other includes, this will insure its just $self now",
@@ -356,14 +356,14 @@
 									"patterns": [
 										{
 											"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-											"begin": "(?![\\s#]|<#|`\\n)(?!(?=\\n)|[;&|)}\\]])",
+											"begin": "(?![\\s#]|<#|`\\n)(?![\\n;&|)}\\]])",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
 													"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-													"begin": "(?!\\G)(?!(?=\\n)|[;&|)}\\]])",
-													"end": "(?=\\n)|(?=[;)}\\]])",
+													"begin": "(?!\\G)(?![\\n;&|)}\\]])",
+													"end": "(?=[\\n;)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -378,8 +378,8 @@
 												},
 												{
 													"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-													"begin": "(?!(?=\\n)|[;&|)}\\]])",
-													"end": "(?=\\n)|(?=[;)}\\]])",
+													"begin": "(?![\\n;&|)}\\]])",
+													"end": "(?=[\\n;)}\\]])",
 													"patterns": [
 														{
 															"include": "#expression_mode"
@@ -545,7 +545,7 @@
 					"name": "keyword.control.$0.powershell"
 				}
 			},
-			"end": "(?=\\n)|(?=[;)}\\]])",
+			"end": "(?=[\\n;)}\\]])",
 			"patterns": [
 				{
 					"include": "#command_mode"
@@ -648,7 +648,7 @@
 										{
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
-											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
+											"end": "(?<![}\\)])(?=[\\n,})\\]])",
 											"patterns": [
 												{
 													"include": "$self"
@@ -775,7 +775,7 @@
 										{
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
-											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
+											"end": "(?<![}\\)])(?=[\\n,})\\]])",
 											"patterns": [
 												{
 													"include": "$self"
@@ -890,7 +890,7 @@
 										{
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
-											"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
+											"end": "(?<![}\\)])(?=[\\n,})\\]])",
 											"patterns": [
 												{
 													"include": "$self"
@@ -1081,7 +1081,7 @@
 												{
 													"comment": "next statement, return when safe to exit",
 													"begin": "(?<=\\))(?![,)}\\]])",
-													"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
+													"end": "(?<![}\\)])(?=[\\n,})\\]])",
 													"patterns": [
 														{
 															"include": "$self"
@@ -1326,7 +1326,7 @@
 												{
 													"comment": "next statement, return when safe to exit",
 													"begin": "(?<=})(?![,)}\\]])",
-													"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
+													"end": "(?<![}\\]])(?=[\\n,})\\]])",
 													"patterns": [
 														{
 															"include": "$self"
@@ -1380,7 +1380,7 @@
 						{
 							"comment": "next statement, return when safe to exit",
 							"begin": "(?<=})(?![,)}\\]])",
-							"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
+							"end": "(?<![}\\]])(?=[\\n,})\\]])",
 							"patterns": [
 								{
 									"include": "$self"
@@ -1552,7 +1552,7 @@
 						{
 							"comment": "next statement, return when safe to exit",
 							"begin": "(?<=})(?![,)}\\]])",
-							"end": "(?<!})(?=\\n)|(?=[,})\\]])",
+							"end": "(?<!})(?=[\\n,})\\]])",
 							"patterns": [
 								{
 									"include": "$self"
@@ -1618,7 +1618,7 @@
 						{
 							"comment": "next statement, return when safe to exit",
 							"begin": "(?<=})(?![,)}\\]])",
-							"end": "(?<!})(?=\\n)|(?=[,})\\]])",
+							"end": "(?<!})(?=[\\n,})\\]])",
 							"patterns": [
 								{
 									"include": "$self"
@@ -1689,7 +1689,7 @@
 							"name": "keyword.operator.invoke-or-source.powershell"
 						}
 					},
-					"end": "(?=\\n)|(?=[;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
 							"comment": "Next token needs to be an operand for the operator, not the actual command, but an expression or unquoted expandable string that describes the command's name.",
@@ -1715,7 +1715,7 @@
 						{
 							"comment": "Next token needs to be an operand for the operator, not the actual command, but an expression or unquoted expandable string that describes the command's name.",
 							"begin": "(?![\\n;)}\\]])",
-							"end": "(?=\\n)|(?=[;)}\\]])",
+							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
 									"include": "#argument_mode"
@@ -1727,12 +1727,12 @@
 				{
 					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
 					"begin": "(?=[\\d.!+\\x{2013}-\\x{2015}-])",
-					"end": "(?=\\n)|(?=[;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
 							"comment": "if unary operators/numeric constant advanced, switch to expression mode",
-							"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?!(?=\\n)|[;|)}\\]])",
-							"end": "(?=\\n)|(?=[;)}\\]])",
+							"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?![\\n;|)}\\]])",
+							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
 									"include": "#expression_mode"
@@ -1747,8 +1747,8 @@
 						},
 						{
 							"comment": "if neither numeric or a pre-unary operator, try finishing command mode with a command name",
-							"begin": "(?!(?=\\n)|[;)}\\]])",
-							"end": "(?=\\n)|(?=[;)}\\]])",
+							"begin": "(?![\\n;)}\\]])",
+							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
 									"include": "#command_name"
@@ -1760,7 +1760,7 @@
 				{
 					"comment": "patterns that indicate an expression, might be able to simplify this to include expression_mode and then see if the cursor advanced, sorta, don't forget about 'notCode', maybe check operand/operator only first, as redirect could also be a problem.",
 					"begin": "(?=[$@][{(\\w:$^?]|[({\\[,]|@?['\"\\x{2018}-\\x{201E}]|[\\x{2013}-\\x{2015}-][\\s{(,;|)}#<>.!+%*/='\"\\x{2018}-\\x{201E}\\x{2013}-\\x{2015}-])",
-					"end": "(?=\\n)|(?=[;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
 							"include": "#expression_mode"
@@ -1838,7 +1838,7 @@
 						},
 						{
 							"begin": "(?![\\n;)}\\]])",
-							"end": "(?=\\n)|(?=[;)}\\]])",
+							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
 									"include": "#argument_mode"
@@ -2290,7 +2290,7 @@
 								{
 									"comment": "next statement, return when safe to exit",
 									"begin": "(?<=})(?![,)}\\]])",
-									"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
+									"end": "(?<![}\\]])(?=[\\n,})\\]])",
 									"patterns": [
 										{
 											"include": "$self"
@@ -2309,7 +2309,7 @@
 				{
 					"comment": "next statement, return when safe to exit",
 					"begin": "(?![,)}\\]]|$)",
-					"end": "(?<![}\\]])(?=\\n)|(?=[,})\\]])",
+					"end": "(?<![}\\]])(?=[\\n,})\\]])",
 					"patterns": [
 						{
 							"include": "$self"
@@ -2403,7 +2403,7 @@
 							"name": "support.function.powershell"
 						}
 					},
-					"end": "(?=\\n)|(?=[;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
 							"include": "#argument_mode"
@@ -2418,7 +2418,7 @@
 							"name": "support.function.$0.powershell"
 						}
 					},
-					"end": "(?=\\n)|(?=[;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
 							"include": "#argument_mode"
@@ -2600,8 +2600,8 @@
 							"patterns": [
 								{
 									"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-									"begin": "(?!\\G)(?!(?=\\n)|[,;&|)}\\]])",
-									"end": "(?=\\n)|(?=[,;&|)}\\]])",
+									"begin": "(?!\\G)(?![\\n,;&|)}\\]])",
+									"end": "(?=[\\n,;&|)}\\]])",
 									"patterns": [
 										{
 											"include": "#expression_mode"
@@ -2616,8 +2616,8 @@
 								},
 								{
 									"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-									"begin": "(?!(?=\\n)|[;&)}\\]])",
-									"end": "(?=\\n)|(?=[;&)}\\]])",
+									"begin": "(?![\\n;&)}\\]])",
+									"end": "(?=[\\n;&)}\\]])",
 									"patterns": [
 										{
 											"include": "#expression_mode"
@@ -2792,7 +2792,7 @@
 														{
 															"comment": "next statement, return when safe to exit",
 															"begin": "(?<=})(?![,)}\\]])",
-															"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
+															"end": "(?<![}\\)])(?=[\\n,})\\]])",
 															"patterns": [
 																{
 																	"include": "$self"
@@ -2824,7 +2824,7 @@
 												{
 													"comment": "next statement, return when safe to exit",
 													"begin": "(?<=[}\\)])(?![,)}\\]])",
-													"end": "(?<![}\\)])(?=\\n)|(?=[,})\\]])",
+													"end": "(?<![}\\)])(?=[\\n,})\\]])",
 													"patterns": [
 														{
 															"include": "$self"
@@ -3191,7 +3191,7 @@
 													"name": "variable.parameter.attribute.powershell"
 												}
 											},
-											"end": "(?=\\n)|(?=[,;&|)}\\]])",
+											"end": "(?=[\\n,;&|)}\\]])",
 											"patterns": [
 												{
 													"begin": "=",
@@ -3200,7 +3200,7 @@
 															"name": "keyword.operator.assignment.attribute-argument.powershell"
 														}
 													},
-													"end": "(?=\\n)|(?=[,;&|)}\\]])",
+													"end": "(?=[\\n,;&|)}\\]])",
 													"patterns": [
 														{
 															"include": "#advanceToToken"
@@ -3213,8 +3213,8 @@
 															"patterns": [
 																{
 																	"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-																	"begin": "(?!\\G)(?!(?=\\n)|[,;&|)}\\]])",
-																	"end": "(?=\\n)|(?=[,;&|)}\\]])",
+																	"begin": "(?!\\G)(?![\\n,;&|)}\\]])",
+																	"end": "(?=[\\n,;&|)}\\]])",
 																	"patterns": [
 																		{
 																			"include": "#expression_mode"
@@ -3229,8 +3229,8 @@
 																},
 																{
 																	"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-																	"begin": "(?!(?=\\n)|[,;&|)}\\]])",
-																	"end": "(?=\\n)|(?=[,;&|)}\\]])",
+																	"begin": "(?![\\n,;&|)}\\]])",
+																	"end": "(?=[\\n,;&|)}\\]])",
 																	"patterns": [
 																		{
 																			"include": "#expression_mode"
@@ -3292,8 +3292,8 @@
 							"include": "#accessors"
 						},
 						{
-							"begin": "(?!\\G)(?!(?=\\n)|(?=[;)}\\]]))",
-							"end": "(?=\\n)|(?=[;)}\\]])",
+							"begin": "(?!\\G)(?!(?=[\\n;)}\\]]))",
+							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
 									"include": "#expression_mode"
@@ -3701,7 +3701,7 @@
 				{
 					"comment": "next statement, return when safe to exit",
 					"begin": "(?<=})(?![,)}\\]])",
-					"end": "(?<!})(?=\\n)|(?=[,})\\]])",
+					"end": "(?<!})(?=[\\n,})\\]])",
 					"patterns": [
 						{
 							"include": "$self"
@@ -4736,7 +4736,7 @@
 							"name": "punctuation.terminator.job.powershell"
 						}
 					},
-					"end": "(?=\\n)|(?=[;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
 							"include": "$self"
