@@ -119,6 +119,8 @@ Expression Mode =
 
     expression [{;} or {|} or {&}]
 
+Note: expression mode is really just the starter to expressions from command mode.  Many other points would start with subexpression.
+
 expression =
 
     operand-expression [operator subexpression]
@@ -132,6 +134,8 @@ expression =
     operand-expression range-operator operand-expression [operator subexpression]
 
 note: assignment is a special case operator that is technically equivelent to a post unary operator, but is binary, and accepts a result from a command (which can in turn be an expression which could lead to another assignment).
+
+Unfortunately range-operator is a special case operator, because it precludes assignment, it needs to be included with other assignments, but it also needs to be included with other subexpressions.  It might need to be its own item and included in a higher level group. 
 
 subexpression = 
 
