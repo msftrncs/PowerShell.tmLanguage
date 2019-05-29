@@ -1726,12 +1726,12 @@
 				},
 				{
 					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
-					"begin": "(?=[\\d.!+\\x{2013}-\\x{2015}-])",
+					"begin": "(?=[\\d.,!+\\x{2013}-\\x{2015}-])",
 					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
 							"comment": "if unary operators/numeric constant advanced, switch to expression mode",
-							"begin": "(?:(?!\\G)|\\G(?=[^\\d.!+\\x{2013}-\\x{2015}-]|$))(?![\\n;|)}\\]])",
+							"begin": "(?:(?!\\G)|\\G(?=[^\\d.,!+\\x{2013}-\\x{2015}-]|$))(?![\\n;|)}\\]])",
 							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
@@ -2043,22 +2043,6 @@
 			"patterns": [
 				{
 					"include": "#redirection"
-				},
-				{
-					"comment": "`,` just continues current mode, after advancing to next token",
-					"begin": ",",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.separator.powershell"
-						}
-					},
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#advanceToToken"
-						}
-					]
 				},
 				{
 					"include": "#type"
@@ -4066,7 +4050,6 @@
 		},
 		"RequiresDirective": {
 			"comment": "requires directive must be on single line, so capture and tokenize, current PS <= 6.2 allow `requires` keyword without delimiter, but the parameters must follow with a delimiter!",
-			"oldbegin": "^\\s*(#)((?i:requires))(?=[\\s{(,;&|)}])",
 			"match": "^\\s*(#)((?i:requires))(.?)(.*)$",
 			"captures": {
 				"1": {
@@ -4118,7 +4101,6 @@
 					]
 				}
 			},
-			"oldend": "$",
 			"name": "comment.line.powershell meta.requires.powershell"
 		},
 		"hashtable": {
@@ -4518,6 +4500,22 @@
 			"comment": "expression mode unary operators that precede operands.",
 			"patterns": [
 				{
+					"comment": "`,` just continues current mode, after advancing to next token",
+					"begin": ",",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.unary.array-element-separator.comma.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						}
+					]
+				},
+				{
 					"begin": "(\\+\\+)|([\\x{2013}-\\x{2015}-]{2})",
 					"beginCaptures": {
 						"1": {
@@ -4583,6 +4581,22 @@
 			"patterns": [
 				{
 					"include": "#operators_post"
+				},
+				{
+					"comment": "`,` just continues current mode, after advancing to next token",
+					"begin": ",",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.array-element-separator.comma.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						}
+					]
 				},
 				{
 					"begin": "(?=[\\x{2013}-\\x{2015}-])(?i:(.is(?:not)?)|(.as))(?!\\p{L})",
@@ -4729,7 +4743,7 @@
 					"include": "#terminators"
 				},
 				{
-					"comment": "`&` resume's in statement mode",
+					"comment": "`&` resume's in statement mode, added PowerShell 6 (previously reserved)",
 					"begin": "&",
 					"beginCaptures": {
 						"0": {
