@@ -2071,6 +2071,10 @@
 		"operand": {
 			"patterns": [
 				{
+					"comment": "preunary operators are technically part of an operand expression",
+					"include": "#operators_preUnary"
+				},
+				{
 					"include": "#variable"
 				},
 				{
@@ -2578,35 +2582,11 @@
 						},
 						{
 							"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-							"begin": "(?!$|[;&|)}\\]])",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
+							"begin": "(?![\\n,;&|)}\\]])",
+							"end": "(?=[\\n,;&|)}\\]])",
 							"patterns": [
 								{
-									"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-									"begin": "(?!\\G)(?![\\n,;&|)}\\]])",
-									"end": "(?=[\\n,;&|)}\\]])",
-									"patterns": [
-										{
-											"include": "#expression_mode"
-										}
-									]
-								},
-								{
-									"include": "#numericConstant"
-								},
-								{
-									"include": "#operators_preUnary"
-								},
-								{
-									"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-									"begin": "(?![\\n;&)}\\]])",
-									"end": "(?=[\\n;&)}\\]])",
-									"patterns": [
-										{
-											"include": "#expression_mode"
-										}
-									]
+									"include": "#expression_mode"
 								}
 							]
 						}
@@ -2884,17 +2864,20 @@
 			]
 		},
 		"substatementEmbedded": {
-			"begin": "\\$\\(",
+			"begin": "(\\$)(\\()",
 			"beginCaptures": {
-				"0": {
-					"name": "punctuation.section.embedded.begin.powershell"
+				"1": {
+					"name": "keyword.other.substatement.powershell punctuation.section.embedded.begin.powershell"
+				},
+				"2": {
+					"name": "punctuation.section.group.begin.powershell punctuation.section.embedded.begin.powershell"
 				}
 			},
 			"contentName": "meta.embedded.substatement.powershell interpolated.complex.source.powershell",
 			"end": "\\)",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.embedded.end.powershell"
+					"name": "punctuation.section.embedded.end.powershell punctuation.section.group.end.powershell"
 				}
 			},
 			"patterns": [
@@ -3169,6 +3152,9 @@
 									"name": "meta.attribute-argument-set.powershell",
 									"patterns": [
 										{
+											"include": "#advanceToToken"
+										},
+										{
 											"begin": "\\b([\\p{L}_]\\w*)",
 											"beginCaptures": {
 												"1": {
@@ -3184,7 +3170,7 @@
 															"name": "keyword.operator.assignment.attribute-argument.powershell"
 														}
 													},
-													"end": "(?=[\\n,;&|)}\\]])",
+													"end": "(?=[,;&|)}\\]])",
 													"patterns": [
 														{
 															"include": "#advanceToToken"
@@ -3192,34 +3178,10 @@
 														{
 															"comment": "begin at the first token in the expression, to test for numeric and unary operators",
 															"begin": "(?!$|[,;|)}\\]])",
-															"end": "(?=.|$)",
-															"applyEndPatternLast": true,
+															"end": "(?=$|[,;|)}\\]])",
 															"patterns": [
 																{
-																	"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-																	"begin": "(?!\\G)(?![\\n,;&|)}\\]])",
-																	"end": "(?=[\\n,;&|)}\\]])",
-																	"patterns": [
-																		{
-																			"include": "#expression_mode"
-																		}
-																	]
-																},
-																{
-																	"include": "#numericConstant"
-																},
-																{
-																	"include": "#operators_preUnary"
-																},
-																{
-																	"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-																	"begin": "(?![\\n,;&|)}\\]])",
-																	"end": "(?=[\\n,;&|)}\\]])",
-																	"patterns": [
-																		{
-																			"include": "#expression_mode"
-																		}
-																	]
+																	"include": "#expression_mode"
 																}
 															]
 														},
@@ -3239,7 +3201,23 @@
 											"name": "invalid.source.powershell"
 										},
 										{
-											"comment": "this gets the comma as well as quoted or numeric literals",
+											"comment": "`,` just continues current mode, after advancing to next token",
+											"begin": ",",
+											"beginCaptures": {
+												"0": {
+													"name": "keyword.operator.attribute-argument-separator.comma.powershell"
+												}
+											},
+											"end": "(?=.|$)",
+											"applyEndPatternLast": true,
+											"patterns": [
+												{
+													"include": "#advanceToToken"
+												}
+											]
+										},
+										{
+											"comment": "this gets expressions without argument names",
 											"include": "#expression_mode"
 										}
 									]
@@ -4708,7 +4686,7 @@
 				},
 				{
 					"comment": "included last only because preunary also includes the negate `!` and `-b?not` operators, but we didn't want the `-` negate operator replacing `-` subtract.",
-					"include": "#operators_preUnary"
+					"old include": "#operators_preUnary"
 				}
 			]
 		},
