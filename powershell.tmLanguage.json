@@ -3773,7 +3773,7 @@
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|MaximumAliasCount|MaximumDriveCount|MaximumErrorCount|MaximumFunctionCount|MaximumHistoryCount|MaximumVariableCount|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoloadingPreference|PSSenderInfo|PSSessionApplicationName|PSSessionConfigurationName|PSSessionOption|VerbosePreference|WarningPreference|WhatIfPreference)$)",
+					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|InformationPreference|Log(?:Command|Engine|Provider)(?:HealthEvent|LifecycleEvent)|Maximum(?:AliasCount|DriveCount|ErrorCount|FunctionCount|HistoryCount|VariableCount)|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoLoadingPreference|PSSenderInfo|PSSession(?:ApplicationName|ConfigurationName|Option)|VerbosePreference|WarningPreference|WhatIfPreference)$)",
 					"name": "variable.language.powershell"
 				},
 				{
