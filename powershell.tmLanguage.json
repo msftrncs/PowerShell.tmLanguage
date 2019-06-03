@@ -2873,11 +2873,11 @@
 					"name": "punctuation.section.group.begin.powershell punctuation.section.embedded.begin.powershell"
 				}
 			},
-			"contentName": "meta.embedded.substatement.powershell interpolated.complex.source.powershell",
+			"name": "meta.embedded.substatement.powershell interpolated.complex.source.powershell",
 			"end": "\\)",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.section.embedded.end.powershell punctuation.section.group.end.powershell"
+					"name": "punctuation.section.group.end.powershell punctuation.section.embedded.end.powershell"
 				}
 			},
 			"patterns": [
