@@ -1731,7 +1731,7 @@
 					"patterns": [
 						{
 							"comment": "if unary operators/numeric constant advanced, switch to expression mode",
-							"begin": "(?:(?!\\G)|\\G(?=[^\\d.,!+\\x{2013}-\\x{2015}-]|$))(?![\\n;|)}\\]])",
+							"begin": "(?!\\G)(?![\\n;|)}\\]])",
 							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
@@ -1887,7 +1887,7 @@
 						},
 						{
 							"comment": "if a member access doesn't occur after variable, finish as an unquoted expandable string argument.",
-							"begin": "(?![\\s{(,;&|)}])(?!(?=\\.(?!\\.)|::|\\[))",
+							"begin": "(?![\\s{(,;&|)}])(?!\\.(?!\\.)|::|\\[)",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -3254,7 +3254,7 @@
 							"include": "#accessors"
 						},
 						{
-							"begin": "(?!\\G)(?!(?=[\\n;)}\\]]))",
+							"begin": "(?!\\G)(?![\\n;)}\\]])",
 							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
@@ -3465,7 +3465,7 @@
 									"name": "punctuation.section.bracket.begin.powershell"
 								}
 							},
-							"end": "]|(?!\\G)(?=\\n)",
+							"end": "]",
 							"endCaptures": {
 								"0": {
 									"name": "punctuation.section.bracket.end.powershell"
@@ -3474,6 +3474,7 @@
 							"name": "meta.index.powershell",
 							"patterns": [
 								{
+									"comment": "should only be an expression, no assignment operators",
 									"include": "#expression_mode"
 								}
 							]
