@@ -38,7 +38,7 @@
 					"name": "keyword.other.class.powershell"
 				}
 			},
-			"end": "}|(?=[^\\s])",
+			"end": "}|(?=\\S)",
 			"endCaptures": {
 				"0": {
 					"name": "punctuation.section.braces.end.powershell"
@@ -47,13 +47,13 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "[\\p{L}_]\\w*(?=[\\s\\[{(,;&|)}:#<>])",
+					"begin": "[\\p{L}_]\\w*(?=[\\s\\[{(,;&|)}:#<>]|`\\s)",
 					"beginCaptures": {
 						"0": {
 							"name": "entity.name.type.class.powershell"
 						}
 					},
-					"end": "(?=[^\\s])",
+					"end": "(?=\\S)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -63,7 +63,7 @@
 									"name": "punctuation.separator.colon.powershell"
 								}
 							},
-							"end": "(?=[^\\s:])",
+							"end": "(?=\\S)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -85,7 +85,7 @@
 											]
 										}
 									},
-									"end": "(?=[^\\s])",
+									"end": "(?=\\S)",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
@@ -95,7 +95,7 @@
 													"name": "punctuation.separator.comma.powershell"
 												}
 											},
-											"end": "(?=[^\\s:])",
+											"end": "(?=\\S)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
@@ -117,7 +117,7 @@
 															]
 														}
 													},
-													"end": "(?=[^\\s])",
+													"end": "(?=\\S)",
 													"applyEndPatternLast": true,
 													"patterns": [
 														{
@@ -161,7 +161,7 @@
 						},
 						{
 							"begin": "(?=[\\p{L}_])",
-							"end": "}|(?=[^\\s])|(?=\\n)",
+							"end": "}|(?=[\\S\\n])",
 							"endCaptures": {
 								"0": {
 									"name": "punctuation.section.braces.end.powershell"
@@ -181,12 +181,12 @@
 											"name": "entity.name.function.powershell"
 										}
 									},
-									"end": "(?=[^\\s])|(?=\\n)",
+									"end": "(?=[\\S\\n])",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
 											"begin": "(?=\\()",
-											"end": "(?=[^\\s])",
+											"end": "(?=\\S)",
 											"applyEndPatternLast": true,
 											"patterns": [
 												{
@@ -264,7 +264,12 @@
 					"name": "keyword.other.enum.powershell"
 				}
 			},
-			"end": "(?=[^\\s])|(?<=})",
+			"end": "}|(?=\\S)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.section.braces.end.powershell"
+				}
+			},
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -274,7 +279,7 @@
 							"name": "entity.name.type.enum.powershell"
 						}
 					},
-					"end": "(?=[^\\s])|(?<=})",
+					"end": "(?=\\S)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -285,7 +290,7 @@
 									"name": "punctuation.separator.colon.powershell"
 								}
 							},
-							"end": "(?=[^\\s:])|(?<=})",
+							"end": "(?=\\S)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -299,7 +304,7 @@
 											]
 										}
 									},
-									"end": "(?=[^\\s])|(?<=})",
+									"end": "(?=\\S)",
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
@@ -324,13 +329,13 @@
 							"name": "punctuation.section.braces.begin.powershell"
 						}
 					},
-					"end": "}",
+					"end": "(?=})",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.section.braces.end.powershell"
 						}
 					},
-					"name": "meta.enumeration.powershell",
+					"contentName": "meta.enumeration-definition.powershell",
 					"patterns": [
 						{
 							"match": ";",
@@ -425,7 +430,12 @@
 					"name": "keyword.other.$0.powershell"
 				}
 			},
-			"end": "(?=[//s])|(?<=})",
+			"end": "}|(?=\\S)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.section.braces.end.powershell"
+				}
+			},
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
@@ -441,7 +451,7 @@
 							"name": "punctuation.separator.colon.powershell"
 						}
 					},
-					"end": "(?=[//s])|(?<=})",
+					"end": "(?=\\S)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
@@ -459,8 +469,8 @@
 							]
 						},
 						{
-							"begin": "(?<!\\G)(?<!})",
-							"end": "(?=[//s])|(?<=})",
+							"begin": "(?!\\G)(?!})",
+							"end": "(?=\\S)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
@@ -470,13 +480,13 @@
 											"name": "punctuation.section.braces.begin.powershell"
 										}
 									},
-									"end": "}",
+									"end": "(?=})",
 									"endCaptures": {
 										"0": {
 											"name": "punctuation.section.braces.end.powershell"
 										}
 									},
-									"name": "meta.function.powershell",
+									"contentName": "meta.function-body.powershell",
 									"patterns": [
 										{
 											"include": "$self"

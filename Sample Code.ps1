@@ -9,10 +9,10 @@ function HexDigitToByte( [ValidateSet([HexDigits])][char]$char ) {
     [byte]$(
         if ($char -ge [char]'A' ) {
             # handle both upper and lowercase A-F, limit at F
-            [MATH]::Min(($char.toByte($null) -band 0x5F) - 0x37, 15)
+            [MATH]::Min(([byte]$char -band 0x5F) - 0x37, 15)
         }
         elseif ($char -ge [char]'0') {
-            [MATH]::Min($char.toByte($null) - 0x30, 9)
+            [MATH]::Min([byte]$char - 0x30, 9)
         }
         else {
             0
