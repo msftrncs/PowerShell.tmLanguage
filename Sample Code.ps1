@@ -491,13 +491,22 @@ $hello.where{ $_ }
 
 ( { hello })
 filter quoteStringWithSpecialChars {
-    if ($_ -and ($_ -match '[\s#@$;,''{}()]')) {
-        "'$($_ -replace "'", "''")'"
+    if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
+        "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
     }
     else {
         $_
     }
 }
+
+filter variableNotate {
+    if ($_ -match '^[^$^\w?:]|^[$^?].|.+?[^\w?:]|.+?::') {
+        "{$($_ -replace '[{}]', '`$0')}"
+    } else {
+        $_
+    }
+}
+
 
 # demonstrate equivelent function vs filter
 function testfun { $input.foreach{ $_ } }
