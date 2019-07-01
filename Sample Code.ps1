@@ -501,7 +501,7 @@ filter quoteStringWithSpecialChars {
 
 filter variableNotate {
     if ($_ -match '^[^$^\w?:]|^[$^?].|.+?[^\w?:]|.+?::') {
-        "{$($_ -replace '[{}]', '`$0')}"
+        "{$($_ -replace '[{}`]', '`$0')}"
     } else {
         $_
     }
