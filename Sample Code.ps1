@@ -500,7 +500,9 @@ filter quoteStringWithSpecialChars {
     }
 }
 
-filter quoteArgWithSpecialChars ([char]$QuotedWith) {
+filter quoteArgWithSpecChars ([char]$QuotedWith) {
+    # filter a list of potential arguments, altering them for compatibility with PowerShell's tokenizer
+    # $QuotedWith - specifies quote character argument was already quoted with
     if ($QuotedWith -eq '') {
         # bareword
         if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
@@ -508,6 +510,7 @@ filter quoteArgWithSpecialChars ([char]$QuotedWith) {
             "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
         }
         else {
+            # is fine as is
             $_
         }
     } elseif ($QuotedWith -like "['`u{2018}-`u{201B}]") {
@@ -515,7 +518,7 @@ filter quoteArgWithSpecialChars ([char]$QuotedWith) {
         "$QuotedWith$($_ -replace '[''\u2018-\u201B]', '$0$0')$QuotedWith"
     } elseif ($QuotedWith -like "[""`u{201C}-`u{201E}]") {
         # double-quoted
-       "$QuotedWith$($_ -replace '[``"\u201C-\u201E]', '$0$0')$QuotedWith"
+       "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0')$QuotedWith"
     }
 }
 
