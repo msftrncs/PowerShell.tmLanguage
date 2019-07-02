@@ -490,12 +490,32 @@ function quoteStringWithSpecialChars {
 $hello.where{ $_ }
 
 ( { hello })
+
 filter quoteStringWithSpecialChars {
     if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
         "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
     }
     else {
         $_
+    }
+}
+
+filter quoteArgWithSpecialChars ([char]$QuotedWith) {
+    if ($QuotedWith -eq '') {
+        # bareword
+        if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
+            # needs to be single-quoted
+            "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
+        }
+        else {
+            $_
+        }
+    } elseif ($QuotedWith -like "['`u{2018}-`u{201B}]") {
+        # single-quoted
+        "$QuotedWith$($_ -replace '[''\u2018-\u201B]', '$0$0')$QuotedWith"
+    } elseif ($QuotedWith -like "[""`u{201C}-`u{201E}]") {
+        # double-quoted
+       "$QuotedWith$($_ -replace '[``"\u201C-\u201E]', '$0$0')$QuotedWith"
     }
 }
 
