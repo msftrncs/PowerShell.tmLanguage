@@ -500,16 +500,19 @@ filter quoteStringWithSpecialChars {
     }
 }
 
-filter quoteArgWithSpecChars ([char]$QuotedWith) {
+filter quoteArgWithSpecChars {
+    param(
+        [ValidateSet([char]0, [char]34, [char]39, [char]0x2018, [char]0x2019, [char]0x201A, [char]0x201B, [char]0x201C, [char]0x201D, [char]0x201E)]
+        [char]$QuotedWith = [char]0
+    )
     # filter a list of potential arguments, altering them for compatibility with PowerShell's tokenizer
     # $QuotedWith - specifies quote character argument was already quoted with
-    if ($QuotedWith -eq '') {
+    if ($QuotedWith -eq [char]0) {
         # bareword
         if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
             # needs to be single-quoted
             "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
-        }
-        else {
+        } else {
             # is fine as is
             $_
         }
@@ -518,7 +521,7 @@ filter quoteArgWithSpecChars ([char]$QuotedWith) {
         "$QuotedWith$($_ -replace '[''\u2018-\u201B]', '$0$0')$QuotedWith"
     } elseif ($QuotedWith -like "[""`u{201C}-`u{201E}]") {
         # double-quoted
-       "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0')$QuotedWith"
+        "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0' -replace '[$]', '`$0')$QuotedWith"
     }
 }
 
