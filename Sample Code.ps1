@@ -549,25 +549,74 @@ filter variableNotate {
     param(
         [string]$ScopeOrProviderPrefix = '' # specify either scope or provider prefix
     )
+    # return a result object similar to the System.Management.Automation.CompletionResult class
     [pscustomobject]@{ 
         ListItemText   = $_
         CompletionText = "$($(
             if ($ScopeOrProviderPrefix -eq '') {
-                if ($_.Contains([char]':') -or $_.StartsWith([char]'?')) {
+                # no scope/drive prefix, detect reasons to force a blank prefix
+                if ($_.Contains([char]':') -or $_ -match '^\?[\w?:]+') {
+                    # force `:` prefix for names containing `:` or beginning with `?` but not needing `{}`
                     ":$_"
                 } else {
+                    #no prefixing needed
                     $_
                 }
             } else {
+                # assemble the prefixed completion
                 "${ScopeOrProviderPrefix}:$_"
             }
         ).foreach{
+            # detect if final completion requires `{}`
             if ($_ -match '^(?:[^$^\w?:]|[$^?].)|.(?:::|[^\w?:])') {
+                # `{}` required, escape where needed
                 "{$($_ -replace '[{}`]', '`$0')}"
             } else {
+                # no wrapping or escaping needed
                 $_
             }
         })"
+    }
+}
+
+class CompleterEscaper {
+    static [string] variableEscape ([string]$text) {
+        return $(
+            # detect if final completion requires `{}`
+            if ($text -match '^(?:[^$^\w?:]|[$^?].)|.(?:::|[^\w?:])') {
+                # `{}` required, escape where needed
+                "{$($text -replace '[{}`]', '`$0')}"
+            } else {
+                # no wrapping or escaping needed
+                $text
+            }
+        )
+    }
+}
+
+filter variableNotate {
+    param(
+        [string]$ScopeOrProviderPrefix = '' # specify either scope or provider prefix
+    )
+
+    # return a result object similar to the System.Management.Automation.CompletionResult class
+    [pscustomobject]@{ 
+        ListItemText   = $_
+        CompletionText = [CompleterEscaper]::variableEscape( $(
+            if ($ScopeOrProviderPrefix -eq '') {
+                # no scope/drive prefix, detect reasons to force a blank prefix
+                if ($_.Contains([char]':') -or $_ -match '^\?[\w?:]+') {
+                    # force `:` prefix for names containing `:` or beginning with `?` but not needing `{}`
+                    ":$_"
+                } else {
+                    #no prefixing needed
+                    $_
+                }
+            } else {
+                # assemble the prefixed completion
+                "${ScopeOrProviderPrefix}:$_"
+            }
+        ))
     }
 }
 
