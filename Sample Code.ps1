@@ -550,10 +550,10 @@ filter variableNotate {
         [string]$ScopeOrProviderPrefix = '' # specify either scope or provider prefix
     )
     [pscustomobject]@{ 
-        ListItemText = $_
+        ListItemText   = $_
         CompletionText = "$($(
             if ($ScopeOrProviderPrefix -eq '') {
-                if ($_.Contains([char]':')) {
+                if ($_.Contains([char]':') -or $_.StartsWith([char]'?')) {
                     ":$_"
                 } else {
                     $_
@@ -562,7 +562,7 @@ filter variableNotate {
                 "${ScopeOrProviderPrefix}:$_"
             }
         ).foreach{
-            if ($_ -match '^[^$^\w?:]|^[$^?].|.+?[^\w?:]|.+?::') {
+            if ($_ -match '^(?:[^$^\w?:]|[$^?].)|.(?:::|[^\w?:])') {
                 "{$($_ -replace '[{}`]', '`$0')}"
             } else {
                 $_
