@@ -502,34 +502,72 @@ filter quoteStringWithSpecialChars {
 
 filter quoteArgWithSpecChars {
     param(
-        [ValidateSet([char]0, [char]34, [char]39, [char]0x2018, [char]0x2019, [char]0x201A, [char]0x201B, [char]0x201C, [char]0x201D, [char]0x201E)]
-        [char]$QuotedWith = [char]0
+        [ValidateSet([char]0us, [char]34us, [char]39us, [char]0x2018us, [char]0x2019us, [char]0x201Aus, [char]0x201Bus, [char]0x201Cus, [char]0x201Dus, [char]0x201Eus)]
+        [char]$QuotedWith = [char]0us, # specifies quote character argument was previously quoted with
+        [bool]$IsLiteralPath = $true, # specifies argument is a literal and needs no wildcard escaping
+        [string]$PrefixText = '' # portion of argument that has already been completed, in its raw (unescaped) form
     )
-    # filter a list of potential arguments, altering them for compatibility with PowerShell's tokenizer
-    # $QuotedWith - specifies quote character argument was already quoted with
-    if ($QuotedWith -eq [char]0) {
-        # bareword
-        if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
-            # needs to be single-quoted
-            "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
-        } else {
-            # is fine as is
-            $_
-        }
-    } elseif ($QuotedWith -like "['`u{2018}-`u{201B}]") {
-        # single-quoted
-        "$QuotedWith$($_ -replace '[''\u2018-\u201B]', '$0$0')$QuotedWith"
-    } elseif ($QuotedWith -like "[""`u{201C}-`u{201E}]") {
-        # double-quoted
-        "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0' -replace '[$]', '`$0')$QuotedWith"
+    # filter a list of potential command argument completions, altering them for compatibility with PowerShell's tokenizer
+    # return a hash table of the original item (ListItemText) and the completion text that would be inserted
+    # this resembles the System.Management.Automation.CompletionResult class
+    [pscustomobject]@{ 
+        ListItemText = $_
+        CompletionText = "$($(
+            # first, force to a literal if argument isn't automatically literal
+            if (-not $IsLiteralPath) {
+                # must escape certain wildcard patterns
+                "$PrefixText$_" -replace '[\[\]*?]', '`$0'
+            } else {
+                "$PrefixText$_"
+            }
+        ).foreach{
+            # escape according to type of quoting completion will use
+            if ($QuotedWith -eq [char]0us) {
+                # bareword, check if completion must be forced to be quoted
+                if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
+                    # needs to be single-quoted
+                    "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
+                } else {
+                    # is fine as is
+                    $_
+                }
+            } elseif ($QuotedWith -notin [char]34us, [char]0x201Cus, [char]0x201Dus, [char]0x201Eus) {
+                # single-quoted
+                "$QuotedWith$($_ -replace '[''\u2018-\u201B]', '$0$0')$QuotedWith"
+            } else {
+                # double-quoted
+                "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0' -replace '[$]', '`$0')$QuotedWith"
+            }
+        })"
     }
 }
 
+# demonstrate above filter creating a `variable:` completion array for an argument that allows wildcards
+(dir variable:*).name | quoteArgWithSpecChars $null $false 'variable:'
+
 filter variableNotate {
-    if ($_ -match '^[^$^\w?:]|^[$^?].|.+?[^\w?:]|.+?::') {
-        "{$($_ -replace '[{}`]', '`$0')}"
-    } else {
-        $_
+    param(
+        [string]$ScopeOrProviderPrefix = '' # specify either scope or provider prefix
+    )
+    [pscustomobject]@{ 
+        ListItemText = $_
+        CompletionText = "$($(
+            if ($ScopeOrProviderPrefix -eq '') {
+                if ($_.Contains([char]':')) {
+                    ":$_"
+                } else {
+                    $_
+                }
+            } else {
+                "${ScopeOrProviderPrefix}:$_"
+            }
+        ).foreach{
+            if ($_ -match '^[^$^\w?:]|^[$^?].|.+?[^\w?:]|.+?::') {
+                "{$($_ -replace '[{}`]', '`$0')}"
+            } else {
+                $_
+            }
+        })"
     }
 }
 
