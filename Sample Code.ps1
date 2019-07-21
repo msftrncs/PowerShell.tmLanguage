@@ -524,7 +524,7 @@ filter quoteArgWithSpecChars {
             # escape according to type of quoting completion will use
             if ($QuotedWith -eq [char]0us) {
                 # bareword, check if completion must be forced to be quoted
-                if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
+                if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`|&;,''"\u2018-\u201E{}()]|\$[{(\w:$^?]') { #)
                     # needs to be single-quoted
                     "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
                 } else {
@@ -536,10 +536,11 @@ filter quoteArgWithSpecChars {
                 "$QuotedWith$($_ -replace '[''\u2018-\u201B]', '$0$0')$QuotedWith"
             } else {
                 # double-quoted
-                "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0' -replace '[$]', '`$0')$QuotedWith"
+                "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0' -replace '\$(?=[{(\w:$^?])'<#)#>, '`$0')$QuotedWith"
             }
         })"
     }
+    # see https://github.com/PowerShell/PowerShell/issues/4543 regarding the commented `)`, they are neccessary.
 }
 
 # demonstrate above filter creating a `variable:` completion array for an argument that allows wildcards
@@ -555,7 +556,7 @@ filter variableNotate {
         CompletionText = "$($(
             if ($ScopeOrProviderPrefix -eq '') {
                 # no scope/drive prefix, detect reasons to force a blank prefix
-                if ($_.Contains([char]':') -or $_ -match '^\?[\w?:]+') {
+                if ($_.Contains([char]':') -or $_ -match '^\?[\w?:]+$') {
                     # force `:` prefix for names containing `:` or beginning with `?` but not needing `{}`
                     ":$_"
                 } else {
@@ -578,6 +579,10 @@ filter variableNotate {
         })"
     }
 }
+
+(dir env:*).name | variableNotate 'env'
+
+(dir variable:*).name | variableNotate
 
 class CompleterEscaper {
     static [string] variableEscape ([string]$text) {
@@ -605,7 +610,7 @@ filter variableNotate {
         CompletionText = [CompleterEscaper]::variableEscape( $(
             if ($ScopeOrProviderPrefix -eq '') {
                 # no scope/drive prefix, detect reasons to force a blank prefix
-                if ($_.Contains([char]':') -or $_ -match '^\?[\w?:]+') {
+                if ($_.Contains([char]':') -or $_ -match '^\?[\w?:]+$') {
                     # force `:` prefix for names containing `:` or beginning with `?` but not needing `{}`
                     ":$_"
                 } else {
