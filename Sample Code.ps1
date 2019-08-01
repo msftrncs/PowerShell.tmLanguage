@@ -492,7 +492,7 @@ $hello.where{ $_ }
 ( { hello })
 
 filter quoteStringWithSpecialChars {
-    if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`$|&;,''"\u2018-\u201E{}()]') {
+    if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`|&;,''"\u2018-\u201E{}()]|\$[{(\w:$^?]') {
         "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
     }
     else {
@@ -516,7 +516,8 @@ filter quoteArgWithSpecChars {
             # first, force to a literal if argument isn't automatically literal
             if (-not $IsLiteralPath) {
                 # must escape certain wildcard patterns
-                "$PrefixText$_" -replace '[\[\]*?]', '`$0'
+                # kludge, WildcardPattern.Escape doesn't escape the escape character
+                [WildcardPattern]::Escape("$PrefixText$_".replace('`','``'))
             } else {
                 "$PrefixText$_"
             }
@@ -524,7 +525,7 @@ filter quoteArgWithSpecChars {
             # escape according to type of quoting completion will use
             if ($QuotedWith -eq [char]0us) {
                 # bareword, check if completion must be forced to be quoted
-                if ($_ -match '^(?:[@#<>]|[1-6]>)|[\s`|&;,''"\u2018-\u201E{}()]|\$[{(\w:$^?]') { #)
+                if ($_ -match '^(?:[@#<>]|[1-6]>|[-\u2013-\u2015](?:[-\u2013-\u2015]$|[_\p{L}]))|[\s`|&;,''"\u2018-\u201E{}()]|\$[{(\w:$^?]') { #)
                     # needs to be single-quoted
                     "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
                 } else {
