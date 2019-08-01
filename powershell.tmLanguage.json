@@ -1939,6 +1939,11 @@
 					}
 				},
 				{
+					"comment": "splatting cannot have members and certain characters following, including no line comment",
+					"match": "@(?![$^?:\\w])",
+					"name": "invalid.splat.powershell"
+				},
+				{
 					"include": "#unquotedArgument"
 				}
 			]
