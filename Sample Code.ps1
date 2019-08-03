@@ -753,3 +753,6 @@ $?:::hello
 echo hello$(1).goodbye @local:?
 $c:args
 ${/:args}
+
+echo @# this is actually a comment and the @ is an error
+echo @ #@ needs to be invalid if not followed by certain characters.
