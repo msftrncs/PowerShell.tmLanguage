@@ -585,6 +585,57 @@ filter variableNotate {
 
 (dir variable:*).name | variableNotate
 
+
+# command name completer logic is slightly different than argument completer.
+# command name completer has both expandable and non-expandable modes but only applies to bareword values
+# as a double-quoted value is always expandable and a single quoted value is never expandable.
+# command name completer is ALWAYS literal.
+filter quoteCmdWithSpecChars {
+    param(
+        [ValidateSet([char]0us, [char]34us, [char]39us, [char]0x2018us, [char]0x2019us, [char]0x201Aus, [char]0x201Bus, [char]0x201Cus, [char]0x201Dus, [char]0x201Eus)]
+        [char]$QuotedWith = [char]0us, # specifies quote character command name was previously quoted with
+        [bool]$IsExpandable = $true, # specifies command name is expandable even when bareword, thus `$` needs escaped
+        [string]$PrefixText = '' # portion of argument that has already been completed, in its raw (unescaped) form
+    )
+    # filter a list of potential command name completions, altering them for compatibility with PowerShell's tokenizer
+    # return a hash table of the original item (ListItemText) and the completion text that would be inserted
+    # this resembles the System.Management.Automation.CompletionResult class
+    [pscustomobject]@{ 
+        ListItemText = $_
+        CompletionText = "$($(
+            # first, force to a literal, must escape certain wildcard patterns
+            # kludge, WildcardPattern.Escape doesn't escape the escape character
+            <#[WildcardPattern]::Escape(#>"$PrefixText$_"<#.replace('`','``'))#>
+        ).foreach{
+            # escape according to type of quoting completion will use
+            if ($QuotedWith -eq [char]0us) {
+                # bareword, check if completion must be forced to be quoted
+                if ($(if ($IsExpandable) {
+                        $_ -match '^(?:[@#]|(?>[1-6*]>&1|[1-6*]?>>?|<)(?!$)|[-\u2013-\u2015][-\u2013-\u2015]$)|^(?![1-6*]>&1$).*?[\s`|&;,''"\u2018-\u201E{}()]|\$[{(\w:$^?]' #)
+                    } else {
+                        $_ -match '^(?:[@#]|(?>[1-6*]>&1|[1-6*]?>>?|<)(?!$)|[-\u2013-\u2015][-\u2013-\u2015]$)|^(?![1-6*]>&1$).*?[\s`|&;,''"\u2018-\u201E{}()]'
+                    })) {
+                    # needs to be single-quoted
+                    "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
+                } else {
+                    # is fine as is
+                    $_
+                }
+            } elseif ($QuotedWith -notin [char]34us, [char]0x201Cus, [char]0x201Dus, [char]0x201Eus) {
+                # single-quoted
+                "$QuotedWith$($_ -replace '[''\u2018-\u201B]', '$0$0')$QuotedWith"
+            } else {
+                # double-quoted
+                "$QuotedWith$($_ -replace '["\u201C-\u201E`]', '$0$0' -replace '\$(?=[{(\w:$^?])'<#)#>, '`$0')$QuotedWith"
+            }
+        })"
+    }
+    # see https://github.com/PowerShell/PowerShell/issues/4543 regarding the commented `)`, they are neccessary.
+}
+
+
+# expirement with a class based completer, but they only return 1 result at a time
+
 class CompleterEscaper {
     static [string] variableEscape ([string]$text) {
         return $(
