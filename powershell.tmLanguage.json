@@ -1703,12 +1703,17 @@
 					"patterns": [
 						{
 							"comment": "Next token needs to be an operand for the operator, not the actual command, but an expression or unquoted expandable string that describes the command's name.",
-							"begin": "\\G(?![,;&|)}<>])",
+							"begin": "\\G(?![,;&|)}<>])|\\G(?=<|[1-6]>&[12]|\\*>&1|[1-6*]?>>?)",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
 								{
 									"include": "#advanceToToken"
+								},
+								{
+									"comment": "at the begining of a command name, `<`, `>` or `>>` are the entire command name.",
+									"match": "(?:<|[1-6]>&[12]|\\*>&1|[1-6*]?>>?)",
+									"name": "entity.name.function.powershell"
 								},
 								{
 									"begin": "(?<=[\\s>]|\\G|^)(?![\\s#,;&|)}<>]|<#|$)",
@@ -1736,7 +1741,7 @@
 				},
 				{
 					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
-					"begin": "(?=[\\d.,!+\\x{2013}-\\x{2015}-])",
+					"begin": "(?=[.,!+\\x{2013}-\\x{2015}-]|\\d(?!>&[12]))",
 					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
@@ -1829,7 +1834,7 @@
 					"patterns": [
 						{
 							"comment": "at the begining of a command name, `<`, `>` or `>>` are the entire command name.",
-							"match": "\\G(?:<|>>?)",
+							"match": "\\G(?:<|\\*>&1|\\*?>>?|[1-6]>&[12])",
 							"name": "entity.name.function.powershell"
 						},
 						{
@@ -4776,7 +4781,7 @@
 					]
 				},
 				{
-					"match": "<(?!#)",
+					"match": "<(?!#)|[1-6]>&2",
 					"name": "invalid.reserved.redirection.powershell"
 				},
 				{
