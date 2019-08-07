@@ -594,7 +594,7 @@ filter quoteCmdWithSpecChars {
     param(
         [ValidateSet([char]0us, [char]34us, [char]39us, [char]0x2018us, [char]0x2019us, [char]0x201Aus, [char]0x201Bus, [char]0x201Cus, [char]0x201Dus, [char]0x201Eus)]
         [char]$QuotedWith = [char]0us, # specifies quote character command name was previously quoted with
-        [bool]$IsExpandable = $true, # specifies command name is expandable even when bareword, thus `$` needs escaped
+        [bool]$IsExpandable = $false, # specifies command name is expandable even when bareword, thus `$` needs escaped
         [string]$PrefixText = '' # portion of argument that has already been completed, in its raw (unescaped) form
     )
     # filter a list of potential command name completions, altering them for compatibility with PowerShell's tokenizer
@@ -786,7 +786,7 @@ ${scope`:} # needs scope/drive and (:) to be invalid, bad variable reference, (`
 ${`:true} # needs to highlight as language constant
 ${local`:true} # needs to highlight as language constant
 $local:true # needs to highlight as a language constant
-${` ` `3`2:`1`2`3`a`f`e`q`q} # backticks need to be invalid when not a valid escape pattern.
+${` ` `3`2:`1`2`3`a`b`f`e`q`q} # backticks need to be invalid when not a valid escape pattern.
 $:true # colon should still be separator
 ${local:args}
 $local:
@@ -844,32 +844,39 @@ hello 1>&2 hello
 '*>&2',
 '2>&2',
 '1>&2hello',
-'2>&3' | QuoteCmdWithSpecChars
+'2>&3', '1>' | QuoteCmdWithSpecChars
 
-[System.Management.Automation.Language.Token[]]$tokens = $null
-[System.Management.Automation.Language.ParseError[]]$parseerrors = $null
-[System.Management.Automation.Language.Parser]::ParseInput('& -h`ello$a',[ref]$tokens,[ref]$parseerrors); quotecmd
+using namespace System.Management.Automation.Language
+
+[Token[]]$tokens = $null
+[ParseError[]]$parseerrors = $null
+[Parser]::ParseInput('& -h`ello$a',[ref]$tokens,[ref]$parseerrors); quotecmd
 
 class QuoteCheck {
-    [System.Management.Automation.Language.Token[]] $tokens = $null
-    [System.Management.Automation.Language.ParseError[]] $parseerrors = $null
+    [Token[]] $tokens = $null
+    [ParseError[]] $parseerrors = $null
+
+    [bool] CmdRequiresQuote ([string]$in) {
+        return $this.CmdRequiresQuote($in, $false)
+    }
 
     [bool] CmdRequiresQuote ([string]$in, [bool]$IsExpandable) {
-        [System.Management.Automation.Language.Token[]] $_tokens = $null
-        [System.Management.Automation.Language.ParseError[]] $_parseerrors = $null
+        [Token[]] $_tokens = $null
+        [ParseError[]] $_parseerrors = $null
 
-        [System.Management.Automation.Language.Parser]::ParseInput($in,[ref]$_tokens,[ref]$_parseerrors)
+        [Parser]::ParseInput($in,[ref]$_tokens,[ref]$_parseerrors)
         $this.tokens = $_tokens; $this.parseerrors = $_parseerrors
         return $this.parseerrors.Count -ne 0 -or $this.tokens.Count -ne 2 -or $this.tokens[0].Kind -in (
-            [System.Management.Automation.Language.TokenKind]::Variable,
-            [System.Management.Automation.Language.TokenKind]::SplattedVariable,
-            [System.Management.Automation.Language.TokenKind]::StringExpandable,
-            [System.Management.Automation.Language.TokenKind]::StringLiteral,
-            [System.Management.Automation.Language.TokenKind]::HereStringExpandable,
-            [System.Management.Automation.Language.TokenKind]::HereStringLiteral,
-            [System.Management.Automation.Language.TokenKind]::Number) -or $this.tokens[0].TokenFlags -band [System.Management.Automation.Language.TokenFlags]::UnaryOperator -or
-            ($IsExpandable -and $this.tokens[0] -is [System.Management.Automation.Language.StringExpandableToken]) -or
-            ($this.tokens[0] -is [System.Management.Automation.Language.StringToken] -and $this.tokens[0].Value.Length -ne $in.Length)
+            [TokenKind]::Variable,
+            [TokenKind]::SplattedVariable,
+            [TokenKind]::StringExpandable,
+            [TokenKind]::StringLiteral,
+            [TokenKind]::HereStringExpandable,
+            [TokenKind]::HereStringLiteral,
+            [TokenKind]::Number,
+            [TokenKind]::Comment) -or $this.tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator -or
+            ($IsExpandable -and $this.tokens[0] -is [StringExpandableToken]) -or
+            ($this.tokens[0] -is [StringToken] -and $this.tokens[0].Value.Length -ne $in.Length)
     }
 }
 
@@ -886,3 +893,5 @@ if ( $parseerrors.Count -ne 0 -or $tokens.Count -ne 2 -or $tokens[0].Kind -in (
     [System.Management.Automation.Language.TokenKind]::Number) -or $tokens[0].TokenFlags -band [System.Management.Automation.Language.TokenFlags]::UnaryOperator
 ) {echo $true}
 } #>
+
+'\svr-2015-01\User Documents\Carl'
