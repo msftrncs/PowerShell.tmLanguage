@@ -611,9 +611,9 @@ filter quoteCmdWithSpecChars {
             if ($QuotedWith -eq [char]0us) {
                 # bareword, check if completion must be forced to be quoted
                 if ($(if ($IsExpandable) {
-                        $_ -match '^(?:[@#]|(?>[1-6*]>&1|[1-6*]?>>?|<)(?!$)|[-\u2013-\u2015][-\u2013-\u2015]$)|^(?![1-6*]>&1$).*?[\s`|&;,''"\u2018-\u201E{}()]|\$[{(\w:$^?]' #)
+                        $_ -match '^(?:[@#]|(?>[1-6]>&[12]|\*>&1|[1-6*]?>>?|<)(?!$)|[-\u2013-\u2015][-\u2013-\u2015]$)|^(?!(?>[1-6]>&[12]|\*>&1|[1-6*]?>>?|<)$).*?[\s`|&;,''"\u2018-\u201E{}()]|\$[{(\w:$^?]' #)
                     } else {
-                        $_ -match '^(?:[@#]|(?>[1-6*]>&1|[1-6*]?>>?|<)(?!$)|[-\u2013-\u2015][-\u2013-\u2015]$)|^(?![1-6*]>&1$).*?[\s`|&;,''"\u2018-\u201E{}()]'
+                        $_ -match '^(?:[@#]|(?>[1-6]>&[12]|\*>&1|\*?>>?|<)(?!$)|[1-6]>(?!&[12])|[-\u2013-\u2015][-\u2013-\u2015]$)|^(?!(?>[1-6]>&[12]|\*>&1|\*?>>?|<)$).*?[\s`|&;,''"\u2018-\u201E{}()]'
                     })) {
                     # needs to be single-quoted
                     "'$($_ -replace '[''\u2018-\u201B]', '$0$0')'"
@@ -807,3 +807,82 @@ ${/:args}
 
 echo @# this is actually a comment and the @ is an error
 echo @ #@ needs to be invalid if not followed by certain characters.
+
+# command names, is expandable
+& 2>&1hello
+& 1>&1hello
+& *>&1hello
+& >>hello
+& >hello
+& *>&2
+& 2>&2
+& 2>&3
+& hello 1>&2 hello
+
+# command names, is not expandable
+2>&1hello
+1>&1hello
+*>&1hello
+>>hello
+>hello
+*>&2
+2>&2
+1>&2
+2>&3
+hello 1>&2 hello
+
+'2>&1',
+'2>&1hello',
+'1>&1',
+'1>&1hello',
+'*>&1',
+'*>&1hello',
+'>>',
+'>>hello',
+'>',
+'>hello',
+'*>&2',
+'2>&2',
+'1>&2hello',
+'2>&3' | QuoteCmdWithSpecChars
+
+[System.Management.Automation.Language.Token[]]$tokens = $null
+[System.Management.Automation.Language.ParseError[]]$parseerrors = $null
+[System.Management.Automation.Language.Parser]::ParseInput('& -h`ello$a',[ref]$tokens,[ref]$parseerrors); quotecmd
+
+class QuoteCheck {
+    [System.Management.Automation.Language.Token[]] $tokens = $null
+    [System.Management.Automation.Language.ParseError[]] $parseerrors = $null
+
+    [bool] CmdRequiresQuote ([string]$in, [bool]$IsExpandable) {
+        [System.Management.Automation.Language.Token[]] $_tokens = $null
+        [System.Management.Automation.Language.ParseError[]] $_parseerrors = $null
+
+        [System.Management.Automation.Language.Parser]::ParseInput($in,[ref]$_tokens,[ref]$_parseerrors)
+        $this.tokens = $_tokens; $this.parseerrors = $_parseerrors
+        return $this.parseerrors.Count -ne 0 -or $this.tokens.Count -ne 2 -or $this.tokens[0].Kind -in (
+            [System.Management.Automation.Language.TokenKind]::Variable,
+            [System.Management.Automation.Language.TokenKind]::SplattedVariable,
+            [System.Management.Automation.Language.TokenKind]::StringExpandable,
+            [System.Management.Automation.Language.TokenKind]::StringLiteral,
+            [System.Management.Automation.Language.TokenKind]::HereStringExpandable,
+            [System.Management.Automation.Language.TokenKind]::HereStringLiteral,
+            [System.Management.Automation.Language.TokenKind]::Number) -or $this.tokens[0].TokenFlags -band [System.Management.Automation.Language.TokenFlags]::UnaryOperator -or
+            ($IsExpandable -and $this.tokens[0] -is [System.Management.Automation.Language.StringExpandableToken]) -or
+            ($this.tokens[0] -is [System.Management.Automation.Language.StringToken] -and $this.tokens[0].Value.Length -ne $in.Length)
+    }
+}
+
+# the above fails for redirect tokens in expandable command name scenario because tokenizer is not in command mode context
+
+<#function quotecmd ([System.Management.Automation.Language.Token[]]$tokens, [System.Management.Automation.Language.ParseError[]]$parseerrors) {
+if ( $parseerrors.Count -ne 0 -or $tokens.Count -ne 2 -or $tokens[0].Kind -in (
+    [System.Management.Automation.Language.TokenKind]::Variable,
+    [System.Management.Automation.Language.TokenKind]::SplattedVariable,
+    [System.Management.Automation.Language.TokenKind]::StringExpandable,
+    [System.Management.Automation.Language.TokenKind]::StringLiteral,
+    [System.Management.Automation.Language.TokenKind]::HereStringExpandable,
+    [System.Management.Automation.Language.TokenKind]::HereStringLiteral,
+    [System.Management.Automation.Language.TokenKind]::Number) -or $tokens[0].TokenFlags -band [System.Management.Automation.Language.TokenFlags]::UnaryOperator
+) {echo $true}
+} #>
