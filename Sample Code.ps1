@@ -850,7 +850,7 @@ using namespace System.Management.Automation.Language
 
 [Token[]]$tokens = $null
 [ParseError[]]$parseerrors = $null
-[Parser]::ParseInput('& -h`ello$a',[ref]$tokens,[ref]$parseerrors); quotecmd
+[Parser]::ParseInput('@"hello',[ref]$tokens,[ref]$parseerrors); $tokens
 
 class QuoteCheck {
     [Token[]] $tokens = $null
@@ -864,19 +864,53 @@ class QuoteCheck {
         [Token[]] $_tokens = $null
         [ParseError[]] $_parseerrors = $null
 
-        [Parser]::ParseInput($in,[ref]$_tokens,[ref]$_parseerrors)
+        IF ($IsExpandable)
+        {
+            [Parser]::ParseInput("&$in",[ref]$_tokens,[ref]$_parseerrors)
+            $this.tokens = $_tokens; $this.parseerrors = $_parseerrors
+            return $this.parseerrors.Count -ne 0 -or $this.tokens.Count -ne 3 -or $this.tokens[1].Kind -in (
+                [TokenKind]::Variable,
+                [TokenKind]::SplattedVariable,
+                [TokenKind]::StringExpandable,
+                [TokenKind]::StringLiteral,
+                [TokenKind]::HereStringExpandable,  # this should technically have an error
+                [TokenKind]::HereStringLiteral,     # this should technically have an error
+                [TokenKind]::Comment) <#-or $this.tokens[1].TokenFlags -band [TokenFlags]::UnaryOperator#> -or
+                $this.tokens[1] -is [StringExpandableToken] -or
+                ($this.tokens[1] -is [StringToken] -and $this.tokens[1].Value.Length -ne $in.Length)
+        } else {
+            [Parser]::ParseInput($in,[ref]$_tokens,[ref]$_parseerrors)
+            $this.tokens = $_tokens; $this.parseerrors = $_parseerrors
+            return $this.parseerrors.Count -ne 0 -or $this.tokens.Count -ne 2 -or $this.tokens[0].Kind -in (
+                [TokenKind]::Variable,
+                [TokenKind]::SplattedVariable,
+                [TokenKind]::StringExpandable,
+                [TokenKind]::StringLiteral,
+                [TokenKind]::HereStringExpandable,  # this should technically have an error
+                [TokenKind]::HereStringLiteral,     # this should technically have an error
+                [TokenKind]::Number,
+                [TokenKind]::Comment) -or $this.tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator -or
+                ($this.tokens[0] -is [StringToken] -and $this.tokens[0].Value.Length -ne $in.Length)
+        }
+    }
+
+    [bool] ArgRequiresQuote ([string]$in) {
+        [Token[]] $_tokens = $null
+        [ParseError[]] $_parseerrors = $null
+
+        [Parser]::ParseInput("&$in",[ref]$_tokens,[ref]$_parseerrors)
         $this.tokens = $_tokens; $this.parseerrors = $_parseerrors
-        return $this.parseerrors.Count -ne 0 -or $this.tokens.Count -ne 2 -or $this.tokens[0].Kind -in (
+        return $this.parseerrors.Count -ne 0 -or $this.tokens.Count -ne 3 -or $this.tokens[1].Kind -in (
             [TokenKind]::Variable,
             [TokenKind]::SplattedVariable,
             [TokenKind]::StringExpandable,
             [TokenKind]::StringLiteral,
-            [TokenKind]::HereStringExpandable,
-            [TokenKind]::HereStringLiteral,
-            [TokenKind]::Number,
-            [TokenKind]::Comment) -or $this.tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator -or
-            ($IsExpandable -and $this.tokens[0] -is [StringExpandableToken]) -or
-            ($this.tokens[0] -is [StringToken] -and $this.tokens[0].Value.Length -ne $in.Length)
+            [TokenKind]::HereStringExpandable,  # this should technically have an error
+            [TokenKind]::HereStringLiteral,     # this should technically have an error
+            [TokenKind]::Comment,
+            [TokenKind]::Redirection,
+            [TokenKind]::RedirectInStd) -or $this.tokens[1] -is [StringExpandableToken] -or
+            ($this.tokens[1] -is [StringToken] -and $this.tokens[1].Value.Length -ne $in.Length)
     }
 }
 
