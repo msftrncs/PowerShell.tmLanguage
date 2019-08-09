@@ -862,7 +862,8 @@ class QuoteCheck {
 
     [bool] CmdRequiresQuote ([string]$in, [bool]$IsExpandable) {
         return $this.CommonRequiresQuote($in, $IsExpandable) -or (-not $IsExpandable -and ($this.tokens[0].Kind -in (
-                    [TokenKind]::Number) -or $this.tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator))
+                    [TokenKind]::Number,
+                    [TokenKind]::Semi) -or $this.tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator))
     }
 
     [bool] ArgRequiresQuote ([string]$in) {
