@@ -853,43 +853,43 @@ using namespace System.Management.Automation.Language
 [Parser]::ParseInput('@"hello',[ref]$tokens,[ref]$parseerrors); $tokens
 
 class QuoteCheck {
-    $tokens = [Token[]]::new(0)
-    $parseerrors = [ParseError[]]::new(0)
-
-    [bool] CmdRequiresQuote ([string]$in) {
-        return $this.CmdRequiresQuote($in, $false)
+    static [bool] CmdRequiresQuote ([string]$in) {
+        return [QuoteCheck]::CmdRequiresQuote($in, $false)
     }
 
-    [bool] CmdRequiresQuote ([string]$in, [bool]$IsExpandable) {
-        return $this.CommonRequiresQuote($in, $IsExpandable) -or (-not $IsExpandable -and ($this.tokens[0].Kind -in (
+    static [bool] CmdRequiresQuote ([string]$in, [bool]$IsExpandable) {
+        [Token[]]$_tokens = $null
+        return [QuoteCheck]::CommonRequiresQuote($in, $IsExpandable, [ref]$_tokens) -or 
+            (-not $IsExpandable -and ($_tokens[0].Kind -in (
                     [TokenKind]::Number,
-                    [TokenKind]::Semi) -or $this.tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator))
+                    [TokenKind]::Keyword,
+                    [TokenKind]::Semi) -or $_tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator))
     }
 
-    [bool] ArgRequiresQuote ([string]$in) {
-        return $this.CommonRequiresQuote($in, $true) -or $this.tokens[1].Kind -in (
+    static [bool] ArgRequiresQuote ([string]$in) {
+        [Token[]]$_tokens = $null
+        return [QuoteCheck]::CommonRequiresQuote($in, $true, [ref]$_tokens) -or $_tokens[1].Kind -in (
             [TokenKind]::Redirection,
             [TokenKind]::RedirectInStd,
             [TokenKind]::Parameter)
     }
 
-    hidden [bool] CommonRequiresQuote([string]$in, [bool]$IsExpandable) {
-        $_tokens = [Token[]]::new(0)
-        $_parseerrors = [ParseError[]]::new(0)
+    static hidden [bool] CommonRequiresQuote([string]$in, [bool]$IsExpandable, [ref]$_tokens_ref) {
+        [ParseError[]]$_parseerrors = $null
         $tokenToCheck = if ($IsExpandable) { 1 } else { 0 }
 
-        [Parser]::ParseInput("$(if ($IsExpandable) {'&'})$in", [ref]$_tokens, [ref]$_parseerrors)
-        $this.tokens = $_tokens; $this.parseerrors = $_parseerrors
-        return $this.parseerrors.Count -ne 0 -or $this.tokens.Count -ne ($tokenToCheck + 2) -or $this.tokens[$tokenToCheck].Kind -in (
+        [Parser]::ParseInput("$(if ($IsExpandable) {'&'})$in", $_tokens_ref, [ref]$_parseerrors)
+        $_tokens = $_tokens_ref.Value
+        return $_parseerrors.Count -ne 0 -or $_tokens.Count -ne ($tokenToCheck + 2) -or $_tokens[$tokenToCheck].Kind -in (
             [TokenKind]::Variable,
             [TokenKind]::SplattedVariable,
             [TokenKind]::StringExpandable,
             [TokenKind]::StringLiteral,
             [TokenKind]::HereStringExpandable,
             [TokenKind]::HereStringLiteral,
-            [TokenKind]::Comment) -or ($IsExpandable -and $this.tokens[1] -is [StringExpandableToken]) -or
-        ($this.tokens[$tokenToCheck] -is [StringToken] -and $this.tokens[$tokenToCheck].Value.Length -ne $in.Length) -or
-        $this.tokens[$tokenToCheck + 1].Kind -ne [TokenKind]::EndOfInput
+            [TokenKind]::Comment) -or ($IsExpandable -and $_tokens[1] -is [StringExpandableToken]) -or
+        ($_tokens[$tokenToCheck] -is [StringToken] -and $_tokens[$tokenToCheck].Value.Length -ne $in.Length) -or
+        $_tokens[$tokenToCheck + 1].Kind -ne [TokenKind]::EndOfInput
     }
 }
 
@@ -907,4 +907,4 @@ if ( $parseerrors.Count -ne 0 -or $tokens.Count -ne 2 -or $tokens[0].Kind -in (
 ) {echo $true}
 } #>
 
-'\svr-2015-01\User Documents\Carl'
+'\svr-2015-01\User Documents\Carl' 'C:\Windows\BitLockerDiscoveryVolumeContents'
