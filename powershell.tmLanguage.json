@@ -1886,7 +1886,7 @@
 				},
 				{
 					"comment": "could be variable reference, if it doesn't have member reference, its the start of an unquoted expandable string",
-					"begin": "(?=\\$(?!\\())",
+					"begin": "(?=\\$[{\\w:$^?])",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -1984,14 +1984,14 @@
 					"begin": "(?<!\\w)(--%)(?!\\w)",
 					"beginCaptures": {
 						"1": {
-							"name": "keyword.control.powershell"
+							"name": "keyword.control.verbatim-argument.powershell"
 						}
 					},
 					"end": "$|(?=\\|)",
 					"patterns": [
 						{
 							"match": "[^\"\\x{201C}-\\x{201E}]+?",
-							"name": "string.unquoted.powershell"
+							"name": "string.unquoted.verbatim-argument.powershell"
 						},
 						{
 							"begin": "(?:[\"\\x{201C}-\\x{201E}])",
