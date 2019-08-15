@@ -2065,9 +2065,6 @@
 					"include": "#redirection"
 				},
 				{
-					"include": "#type"
-				},
-				{
 					"comment": "normally operands win matches first, but numeric constant and operators share common first characters, and their matching needs to be alternated such that after any operand matches, a check for operators should occur before a numeric value is checked for again.  Operators needs to have first priority of a match after a numeric constant.",
 					"include": "#operand"
 				},
@@ -2093,6 +2090,9 @@
 				{
 					"comment": "preunary operators are technically part of an operand expression",
 					"include": "#operators_preUnary"
+				},
+				{
+					"include": "#type"
 				},
 				{
 					"include": "#variable"
@@ -4136,13 +4136,16 @@
 							"name": "entity.name.variable.property.powershell"
 						},
 						{
-							"include": "#type"
+							"comment": "#type"
 						},
 						{
-							"include": "#variable"
+							"comment": "#variable"
 						},
 						{
-							"include": "#quotedStrings_Members"
+							"comment": "#quotedStrings_Members"
+						},
+						{
+							"include": "#operand"
 						},
 						{
 							"begin": "(=)\\n?",
