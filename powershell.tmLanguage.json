@@ -2909,60 +2909,16 @@
 		"numericConstant": {
 			"patterns": [
 				{
+					"begin": "(?>(?i:[+\\x{2013}-\\x{2015}-]?(?:0(?:x\\h+|b[01]+)|(?:\\d+\\.?\\d*|\\.\\d+)(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?))(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
 					"beginCaptures": {
-						"1": {
-							"name": "constant.numeric.integer.powershell"
-						},
-						"3": {
-							"name": "storage.modifier.powershell"
-						},
-						"4": {
-							"name": "constant.language.powershell"
+						"0": {
+							"patterns": [
+								{
+									"include": "#numericConstant_capture"
+								}
+							]
 						}
 					},
-					"begin": "([+\\x{2013}-\\x{2015}-]?(?:\\d+(?i:(?:\\.\\d*)?((?:e[+\\x{2013}-\\x{2015}-]?\\d+)?([lsyn]|u[lsy]?))|(?!\\.(?!\\.)))|(?:\\.\\d+)\\g<2>))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#numeric_post"
-						}
-					]
-				},
-				{
-					"beginCaptures": {
-						"1": {
-							"name": "constant.numeric.hex.powershell"
-						},
-						"2": {
-							"name": "storage.modifier.powershell"
-						},
-						"3": {
-							"name": "constant.language.powershell"
-						}
-					},
-					"begin": "([+\\x{2013}-\\x{2015}-]?0(?i:x\\h+(n|u?[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#numeric_post"
-						}
-					]
-				},
-				{
-					"beginCaptures": {
-						"1": {
-							"name": "constant.numeric.decimal.powershell"
-						},
-						"2": {
-							"name": "storage.modifier.decimal.powershell"
-						},
-						"5": {
-							"name": "constant.language.powershell"
-						}
-					},
-					"begin": "([+\\x{2013}-\\x{2015}-]?(?i:\\d+(?:(?:(d)|(?:(e[+\\x{2013}-\\x{2015}-]?\\d+)\\g<2>?))|\\.\\d*(\\g<3>?\\g<2>?))|\\.\\d+\\g<4>))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -2975,20 +2931,6 @@
 					"comment": "capture negative invalid constant construct",
 					"name": "invalid.numeric-constant.powershell",
 					"match": "([\\x{2013}-\\x{2015}-]\\.(?i:(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(?:[dlsyn]|u[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])"
-				},
-				{
-					"captures": {
-						"1": {
-							"name": "constant.numeric.binary.powershell"
-						},
-						"2": {
-							"name": "storage.modifier.powershell"
-						},
-						"3": {
-							"name": "constant.language.powershell"
-						}
-					},
-					"match": "([+\\x{2013}-\\x{2015}-]?0(?i:b[01]+([dn]|u?[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])"
 				}
 			],
 			"repository": {
@@ -3030,22 +2972,8 @@
 				}
 			}
 		},
-		"numericConstant_argumentMode": {
+		"numericConstant_capture": {
 			"patterns": [
-				{
-					"captures": {
-						"1": {
-							"name": "constant.numeric.integer.powershell"
-						},
-						"3": {
-							"name": "storage.modifier.powershell"
-						},
-						"4": {
-							"name": "constant.language.powershell"
-						}
-					},
-					"match": "((?:\\d+(?i:(?:\\.\\d*)?((?:e[+\\x{2013}-\\x{2015}-]?\\d+)?([lsyn]|u[lsy]?))|(?!\\.(?!\\.)))|(?:\\.\\d+)\\g<2>))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}])"
-				},
 				{
 					"captures": {
 						"1": {
@@ -3058,21 +2986,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "(0(?i:x\\h+(n|u?[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}])"
-				},
-				{
-					"captures": {
-						"1": {
-							"name": "constant.numeric.decimal.powershell"
-						},
-						"2": {
-							"name": "storage.modifier.decimal.powershell"
-						},
-						"5": {
-							"name": "constant.language.powershell"
-						}
-					},
-					"match": "((?i:\\d+(?:(?:(d)|(?:(e[+\\x{2013}-\\x{2015}-]?\\d+)\\g<2>?))|\\.\\d*(\\g<3>?\\g<2>?))|\\.\\d+\\g<4>))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}])"
+					"match": "([+\\x{2013}-\\x{2015}-]?0(?i:x\\h+(u?[lsy]|[nu])?))((?i:[kmgtp]b))?$"
 				},
 				{
 					"captures": {
@@ -3086,9 +3000,49 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "(0(?i:b[01]+(n|u?[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}])"
+					"match": "([+\\x{2013}-\\x{2015}-]?0(?i:b[01]+(u?[lsy]|[dnu])?))((?i:[kmgtp]b))?$"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.numeric.integer.powershell"
+						},
+						"3": {
+							"name": "storage.modifier.powershell"
+						},
+						"4": {
+							"name": "constant.language.powershell"
+						}
+					},
+					"match": "([+\\x{2013}-\\x{2015}-]?(?:\\d+(?i:(?:\\.\\d*)?((?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(u?[lsy]|[un]))|(?!\\.(?!\\.)))|(?:\\.\\d+)\\g<2>))((?i:[kmgtp]b))?$"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.numeric.decimal.powershell"
+						},
+						"2": {
+							"name": "storage.modifier.decimal.powershell"
+						},
+						"5": {
+							"name": "constant.language.powershell"
+						}
+					},
+					"match": "([+\\x{2013}-\\x{2015}-]?(?i:\\d+(?:(?:(d)|(?:(e[+\\x{2013}-\\x{2015}-]?\\d+)\\g<2>?))|\\.\\d*(\\g<3>?\\g<2>?))|\\.\\d+\\g<4>))((?i:[kmgtp]b))?$"
 				}
 			]
+		},
+		"numericConstant_argumentMode": {
+			"match": "(?>(?i:(?:0(?:x\\h+|b[01]+)|(?:\\d+\\.?\\d*|\\.\\d+)(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?))(?=[\\s{(,;&|)}])",
+			"captures": {
+				"0": {
+					"patterns": [
+						{
+							"include": "#numericConstant_capture"
+						}
+					]
+				}
+			}
 		},
 		"scriptblock": {
 			"begin": "(?={)",
