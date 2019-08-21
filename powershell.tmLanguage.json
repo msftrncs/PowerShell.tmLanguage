@@ -658,7 +658,7 @@
 										{
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
-											"end": "(?<![}\\)])(?=[\\n,})\\]])",
+											"end": "(?<![})])(?=[\\n,})\\]])",
 											"patterns": [
 												{
 													"include": "$self"
@@ -785,7 +785,7 @@
 										{
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
-											"end": "(?<![}\\)])(?=[\\n,})\\]])",
+											"end": "(?<![})])(?=[\\n,})\\]])",
 											"patterns": [
 												{
 													"include": "$self"
@@ -900,7 +900,7 @@
 										{
 											"comment": "next statement, return when safe to exit",
 											"begin": "(?<=})(?![,)}\\]])",
-											"end": "(?<![}\\)])(?=[\\n,})\\]])",
+											"end": "(?<![})])(?=[\\n,})\\]])",
 											"patterns": [
 												{
 													"include": "$self"
@@ -1091,7 +1091,7 @@
 												{
 													"comment": "next statement, return when safe to exit",
 													"begin": "(?<=\\))(?![,)}\\]])",
-													"end": "(?<![}\\)])(?=[\\n,})\\]])",
+													"end": "(?<![})])(?=[\\n,})\\]])",
 													"patterns": [
 														{
 															"include": "$self"
@@ -2776,7 +2776,7 @@
 														{
 															"comment": "next statement, return when safe to exit",
 															"begin": "(?<=})(?![,)}\\]])",
-															"end": "(?<![}\\)])(?=[\\n,})\\]])",
+															"end": "(?<![})])(?=[\\n,})\\]])",
 															"patterns": [
 																{
 																	"include": "$self"
@@ -2807,8 +2807,8 @@
 												},
 												{
 													"comment": "next statement, return when safe to exit",
-													"begin": "(?<=[}\\)])(?![,)}\\]])",
-													"end": "(?<![}\\)])(?=[\\n,})\\]])",
+													"begin": "(?:(?<=[})])|(?=\\())(?![,)}\\]])",
+													"end": "(?<![})])(?=[\\n,})\\]])",
 													"patterns": [
 														{
 															"include": "$self"
@@ -3005,20 +3005,6 @@
 				{
 					"captures": {
 						"1": {
-							"name": "constant.numeric.integer.powershell"
-						},
-						"3": {
-							"name": "storage.modifier.powershell"
-						},
-						"4": {
-							"name": "constant.language.powershell"
-						}
-					},
-					"match": "([+\\x{2013}-\\x{2015}-]?(?:\\d+(?i:(?:\\.\\d*)?((?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(u?[lsy]|[un]))|(?!\\.(?!\\.)))|(?:\\.\\d+)\\g<2>))((?i:[kmgtp]b))?$"
-				},
-				{
-					"captures": {
-						"1": {
 							"name": "constant.numeric.decimal.powershell"
 						},
 						"2": {
@@ -3029,6 +3015,20 @@
 						}
 					},
 					"match": "([+\\x{2013}-\\x{2015}-]?(?i:\\d+(?:(?:(d)|(?:(e[+\\x{2013}-\\x{2015}-]?\\d+)\\g<2>?))|\\.\\d*(\\g<3>?\\g<2>?))|\\.\\d+\\g<4>))((?i:[kmgtp]b))?$"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "constant.numeric.integer.powershell"
+						},
+						"3": {
+							"name": "storage.modifier.powershell"
+						},
+						"4": {
+							"name": "constant.language.powershell"
+						}
+					},
+					"match": "([+\\x{2013}-\\x{2015}-]?(?:\\d+(?i:(?:\\.\\d*)?((?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(u?[lsy]|[un])))?|(?:\\.\\d+)\\g<2>))((?i:[kmgtp]b))?$"
 				}
 			]
 		},
