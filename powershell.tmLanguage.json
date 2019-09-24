@@ -727,7 +727,7 @@
 							"include": "#advanceToToken"
 						},
 						{
-							"begin": "(?=\\()",
+							"begin": "(?<![)}])(?=\\()",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -757,15 +757,14 @@
 									]
 								},
 								{
-									"begin": "(?<=\\))(?![,)}])",
-									"end": "(?=.|$)",
-									"applyEndPatternLast": true,
+									"begin": "(?<=\\))(?=[\\s#]|<#|`\\s|{)",
+									"end": "(?<=})|$(?!\\G)",
 									"patterns": [
 										{
 											"include": "#advanceToToken"
 										},
 										{
-											"begin": "(?={)",
+											"begin": "(?<!})(?={)",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
@@ -788,43 +787,15 @@
 															"include": "$self"
 														}
 													]
-												},
-												{
-													"comment": "next statement, return when safe to exit",
-													"begin": "(?<=})(?![,)}\\]])",
-													"end": "(?<![})])(?=[\\n,})\\]])",
-													"patterns": [
-														{
-															"include": "$self"
-														}
-													]
 												}
 											]
-										},
-										{
-											"comment": "very limited what is permitted here",
-											"ignore": "[^\\s{()}]",
-											"name": "invalid.source.powershell"
 										},
 										{
 											"include": "#notCode"
 										}
 									]
-								},
-								{
-									"comment": "very limited what is permitted here",
-									"ignore": "[^\\s{]",
-									"name": "invalid.source.powershell"
 								}
 							]
-						},
-						{
-							"comment": "`,`, `<` and `>` not permitted here",
-							"ignore": "[,<>]",
-							"name": "invalid.source.powershell"
-						},
-						{
-							"ignore": "#notCode"
 						}
 					]
 				},
@@ -842,7 +813,7 @@
 							"include": "#advanceToToken"
 						},
 						{
-							"begin": "(?=\\()",
+							"begin": "(?<![})])(?=\\()",
 							"end": "(?=.|$)",
 							"applyEndPatternLast": true,
 							"patterns": [
@@ -880,7 +851,7 @@
 											"include": "#advanceToToken"
 										},
 										{
-											"begin": "(?={)",
+											"begin": "(?<!})(?={)",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
@@ -903,43 +874,15 @@
 															"include": "$self"
 														}
 													]
-												},
-												{
-													"comment": "next statement, return when safe to exit",
-													"begin": "(?<=})(?![,)}\\]])",
-													"end": "(?<![})])(?=[\\n,})\\]])",
-													"patterns": [
-														{
-															"include": "$self"
-														}
-													]
 												}
 											]
-										},
-										{
-											"comment": "very limited what is permitted here",
-											"ignore": "[^\\s{()}]",
-											"name": "invalid.source.powershell"
 										},
 										{
 											"include": "#notCode"
 										}
 									]
-								},
-								{
-									"comment": "very limited what is permitted here",
-									"ignore": "[^\\s{]",
-									"name": "invalid.source.powershell"
 								}
 							]
-						},
-						{
-							"comment": "`,`, `<` and `>` not permitted here",
-							"ignore": "[,<>]",
-							"name": "invalid.source.powershell"
-						},
-						{
-							"ignore": "#notCode"
 						}
 					]
 				},
@@ -951,8 +894,7 @@
 							"name": "keyword.control.do.powershell"
 						}
 					},
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
+					"end": "(?<=\\))|$(?!\\G)",
 					"patterns": [
 						{
 							"include": "#advanceToToken"
@@ -989,8 +931,7 @@
 											"name": "punctuation.section.braces.end.powershell"
 										}
 									},
-									"end": "(?=.|$)",
-									"applyEndPatternLast": true,
+									"end": "(?<=\\))|$(?!\\G)",
 									"patterns": [
 										{
 											"include": "#advanceToToken"
@@ -1002,14 +943,13 @@
 													"name": "keyword.control.do-while.powershell"
 												}
 											},
-											"end": "(?=.|$)",
-											"applyEndPatternLast": true,
+											"end": "(?<=\\))|$(?!\\G)",
 											"patterns": [
 												{
 													"include": "#advanceToToken"
 												},
 												{
-													"begin": "(?=\\()",
+													"begin": "(?<!\\))(?=\\()",
 													"end": "(?=.|$)",
 													"applyEndPatternLast": true,
 													"patterns": [
@@ -1037,18 +977,11 @@
 																	"include": "#command_mode"
 																}
 															]
-														},
-														{
-															"begin": "(?<=\\))(?![,)}]|$)",
-															"end": "(?=[\\S])",
-															"applyEndPatternLast": true,
-															"patterns": [
-																{
-																	"include": "$self"
-																}
-															]
 														}
 													]
+												},
+												{
+													"include": "#notCode"
 												}
 											]
 										},
@@ -1059,14 +992,13 @@
 													"name": "keyword.control.do-until.powershell"
 												}
 											},
-											"end": "(?=.|$)",
-											"applyEndPatternLast": true,
+											"end": "(?<=\\))|$(?!\\G)",
 											"patterns": [
 												{
 													"include": "#advanceToToken"
 												},
 												{
-													"begin": "(?=\\()",
+													"begin": "(?<!\\))(?=\\()",
 													"end": "(?=.|$)",
 													"applyEndPatternLast": true,
 													"patterns": [
@@ -1094,18 +1026,11 @@
 																	"include": "#command_mode"
 																}
 															]
-														},
-														{
-															"comment": "next statement, return when safe to exit",
-															"begin": "(?<=\\))(?![,)}\\]])",
-															"end": "(?<![})])(?=[\\n,})\\]])",
-															"patterns": [
-																{
-																	"include": "$self"
-																}
-															]
 														}
 													]
+												},
+												{
+													"include": "#notCode"
 												}
 											]
 										},
@@ -4085,13 +4010,13 @@
 					"include": "#operand"
 				},
 				{
-					"begin": "(=)\\n?",
+					"begin": "(=)",
 					"beginCaptures": {
 						"1": {
 							"name": "keyword.operator.assignment.hashtable-member.powershell"
 						}
 					},
-					"end": "(?=[;}\\n])",
+					"end": "(?=[;}])|$(?!\\G)",
 					"patterns": [
 						{
 							"include": "#advanceToToken"
