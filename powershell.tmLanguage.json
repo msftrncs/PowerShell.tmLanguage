@@ -10,7 +10,39 @@
 	"patterns": [
 		{
 			"comment": "type without accessor or attribute needed in statement mode, mostly for [flags()] before an `enum`.",
-			"include": "#type"
+			"begin": "(?=\\[)",
+			"end": "(?=[\\n;)}\\]])",
+			"patterns": [
+				{
+					"comment": "if type advanced, test for attribute qualified keywords",
+					"begin": "(?!\\G)(?![\\n;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						},
+						{
+							"include": "#attributeStatement"
+						},
+						{
+							"include": "#expression_mode"
+						}
+					]
+				},
+				{
+					"include": "#type"
+				},
+				{
+					"comment": "if not a type or attribute, try finishing in command mode",
+					"begin": "(?![\\n;)}\\]])",
+					"end": "(?=[\\n;)}\\]])",
+					"patterns": [
+						{
+							"include": "#command_mode"
+						}
+					]
+				}
+			]
 		},
 		{
 			"include": "#RequiresDirective"
@@ -36,7 +68,7 @@
 		}
 	],
 	"repository": {
-		"statements": {
+		"attributeStatement": {
 			"patterns": [
 				{
 					"begin": "(?i:class)(?=[\\s{(,;&|)}])",
@@ -429,6 +461,13 @@
 							"include": "#notCode"
 						}
 					]
+				}
+			]
+		},
+		"statements": {
+			"patterns": [
+				{
+					"include": "#attributeStatement"
 				},
 				{
 					"begin": "(?i:function|filter|workflow)(?=[\\s{(,;&|)}])",
@@ -1050,9 +1089,54 @@
 					"comment": "else,elseif: only after if,elseif",
 					"begin": "(?i)(?=if[\\s{(,;&|)}])",
 					"end": "(?!\\G)",
+					"applyEndPatternLast": true,
 					"patterns": [
 						{
 							"include": "#ifStatement"
+						},
+						{
+							"begin": "(?i:else)(?=[\\s{(,;&|)}])",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.control.if-else.powershell"
+								}
+							},
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"begin": "(?<!}){",
+									"beginCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.begin.powershell"
+										}
+									},
+									"end": "}",
+									"endCaptures": {
+										"0": {
+											"name": "punctuation.section.braces.end.powershell"
+										}
+									},
+									"name": "meta.statements.if-else-condition.powershell",
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								},
+								{
+									"begin": "(?<=})(?![;)}\\]\\n])",
+									"end": "(?=[;)}\\]\\n])",
+									"patterns": [
+										{
+											"include": "$self"
+										}
+									]
+								}
+							]
 						}
 					]
 				},
@@ -1672,7 +1756,7 @@
 					"patterns": [
 						{
 							"comment": "if unary operators/numeric constant advanced, switch to expression mode",
-							"begin": "(?!\\G)(?![\\n;|)}\\]])",
+							"begin": "(?!\\G)(?![\\n;)}\\]])",
 							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
@@ -2677,56 +2761,21 @@
 											"patterns": [
 												{
 													"include": "#advanceToToken"
+												},
+												{
+													"begin": "(?i)(?=elseif[\\s{(,;&|)}])",
+													"end": "(?!\\G)",
+													"patterns": [
+														{
+															"include": "#ifStatement"
+														}
+													]
 												}
 											]
 										}
 									]
 								}
 							]
-						}
-					]
-				},
-				{
-					"begin": "(?i:else)(?=[\\s{(,;&|)}])",
-					"beginCaptures": {
-						"0": {
-							"name": "keyword.control.if-else.powershell"
-						}
-					},
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#advanceToToken"
-						},
-						{
-							"begin": "(?<!}){",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.begin.powershell"
-								}
-							},
-							"end": "}",
-							"endCaptures": {
-								"0": {
-									"name": "punctuation.section.braces.end.powershell"
-								}
-							},
-							"name": "meta.statements.if-else-condition.powershell",
-							"patterns": [
-								{
-									"include": "$self"
-								}
-							]
-						}
-					]
-				},
-				{
-					"begin": "(?i)(?=elseif[\\s{(,;&|)}])",
-					"end": "(?!\\G)",
-					"patterns": [
-						{
-							"include": "#ifStatement"
 						}
 					]
 				}
