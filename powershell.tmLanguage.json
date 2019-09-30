@@ -301,6 +301,9 @@
 											"include": "#expression_mode"
 										}
 									]
+								},
+								{
+									"include": "#notCode"
 								}
 							]
 						},
