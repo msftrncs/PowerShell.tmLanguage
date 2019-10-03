@@ -501,7 +501,7 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}<>@#\\]]|`(?!\\s)))",
+							"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}<>$@#\\]]|`(?!\\s)))",
 							"beginCaptures": {
 								"1": {
 									"name": "storage.modifier.scope.powershell"
