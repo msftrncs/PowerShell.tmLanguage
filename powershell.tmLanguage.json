@@ -106,7 +106,7 @@
 									"applyEndPatternLast": true,
 									"patterns": [
 										{
-											"begin": "(?!`)((?>[\\p{L}_`][\\w`+]*)(?=[.\\s])(?:\\.\\g<1>?)?)",
+											"begin": "(?!`)((?>[\\p{L}_`][\\w#`+]*)(?=[<>.,\\s])(?:\\.\\g<1>?)?)",
 											"beginCaptures": {
 												"0": {
 													"patterns": [
@@ -138,7 +138,7 @@
 													"applyEndPatternLast": true,
 													"patterns": [
 														{
-															"begin": "(?!`)([\\p{L}_`][\\w`+]*(?:\\.\\g<1>?)?)",
+															"begin": "(?!`)([\\p{L}_`][\\w#`+]*(?:\\.#*\\g<1>?)?)",
 															"beginCaptures": {
 																"0": {
 																	"patterns": [
@@ -501,7 +501,7 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}<>$@#\\]]|`(?!\\s)))",
+							"begin": "(?:(global|local|script|private)(`)?(:)(?=[^\\s{(,;&)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}<>$@#]|`(?!\\s)))",
 							"beginCaptures": {
 								"1": {
 									"name": "storage.modifier.scope.powershell"
@@ -518,7 +518,7 @@
 							"patterns": [
 								{
 									"begin": "\\G",
-									"end": "(?=[\\s{(,;&)}])",
+									"end": "(?=[\\s{(,;&)}])|\\G]",
 									"name": "entity.name.function.powershell",
 									"patterns": [
 										{
@@ -1680,7 +1680,7 @@
 				},
 				{
 					"comment": "the argument is permitted to be quoted; TODO",
-					"match": "(?i:(using))\\s+(?i:(assembly|namespace|module))\\s+((?>[\\p{L}_]\\w*\\.?)+(?=[.,+\\s\\[\\]]))",
+					"match": "(?i:(using))\\s+(?i:(assembly|namespace|module))\\s+((?>[\\p{L}_][\\w#]*(?:\\.#*)?)+(?=[<>.,+\\s\\[\\]]))",
 					"captures": {
 						"1": {
 							"name": "keyword.control.using.powershell"
@@ -1843,7 +1843,7 @@
 				},
 				{
 					"comment": "command names are allowed to start with < or >, without a backtick, but `function` requires a backtick.  See below!",
-					"begin": "(?:(global|local|script|private)(`)?(:)(?![\\s{(,;&|)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}@#\\]]|`(?!\\s)))",
+					"begin": "(?:(global|local|script|private)(`)?(:)(?![\\s{(,;&|)}])|(?=[^`'\"\\x{2018}-\\x{201E}\\s{(,;&)}@#]|`(?!\\s)))",
 					"beginCaptures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
@@ -1859,8 +1859,8 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"comment": "at the begining of a command name, `<`, `>` or `>>` are the entire command name.",
-							"match": "\\G(?:<|\\*>&1|\\*?>>?|[1-6]>&[12])",
+							"comment": "at the begining of a command name, `]`, `<`, `>` or `>>` are the entire command name.",
+							"match": "\\G(?:]|<|\\*>&1|\\*?>>?|[1-6]>&[12])",
 							"name": "entity.name.function.powershell"
 						},
 						{
@@ -1878,8 +1878,8 @@
 							]
 						},
 						{
-							"begin": "(?![\\n;)}\\]])",
-							"end": "(?=[\\n;)}\\]])",
+							"begin": "(?![\\n;)}])",
+							"end": "(?=[\\n;)}])",
 							"patterns": [
 								{
 									"include": "#argument_mode"
@@ -2039,7 +2039,6 @@
 				},
 				{
 					"match": "(([\\x{2013}-\\x{2015}-])\\p{L}[^:\\s\\[{(,;&|)}'\"\\x{2018}-\\x{201E}]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
-					"old match": "([\\x{2013}-\\x{2015}-]\\p{L}[\\w~`!@#$%^*<?>\\]\\\\/=+-]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 					"captures": {
 						"1": {
 							"name": "entity.name.parameter.powershell"
@@ -3251,7 +3250,7 @@
 					]
 				},
 				{
-					"begin": "(?!`)((?>[\\p{L}_`][\\w`+]*)(?=[.,+\\s\\[\\]])(?:\\.\\g<1>?)?)",
+					"begin": "(?!`)((?>[\\p{L}_`][\\w#`+]*)(?=[<>.,+\\s\\[\\]])(?:\\.#*\\g<1>?)?)",
 					"beginCaptures": {
 						"0": {
 							"patterns": [
@@ -3305,19 +3304,19 @@
 			"patterns": [
 				{
 					"comment:": "[short], [ushort], [uint], [ulong] added PowerShell Core 6.2;",
-					"match": "(?<![.\\w-])(?i:(?:value)?type|void|switch|(?:ps(?:custom)?)?object|pscredential|psmoduleinfo|hashtable|scriptblock|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|datetime|array|bigint|u?int(?:32|16|64)?|u?long|u?short)(?![.\\w+`-])",
+					"match": "(?<![.\\w-])(?i:(?:value)?type|void|switch|(?:ps(?:custom)?)?object|pscredential|psmoduleinfo|hashtable|scriptblock|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|datetime|array|bigint|u?int(?:32|16|64)?|u?long|u?short)(?![.\\w#+`-])",
 					"name": "keyword.type.powershell"
 				},
 				{
-					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml|enum)(?![\\w-])",
+					"match": "(?<![.\\w-])(?i:system|math|text|convert|regex|xml|enum)(?![\\w#-])",
 					"name": "support.class.powershell"
 				},
 				{
-					"match": "(?<![.\\w-])(?i:ordered)(?![.\\w+`\\[-])",
+					"match": "(?<![.\\w-])(?i:ordered)(?![.\\w#+`\\[-])",
 					"name": "support.function.attribute.powershell"
 				},
 				{
-					"match": "(?<![.\\w-])(?i:ref)(?![.\\w+`\\[-])",
+					"match": "(?<![.\\w-])(?i:ref)(?![.\\w#+`\\[-])",
 					"name": "storage.modifier.powershell"
 				}
 			]
