@@ -1614,7 +1614,7 @@
 				},
 				{
 					"comment": "inlinescript,parallel,sequence: only in workflow; ",
-					"begin": "(?i:begin|dynamicparam|end|inlinescript|parallel|process|sequence)(?=[\\s{(,;&|)}])",
+					"begin": "(?i:begin|dispose|dynamicparam|end|inlinescript|parallel|process|sequence)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.control.$0.powershell"
