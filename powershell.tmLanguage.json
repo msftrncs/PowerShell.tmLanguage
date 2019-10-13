@@ -4415,7 +4415,7 @@
 					]
 				},
 				{
-					"begin": "[+%*/\\x{2013}-\\x{2015}-]?=",
+					"begin": "(?:[+%*/\\x{2013}-\\x{2015}-]|\\?\\?)?=",
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.assignment.powershell"
@@ -4633,6 +4633,21 @@
 					"beginCaptures": {
 						"0": {
 							"name": "keyword.operator.arithmetic.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToToken"
+						}
+					]
+				},
+				{
+					"begin": "\\?\\?",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.null-coalesce.powershell"
 						}
 					},
 					"end": "(?=.|$)",
