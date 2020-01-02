@@ -256,9 +256,9 @@
 	],
 	"repository": {
 		"commentLine": {
-			"begin": "(?<![`\\\\-])#",
+			"begin": "(?<![`\\\\-])(#)#*",
 			"captures": {
-				"0": {
+				"1": {
 					"name": "punctuation.definition.comment.powershell"
 				}
 			},
