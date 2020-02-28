@@ -74,7 +74,7 @@
 					"begin": "(?i:class)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.declaration.class.powershell"
+							"name": "storage.type.class.powershell keyword.declaration.class.powershell"
 						}
 					},
 					"end": "}|(?=\\S)",
@@ -316,7 +316,7 @@
 					"begin": "((?i:enum))(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"1": {
-							"name": "keyword.declaration.enum.powershell"
+							"name": "storage.type.enum.powershell keyword.declaration.enum.powershell"
 						}
 					},
 					"end": "}|(?=\\S)",
@@ -489,7 +489,7 @@
 					"begin": "(?i:function|filter|workflow)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.declaration.$0.powershell"
+							"name": "storage.type.$0.powershell keyword.declaration.$0.powershell"
 						}
 					},
 					"end": "}|(?=\\S)",
@@ -743,7 +743,7 @@
 									"match": "(?i:([\\x{2013}-\\x{2015}-])parallel)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 									"beginCaptures": {
 										"1": {
-											"name": "entity.name.parameter.foreach-parallel.powershell"
+											"name": "variable.parameter.foreach-parallel.powershell"
 										},
 										"2": {
 											"name": "punctuation.definition.parameter.powershell"
@@ -1238,7 +1238,7 @@
 									"match": "((?i:([\\x{2013}-\\x{2015}-])(regex|wildcard|exact|casesensitive)))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 									"captures": {
 										"1": {
-											"name": "entity.name.parameter.switch-$2.powershell"
+											"name": "variable.parameter.switch-$2.powershell"
 										},
 										"3": {
 											"name": "punctuation.definition.parameter.powershell"
@@ -1253,7 +1253,7 @@
 									"begin": "((?i:([\\x{2013}-\\x{2015}-])file))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 									"beginCaptures": {
 										"1": {
-											"name": "entity.name.parameter.switch-file.powershell"
+											"name": "variable.parameter.switch-file.powershell"
 										},
 										"2": {
 											"name": "punctuation.definition.parameter.powershell"
@@ -1517,7 +1517,7 @@
 									"begin": "((?i:([\\x{2013}-\\x{2015}-])supportedcommand))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 									"beginCaptures": {
 										"1": {
-											"name": "entity.name.parameter.data-supportedcommand.powershell"
+											"name": "variable.parameter.data-supportedcommand.powershell"
 										},
 										"2": {
 											"name": "punctuation.definition.parameter.powershell"
@@ -2041,7 +2041,7 @@
 					"match": "(([\\x{2013}-\\x{2015}-])\\p{L}[^:\\s\\[{(,;&|)}'\"\\x{2018}-\\x{201E}]*)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 					"captures": {
 						"1": {
-							"name": "entity.name.parameter.powershell"
+							"name": "variable.parameter.powershell"
 						},
 						"2": {
 							"name": "punctuation.definition.parameter.powershell"
@@ -2543,7 +2543,7 @@
 							"name": "keyword.operator.documentation.powershell"
 						},
 						"3": {
-							"name": "entity.name.parameter.documentation.powershell"
+							"name": "variable.parameter.documentation.powershell"
 						}
 					},
 					"match": "(?:^|\\G)(?i:\\s*(\\.)(PARAMETER)\\s+(.+))",
@@ -3984,7 +3984,7 @@
 							"match": "(([\\x{2013}-\\x{2015}-])(?i:Modules|PSSnapin|PSEdition|RunAsAdministrator|ShellId|Version)\\b)(:)?",
 							"captures": {
 								"1": {
-									"name": "entity.name.parameter.powershell"
+									"name": "variable.parameter.powershell"
 								},
 								"2": {
 									"name": "punctuation.definition.parameter.powershell"
