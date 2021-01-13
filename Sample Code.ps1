@@ -235,13 +235,13 @@ S31400100069000000000000000000FFFFFFFFFFFF78
 '@ -split '\n').trim().where({ $_ -ne '' }).foreach({ [hexsrecord]::new($_) })
 
 # create a crazy random password
-((Get-Random (1..100) -count 9) +
+-join ((Get-Random (1..100) -count 9) +
     (Get-Random ([char]0x21..[char]0x2F+[char]0x3a..[char]0x7E) -count 9) |
-    Sort-Object {Get-Random}) -join ''
+    Sort-Object {Get-Random})
 
-((Get-Random ([char]0x30..[char]0x39) -count 9) +
+-join ((Get-Random ([char]0x30..[char]0x39) -count 9) +
     (Get-Random ([char]0x21..[char]0x7E) -count 18) |
-    Sort-Object {Get-Random}) -join ''
+    Sort-Object {Get-Random})
 
 
 :hello <#this is actually the label for the foreach below! #> <# hello george #>
