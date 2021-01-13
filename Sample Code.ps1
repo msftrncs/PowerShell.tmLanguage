@@ -853,17 +853,28 @@ using namespace System.Management.Automation.Language
 [Parser]::ParseInput('@"hello',[ref]$tokens,[ref]$parseerrors); $tokens
 
 class QuoteCheck {
+    <#
+        Checking for quoting on commands is slightly more complicated.
+
+        command can be first in pipeline, or not
+
+        command can be with or without invocation operator
+
+        command either with invocation operator, or not first in pipeline, can be keywords and not require quotes.
+
+        commands that fail without the invocation operator may pass with the invocation operator
+
+    #>
     static [bool] CmdRequiresQuote ([string]$in) {
         return [QuoteCheck]::CmdRequiresQuote($in, $false)
     }
 
     static [bool] CmdRequiresQuote ([string]$in, [bool]$IsExpandable) {
         [Token[]]$_tokens = $null
-        return [QuoteCheck]::CommonRequiresQuote($in, $IsExpandable, [ref]$_tokens) -or 
+        return [QuoteCheck]::CommonRequiresQuote($in, $IsExpandable, [ref]$_tokens) -or
             (-not $IsExpandable -and ($_tokens[0].Kind -in (
-                    [TokenKind]::Number,
-                    [TokenKind]::Keyword,
-                    [TokenKind]::Semi) -or $_tokens[0].TokenFlags -band [TokenFlags]::UnaryOperator))
+                        [TokenKind]::Number, [TokenKind]::Semi) -or
+                    $_tokens[0].TokenFlags -band ([TokenFlags]::UnaryOperator -bor [TokenFlags]::Keyword)))
     }
 
     static [bool] ArgRequiresQuote ([string]$in) {
@@ -874,11 +885,11 @@ class QuoteCheck {
             [TokenKind]::Parameter)
     }
 
-    static hidden [bool] CommonRequiresQuote([string]$in, [bool]$IsExpandable, [ref]$_tokens_ref) {
+    static hidden [bool] CommonRequiresQuote ([string]$in, [bool]$IsExpandable, [ref]$_tokens_ref) {
         [ParseError[]]$_parseerrors = $null
-        $tokenToCheck = if ($IsExpandable) { 1 } else { 0 }
+        $tokenToCheck = $IsExpandable ? 1 : 0
 
-        [Parser]::ParseInput("$(if ($IsExpandable) {'&'})$in", $_tokens_ref, [ref]$_parseerrors)
+        [Parser]::ParseInput("$($IsExpandable ? '&' : '')$in", $_tokens_ref, [ref]$_parseerrors)
         $_tokens = $_tokens_ref.Value
         return $_parseerrors.Count -ne 0 -or $_tokens.Count -ne ($tokenToCheck + 2) -or $_tokens[$tokenToCheck].Kind -in (
             [TokenKind]::Variable,
@@ -888,23 +899,114 @@ class QuoteCheck {
             [TokenKind]::HereStringExpandable,
             [TokenKind]::HereStringLiteral,
             [TokenKind]::Comment) -or ($IsExpandable -and $_tokens[1] -is [StringExpandableToken]) -or
-        ($_tokens[$tokenToCheck] -is [StringToken] -and $_tokens[$tokenToCheck].Value.Length -ne $in.Length) -or
+        ($_tokens[$tokenToCheck] -is [StringToken] -and ($_tokens[$tokenToCheck].Value.Length -ne $in.Length -or $_tokens[$tokenToCheck].Value.EndsWith([char]'`'))) -or
         $_tokens[$tokenToCheck + 1].Kind -ne [TokenKind]::EndOfInput
     }
 }
 
-# the above fails for redirect tokens in expandable command name scenario because tokenizer is not in command mode context
+using namespace System.Management.Automation.Language
 
-<#function quotecmd ([System.Management.Automation.Language.Token[]]$tokens, [System.Management.Automation.Language.ParseError[]]$parseerrors) {
-if ( $parseerrors.Count -ne 0 -or $tokens.Count -ne 2 -or $tokens[0].Kind -in (
-    [System.Management.Automation.Language.TokenKind]::Variable,
-    [System.Management.Automation.Language.TokenKind]::SplattedVariable,
-    [System.Management.Automation.Language.TokenKind]::StringExpandable,
-    [System.Management.Automation.Language.TokenKind]::StringLiteral,
-    [System.Management.Automation.Language.TokenKind]::HereStringExpandable,
-    [System.Management.Automation.Language.TokenKind]::HereStringLiteral,
-    [System.Management.Automation.Language.TokenKind]::Number) -or $tokens[0].TokenFlags -band [System.Management.Automation.Language.TokenFlags]::UnaryOperator
-) {echo $true}
-} #>
+function CmdRequiresQuote ([string]$in) {
+    [QuoteCheck]::CmdRequiresQuote($in, $false)
+}
 
-'\svr-2015-01\User Documents\Carl' 'C:\Windows\BitLockerDiscoveryVolumeContents'
+function CmdRequiresQuote ([string]$in, [bool]$IsExpandable = $false) {
+    [Token[]]$_tokens = $null
+    (_CommonRequiresQuote $in $IsExpandable ([ref]$_tokens)) -or
+        -not $IsExpandable -and ($_tokens[0].Kind -in (
+                [TokenKind]::Number, [TokenKind]::Semi) -or
+            $_tokens[0].TokenFlags -band ([TokenFlags]::UnaryOperator -bor [TokenFlags]::Keyword))
+}
+
+function ArgRequiresQuote ([string]$in) {
+    [Token[]]$_tokens = $null
+    (_CommonRequiresQuote $in $true ([ref]$_tokens)) -or $_tokens[1].Kind -in (
+        [TokenKind]::Redirection,
+        [TokenKind]::RedirectInStd,
+        [TokenKind]::Parameter)
+}
+
+function _CommonRequiresQuote([string]$in, [bool]$IsExpandable, [ref]$_tokens_ref) {
+    [ParseError[]]$_parseerrors = $null
+    $tokenToCheck = $IsExpandable ? 1 : 0
+
+    [Parser]::ParseInput("$($IsExpandable ? '&' : '')$in", $_tokens_ref, [ref]$_parseerrors) | Out-Null
+    $_tokens = $_tokens_ref.Value
+    $_parseerrors.Length -ne 0 -or $_tokens.Length -ne ($tokenToCheck + 2) -or $_tokens[$tokenToCheck].Kind -in (
+        [TokenKind]::Variable,
+        [TokenKind]::SplattedVariable,
+        [TokenKind]::StringExpandable,
+        [TokenKind]::StringLiteral,
+        [TokenKind]::HereStringExpandable,
+        [TokenKind]::HereStringLiteral,
+        [TokenKind]::Comment) -or ($IsExpandable -and $_tokens[1] -is [StringExpandableToken]) -or
+    ($_tokens[$tokenToCheck] -is [StringToken] -and $_tokens[$tokenToCheck].Value.Length -ne $in.Length) -or
+    $_tokens[$tokenToCheck + 1].Kind -ne [TokenKind]::EndOfInput
+}
+
+
+@{
+    hashstatement = if ($hello) {} else {}
+    NextHashStatement = if
+        (condition)
+        {
+        }
+        else {
+
+        }
+    anotherHashStatement = while () {
+
+    }
+    simpleIfHashStatement = if () {$a}
+    followingSimpleHashStatement = 1
+}
+
+if () {hello}
+
+
+else {}{}.hello
+
+# should be acceptable but isn't
+@{key1 = if (cond) {statement cond1} elseif (cond2) {statement cond2} key2 = 3} # key2 is an unexpected token
+
+# normal practice
+@{
+    key1 = if (cond) {statement cond1} elseif (cond2) {statement cond2}
+    key2 = 3 # key2 is accepted
+}
+
+# noted special condition
+@{
+    if = if (cond) {statement cond1} elseif (cond2) {statement cond2}
+    else = 3 # else key not accepted, expected to be remnant of if statement.
+}
+
+# required regardless of this request
+@{
+    if = if ($cond) {statement cond1} elseif (cond2) {statement cond2};
+    else = 3 # else key is accepted, `;` above ended if statement definitively
+}
+
+function $a = {1}
+
+$x ??= 'new value'
+${x}??='new value'
+
+$x? ??= 'new value'
+${x?}??='new value'
+
+$x = $null
+$x ?? 100
+
+$x = 'some value'
+$x ?? 100
+
+$x? = 'some value'
+${x?}??100
+
+"" hello &&
+
+$true?1:0
+$true ?1:0
+13?1:0
+13 ?$true:0:hello : 5 : #invalid trailing colon

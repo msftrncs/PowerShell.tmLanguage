@@ -2862,7 +2862,7 @@
 		"numericConstant": {
 			"patterns": [
 				{
-					"begin": "(?>(?i:[+\\x{2013}-\\x{2015}-]?(?:0(?:x\\h+|b[01]+)|(?:\\d+(?:\\.(?!\\.)\\d*)?|\\.\\d+)(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?))(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"begin": "(?>(?i:[+\\x{2013}-\\x{2015}-]?(?:0(?:x\\h+|b[01]+)|(?:\\d+(?:\\.(?!\\.)\\d*)?|\\.\\d+)(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?))(?=[\\s{(:,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
 					"beginCaptures": {
 						"0": {
 							"patterns": [
@@ -2883,7 +2883,7 @@
 				{
 					"comment": "capture negative invalid constant construct",
 					"name": "invalid.numeric-constant.powershell",
-					"match": "([\\x{2013}-\\x{2015}-]\\.(?i:(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(?:[dlsyn]|u[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])"
+					"match": "([\\x{2013}-\\x{2015}-]\\.(?i:(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(?:[dlsyn]|u[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(:,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])"
 				}
 			],
 			"repository": {
@@ -4655,6 +4655,47 @@
 					"patterns": [
 						{
 							"include": "#advanceToToken"
+						}
+					]
+				},
+				{
+					"comment": "selector (ternary) operator",
+					"begin": "(?=\\?)",
+					"end": "(?!\\G)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\G\\?",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.operator.selector.true-separator.powershell"
+								}
+							},
+							"end": "(?=[:,;&)}\\]])",
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								},
+								{
+									"include": "#expression_mode"
+								}
+							]
+						},
+						{
+							"comment": "this will inadvertantly detect successive `:` without an operand between them",
+							"begin": ":(?!:)",
+							"beginCaptures": {
+								"0": {
+									"name": "keyword.operator.selector.false-separator.powershell"
+								}
+							},
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#advanceToToken"
+								}
+							]
 						}
 					]
 				},
