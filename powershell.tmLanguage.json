@@ -4249,6 +4249,10 @@
 					"name": "constant.character.escape.powershell"
 				},
 				{
+					"comment": "backtick at end of function name cannot continue line, becomes literal",
+					"match": "`$"
+				},
+				{
 					"include": "#argumentModeEscapes"
 				},
 				{
@@ -4309,6 +4313,10 @@
 				{
 					"match": "`(?!\\n)\\s",
 					"name": "constant.character.escape.powershell"
+				},
+				{
+					"comment": "backtick at end of unquoted text cannot continue line, becomes literal",
+					"match": "`$"
 				},
 				{
 					"include": "#argumentModeEscapes"
