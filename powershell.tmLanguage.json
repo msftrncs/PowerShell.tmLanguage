@@ -4121,27 +4121,7 @@
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"comment": "single quoted strings",
-					"begin": "\\G['\\x{2018}-\\x{201B}]",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.begin.powershell"
-						}
-					},
-					"end": "['\\x{2018}-\\x{201B}]",
-					"applyEndPatternLast": true,
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.end.powershell"
-						}
-					},
-					"name": "string.quoted.single.powershell",
-					"patterns": [
-						{
-							"match": "['\\x{2018}-\\x{201B}]{2}",
-							"name": "constant.character.escape.powershell"
-						}
-					]
+					"include": "#singleQuotedStrings"
 				},
 				{
 					"comment": "double quoted here-strings",
@@ -4203,32 +4183,7 @@
 					"contentName": "string.quoted.single.heredoc.powershell"
 				},
 				{
-					"comment": "double quoted strings",
-					"begin": "\\G(?:[\"\\x{201C}-\\x{201E}])",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.begin.powershell"
-						}
-					},
-					"end": "(?:[\"\\x{201C}-\\x{201E}])",
-					"applyEndPatternLast": true,
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.end.powershell"
-						}
-					},
-					"name": "string.quoted.double.powershell",
-					"patterns": [
-						{
-							"include": "#variableNoProperty"
-						},
-						{
-							"include": "#doubleQuotedStringEscapes"
-						},
-						{
-							"include": "#substatementEmbedded"
-						}
-					]
+					"include": "#doubleQuotedStrings"
 				},
 				{
 					"begin": "(?=\\.(?!\\.)|::|\\[)",
@@ -4239,6 +4194,57 @@
 							"include": "#accessors"
 						}
 					]
+				}
+			]
+		},
+		"singleQuotedStrings": {
+			"comment": "single quoted strings",
+			"begin": "['\\x{2018}-\\x{201B}]",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.powershell"
+				}
+			},
+			"end": "['\\x{2018}-\\x{201B}]",
+			"applyEndPatternLast": true,
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.powershell"
+				}
+			},
+			"name": "string.quoted.single.powershell",
+			"patterns": [
+				{
+					"match": "['\\x{2018}-\\x{201B}]{2}",
+					"name": "constant.character.escape.powershell"
+				}
+			]
+		},
+		"doubleQuotedStrings": {
+			"comment": "double quoted strings",
+			"begin": "(?:[\"\\x{201C}-\\x{201E}])",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.powershell"
+				}
+			},
+			"end": "(?:[\"\\x{201C}-\\x{201E}])",
+			"applyEndPatternLast": true,
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.powershell"
+				}
+			},
+			"name": "string.quoted.double.powershell",
+			"patterns": [
+				{
+					"include": "#variableNoProperty"
+				},
+				{
+					"include": "#doubleQuotedStringEscapes"
+				},
+				{
+					"include": "#substatementEmbedded"
 				}
 			]
 		},
@@ -4325,61 +4331,13 @@
 					"include": "#variableNoProperty"
 				},
 				{
-					"include": "#quotedStrings_Members"
+					"include": "#singleQuotedStrings"
+				},
+				{
+					"include": "#doubleQuotedStrings"
 				},
 				{
 					"include": "#substatementEmbedded"
-				}
-			]
-		},
-		"unquotedStrings_text_interpolatedString": {
-			"comment": "!!!!!!!!!!!!!!!!!!WIP!!!",
-			"patterns": [
-				{
-					"match": "`(?!\\n)\\s",
-					"name": "constant.character.escape.powershell"
-				},
-				{
-					"include": "#argumentModeEscapes"
-				},
-				{
-					"begin": "['\\x{2018}-\\x{201B}]",
-					"end": "['\\x{2018}-\\x{201B}]",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"match": "['\\x{2018}-\\x{201B}]{2}",
-							"name": "constant.character.escape.powershell"
-						}
-					]
-				},
-				{
-					"begin": "[\"\\x{201C}-\\x{201E}]",
-					"end": "[\"\\x{201C}-\\x{201E}]",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#doubleQuotedStringEscapes"
-						},
-						{
-							"begin": "\\$\\(",
-							"end": "\\)",
-							"patterns": [
-								{
-									"include": "#unquotedStrings_text"
-								}
-							]
-						}
-					]
-				},
-				{
-					"begin": "\\$\\(",
-					"end": "\\)",
-					"patterns": [
-						{
-							"include": "#unquotedStrings_text"
-						}
-					]
 				}
 			]
 		},
