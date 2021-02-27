@@ -4707,7 +4707,8 @@
 					"contentName": "invalid.source.powershell",
 					"patterns": [
 						{
-							"include": "#unquotedStrings_text"
+							"ignore_include": "#unquotedStrings_text",
+							"include": "#functionName"
 						}
 					]
 				}
