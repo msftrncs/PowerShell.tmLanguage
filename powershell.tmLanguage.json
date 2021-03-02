@@ -489,7 +489,7 @@
 					"begin": "(?i:function|filter|workflow)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
-							"name": "storage.type.$0.powershell keyword.declaration.$0.powershell"
+							"name": "storage.type.${0:/downcase}.powershell keyword.declaration.${0:/downcase}.powershell"
 						}
 					},
 					"end": "}|(?=\\S)",
@@ -594,7 +594,7 @@
 					"begin": "(?i:break|continue)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.control.$0.powershell"
+							"name": "keyword.control.${0:/downcase}.powershell"
 						}
 					},
 					"end": "[\\p{L}_]\\w*|(?=$\\n|\\S)",
@@ -614,7 +614,7 @@
 					"begin": "(?i:exit|return|throw)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.control.$0.powershell"
+							"name": "keyword.control.${0:/downcase}.powershell"
 						}
 					},
 					"end": "(?=[\\n;)}\\]])",
@@ -1238,7 +1238,7 @@
 									"match": "((?i:([\\x{2013}-\\x{2015}-])(regex|wildcard|exact|casesensitive)))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
 									"captures": {
 										"1": {
-											"name": "variable.parameter.switch-$2.powershell"
+											"name": "variable.parameter.switch-${2:/downcase}.powershell"
 										},
 										"3": {
 											"name": "punctuation.definition.parameter.powershell"
@@ -1501,7 +1501,7 @@
 					"begin": "(?i:data)(?=[\\s{(,;&|)}])",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.control.$0.powershell"
+							"name": "keyword.control.data.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -1645,12 +1645,12 @@
 				{
 					"comment": "from,var,define are reserved; configuration is TODO, needs significant syntax structure work.",
 					"match": "(?i:configuration|define|from|var)(?=[\\s{(,;&|)}])",
-					"name": "invalid.reserved.keyword.control.$0.powershell"
+					"name": "invalid.reserved.keyword.control.${0:/downcase}.powershell"
 				},
 				{
 					"comment": "param: only in main body or a function main body, and only if followed by parameter declaration",
 					"match": "(?i:param)(?=[\\s{(,;&|)}])",
-					"name": "keyword.control.$0.powershell"
+					"name": "keyword.control.${0:/downcase}.powershell"
 				},
 				{
 					"include": "#command_mode"
@@ -1662,7 +1662,7 @@
 			"begin": "(?i:begin|dispose|dynamicparam|end|inlinescript|parallel|process|sequence)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
-					"name": "keyword.control.$0.powershell"
+					"name": "keyword.control.${0:/downcase}.powershell"
 				}
 			},
 			"end": "(?=.|$)",
@@ -1697,9 +1697,9 @@
 							]
 						},
 						{
-							"comment": "next block, return when safe to exit",
+							"comment": "next block, only return when container ends",
 							"begin": "(?<=})(?![,)}\\]])",
-							"end": "(?=[\\n,})\\]])",
+							"end": "(?=[,})\\]])",
 							"patterns": [
 								{
 									"include": "#process_blocks"
@@ -2002,6 +2002,11 @@
 					"include": "#redirection"
 				},
 				{
+					"comment": "argument mode line continuation",
+					"match": "`\\n",
+					"name": "constant.character.escape.powershell"
+				},
+				{
 					"comment": "`,` just continues current mode, after advancing to next token",
 					"begin": ",",
 					"beginCaptures": {
@@ -2084,8 +2089,7 @@
 					"name": "string.unquoted.argument.powershell"
 				},
 				{
-					"begin": "(?![\\s{(,;&|)}])",
-					"alternateBegin": "(?=[^'\"\\x{2018}-\\x{201E}\\s\\[{(,;&|)}$@])|(?<=\\S)(?=[$@<>])",
+					"begin": "(?![\\s{(,;&|)}])(?!$)",
 					"end": "(?=[\\s{(,;&|)}])",
 					"contentName": "string.unquoted.argument.powershell",
 					"patterns": [
@@ -2105,6 +2109,16 @@
 			"patterns": [
 				{
 					"include": "#redirection"
+				},
+				{
+					"ig_comment": "patterns that indicate an operand, might be able to simplify this to include expression_mode and then see if the cursor advanced, sorta, don't forget about 'notCode', maybe check operand/operator only first, as redirect could also be a problem.",
+					"ig_begin": "(?=[$@][{(\\w:$^?]|[({\\[,]|@?['\"\\x{2018}-\\x{201E}]|[\\x{2013}-\\x{2015}-][\\s{(,;|)}#<>.!+%*/='\"\\x{2018}-\\x{201E}\\x{2013}-\\x{2015}-])",
+					"ig_end": "(?=[\\n;)}\\]])",
+					"ig_patterns": [
+						{
+							"ig_include": "#operand"
+						}
+					]
 				},
 				{
 					"comment": "normally operands win matches first, but numeric constant and operators share common first characters, and their matching needs to be alternated such that after any operand matches, a check for operators should occur before a numeric value is checked for again.  Operators needs to have first priority of a match after a numeric constant.",
@@ -2431,7 +2445,7 @@
 		"argumentModeEscapes": {
 			"patterns": [
 				{
-					"match": "`[`0abefnrtv'\"\\x{2018}-\\x{201E}$@{(,;&|)}#<>\\n]",
+					"match": "`[`0abefnrtv'\"\\x{2018}-\\x{201E}$@{(,;&|)}#<>]",
 					"name": "constant.character.escape.powershell"
 				},
 				{
@@ -2465,7 +2479,7 @@
 					"begin": "(?i:(?:foreach|where|sort|tee)-object)(?=[\\s{(,;&)}])",
 					"beginCaptures": {
 						"0": {
-							"name": "support.function.$0.powershell"
+							"name": "support.function.${0:/downcase}.powershell"
 						}
 					},
 					"end": "(?=[\\n;)}\\]])",
@@ -3455,7 +3469,7 @@
 					"begin": "(?<![\\])])(?:(?i:(foreach|where)(?=[\\({]))|([\\p{L}_]\\w*(?=\\()))",
 					"captures": {
 						"1": {
-							"name": "support.function.$1.powershell"
+							"name": "support.function.${1:/downcase}.powershell"
 						},
 						"2": {
 							"name": "entity.name.function.method.powershell"
@@ -4457,7 +4471,7 @@
 					"begin": "[\\x{2013}-\\x{2015}-]((?i:join|[ic]?(?:split)))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.unary.string-$1.powershell"
+							"name": "keyword.operator.unary.string-${1:/downcase}.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -4540,7 +4554,7 @@
 					"begin": "[\\x{2013}-\\x{2015}-]((?i:[ic]?(?:eq|ne|[gl][te]|(?:not)?(?:like|match|contains|in))))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.comparison.$1.powershell"
+							"name": "keyword.operator.comparison.${1:/downcase}.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -4555,7 +4569,7 @@
 					"begin": "[\\x{2013}-\\x{2015}-]((?i:join|[ic]?(?:split|replace)))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.string-$1.powershell"
+							"name": "keyword.operator.string-${1:/downcase}.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -4570,7 +4584,7 @@
 					"begin": "[\\x{2013}-\\x{2015}-]((?i:and|or|xor))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.logical.$1.powershell"
+							"name": "keyword.operator.logical.${1:/downcase}.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -4585,7 +4599,7 @@
 					"begin": "[\\x{2013}-\\x{2015}-]((?i:band|bor|bxor|shl|shr))(?!\\p{L})",
 					"beginCaptures": {
 						"0": {
-							"name": "keyword.operator.bitwise.$1.powershell"
+							"name": "keyword.operator.bitwise.${1:/downcase}.powershell"
 						}
 					},
 					"end": "(?=.|$)",
