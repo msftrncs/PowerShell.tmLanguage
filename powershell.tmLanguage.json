@@ -19,7 +19,7 @@
 					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
-							"include": "#advanceToToken"
+							"include": "#advanceToArgument"
 						},
 						{
 							"include": "#attributeStatement"
