@@ -2011,7 +2011,7 @@
 					"begin": ",",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.separator.powershell"
+							"name": "keyword.operator.array-element-separator.comma.powershell"
 						}
 					},
 					"end": "(?=.|$)",
@@ -3497,6 +3497,10 @@
 										}
 									},
 									"patterns": [
+										{
+											"match": ",",
+											"name": "punctuation.separator.method-argument-list.comma.powershell"
+										},
 										{
 											"include": "#expression_mode"
 										}
