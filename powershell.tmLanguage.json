@@ -1587,8 +1587,8 @@
 								},
 								{
 									"comment": "next statement, return when safe to exit",
-									"begin": "(?<=})(?![,)}\\]])",
-									"end": "(?<!})(?=[\\n,})\\]])",
+									"begin": "(?<=})(?![\\n,)}\\]])",
+									"end": "(?=[\\n,})\\]])",
 									"patterns": [
 										{
 											"include": "$self"
@@ -3169,7 +3169,7 @@
 											"begin": ",",
 											"beginCaptures": {
 												"0": {
-													"name": "keyword.operator.attribute-argument-separator.comma.powershell"
+													"name": "punctuation.separator.attribute-argument-separator.comma.powershell"
 												}
 											},
 											"end": "(?=.|$)",
@@ -3631,8 +3631,8 @@
 				},
 				{
 					"comment": "next statement, return when safe to exit",
-					"begin": "(?<=})(?![,)}\\]])",
-					"end": "(?<!})(?=[\\n,})\\]])",
+					"begin": "(?<=})(?![\\n,)}\\]])",
+					"end": "(?=[\\n,})\\]])",
 					"patterns": [
 						{
 							"include": "$self"
