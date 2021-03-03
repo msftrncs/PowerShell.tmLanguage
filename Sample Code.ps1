@@ -55,7 +55,7 @@ for (
 "16#{0:X}" -f [int][char]'w'
 "16#{0:X}" -f [int]'w'[0]
 
-('save'.ToCharArray() | % {"{0:X2}" -f [byte]$_ }) -join ' '
+('save'.ToCharArray().foreach{"{0:X2}" -f [byte]$_ }) -join ' '
 
 <#
     Should consider a class that can store memory blocks from S19/S28/S37 files, each memory block would posses a property
@@ -353,7 +353,7 @@ $‟hello # ‟ is neither a quote, nor a valid variable character
     VerySweet
 }
 
-[winesweetness].getenumvalues().foreach( { [pscustomobject]@{Element = $_; Value = $_.value__ } } )
+[winesweetness].getenumvalues().foreach{ [pscustomobject]@{Element = $_; Value = $_.value__ } }
 
 $variable:hello
 
@@ -365,12 +365,49 @@ function :local:me {}
 
 [xml.xml.xml-test]
 
-<#Invoke-Expression #> ([IO.StreamReader]::new([IO.Compression.DeflateStream]::new([IO.MemoryStream][Convert]::FromBase64String('aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uIGhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uICBoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvLiAgIGhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uICBoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCgpoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsbw=='),[IO.Compression.CompressionMode]::Decompress),[Text.Encoding]::ASCII)).ReadToEnd()
+$src = @'
+    aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVs
+    bG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9o
+    ZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxs
+    b2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hl
+    bGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxv
+    aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVs
+    bG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9o
+    ZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxs
+    b2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hl
+    bGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxv
+    aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVs
+    bG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9o
+    ZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxs
+    b2hlbGxvaGVsbG8uIGhlbGxvaGVsbG9oZWxsb2hlbGxv
+    aGVsbG9oZWxsb2hlbGxvaGVsbG8uICBoZWxsb2hlbGxv
+    aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvLiAg
+    IGhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hl
+    bGxvaGVsbG8uICBoZWxsb2hlbGxvaGVsbG9oZWxsb2hl
+    bGxvaGVsbG9oZWxsb2hlbGxvCmhlbGxvaGVsbG9oZWxs
+    b2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KCmhlbGxv
+    aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVs
+    bG8KCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxs
+    b2hlbGxvaGVsbG8KaGVsbG9oZWxsb2hlbGxvaGVsbG9o
+    ZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxs
+    b2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hl
+    bGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxv
+    CgpoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9o
+    ZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxs
+    b2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hl
+    bGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxv
+    aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCmhl
+    bGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxv
+    aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVs
+    bG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9o
+    ZWxsb2hlbGxvaGVsbG9oZWxsbw==
+'@
 
-(New-Object IO.StreamReader -ArgumentList (New-Object IO.Compression.DeflateStream -ArgumentList ([IO.MemoryStream][Convert]::FromBase64String('aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uIGhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uICBoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvLiAgIGhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uICBoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCgpoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsbw==')),([IO.Compression.CompressionMode]::Decompress)),([Text.Encoding]::ASCII)).ReadToEnd()
+<#Invoke-Expression #> ([IO.StreamReader]::new([IO.Compression.DeflateStream]::new([IO.MemoryStream][Convert]::FromBase64String($src),[IO.Compression.CompressionMode]::Decompress),[Text.Encoding]::ASCII)).ReadToEnd()
 
-(New-Object IO.StreamReader((New-Object IO.Compression.DeflateStream([IO.MemoryStream][Convert]::FromBase64String('aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uIGhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uICBoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvLiAgIGhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8uICBoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG8KaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCgpoZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvCmhlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsbw=='),[IO.Compression.CompressionMode]::Decompress)),[Text.Encoding]::ASCII)).ReadToEnd()
+(New-Object IO.StreamReader -ArgumentList (New-Object IO.Compression.DeflateStream -ArgumentList ([IO.MemoryStream][Convert]::FromBase64String($src)),([IO.Compression.CompressionMode]::Decompress)),([Text.Encoding]::ASCII)).ReadToEnd()
 
+(New-Object IO.StreamReader((New-Object IO.Compression.DeflateStream([IO.MemoryStream][Convert]::FromBase64String($src),[IO.Compression.CompressionMode]::Decompress)),[Text.Encoding]::ASCII)).ReadToEnd()
 
 
 [flags()] enum CrazyEnums {
@@ -1010,3 +1047,6 @@ $true?1:0
 $true ?1:0
 13?1:0
 13 ?$true:0:hello : 5 : #invalid trailing colon
+
+$i = $i++
+if ($true) {;}
