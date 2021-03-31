@@ -3394,15 +3394,67 @@
 		"accessors": {
 			"patterns": [
 				{
-					"begin": "\\G(?:\\.(?!\\.)|(?<!:)::)",
+					"begin": "\\G(?:\\.(?!\\.))",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.accessor.powershell"
+							"name": "punctuation.accessor.instance.powershell"
 						}
 					},
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
+						{
+							"begin": "(?<![\\])])(?:(?i:foreach|where)(?=[\\({]))",
+							"beginCaptures": {
+								"0": {
+									"name": "support.function.${0:/downcase}.powershell"
+								}
+							},
+							"end": "(?!\\G)|(?=\\))",
+							"patterns": [
+								{
+									"include": "#members_methodArguments"
+								}
+							]
+						},
+						{
+							"include": "#members"
+						},
+						{
+							"include": "#commentLine"
+						},
+						{
+							"include": "#commentBlock"
+						},
+						{
+							"include": "#advanceToToken"
+						}
+					]
+				},
+				{
+					"begin": "\\G(?:(?<!:)::)",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.accessor.static.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "(?<![\\])])(?i:new(?=[\\({]))",
+							"beginCaptures": {
+								"0": {
+									"name": "support.function.${0:/downcase}.powershell"
+								}
+							},
+							"end": "(?!\\G)|(?=\\))",
+							"patterns": [
+								{
+									"include": "#members_methodArguments"
+								}
+							]
+						},
 						{
 							"include": "#members"
 						},
@@ -3463,69 +3515,73 @@
 				}
 			]
 		},
+		"members_methodArguments": {
+			"patterns": [
+				{
+					"begin": "\\G(?=\\()",
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"begin": "\\(",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.method-arguments.begin.powershell"
+								}
+							},
+							"contentName": "meta.method-arguments.powershell",
+							"end": "\\)",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.method-arguments.end.powershell"
+								}
+							},
+							"patterns": [
+								{
+									"match": ",",
+									"name": "punctuation.separator.method-argument-list.comma.powershell"
+								},
+								{
+									"include": "#expression_mode"
+								}
+							]
+						},
+						{
+							"begin": "(?=\\.(?!\\.)|::|\\[)",
+							"end": "(?=.|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#accessors"
+								}
+							]
+						}
+					]
+				},
+				{
+					"begin": "\\G(?=\\{)",
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"include": "#scriptblock"
+						}
+					]
+				}
+			]
+		},
 		"members": {
 			"patterns": [
 				{
-					"begin": "(?<![\\])])(?:(?i:(foreach|where)(?=[\\({]))|([\\p{L}_]\\w*(?=\\()))",
-					"captures": {
-						"1": {
-							"name": "support.function.${1:/downcase}.powershell"
-						},
-						"2": {
+					"begin": "(?<![\\])])[\\p{L}_]\\w*(?=\\()",
+					"beginCaptures": {
+						"0": {
 							"name": "entity.name.function.method.powershell"
 						}
 					},
 					"end": "(?!\\G)|(?=\\))",
 					"patterns": [
 						{
-							"begin": "\\G(?=\\()",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"begin": "\\(",
-									"beginCaptures": {
-										"0": {
-											"name": "punctuation.section.method-arguments.begin.powershell"
-										}
-									},
-									"contentName": "meta.method-arguments.powershell",
-									"end": "\\)",
-									"endCaptures": {
-										"0": {
-											"name": "punctuation.section.method-arguments.end.powershell"
-										}
-									},
-									"patterns": [
-										{
-											"match": ",",
-											"name": "punctuation.separator.method-argument-list.comma.powershell"
-										},
-										{
-											"include": "#expression_mode"
-										}
-									]
-								},
-								{
-									"begin": "(?=\\.(?!\\.)|::|\\[)",
-									"end": "(?=.|$)",
-									"applyEndPatternLast": true,
-									"patterns": [
-										{
-											"include": "#accessors"
-										}
-									]
-								}
-							]
-						},
-						{
-							"begin": "\\G(?=\\{)",
-							"end": "(?!\\G)",
-							"patterns": [
-								{
-									"include": "#scriptblock"
-								}
-							]
+							"include": "#members_methodArguments"
 						}
 					]
 				},
