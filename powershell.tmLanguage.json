@@ -1890,6 +1890,10 @@
 									"match": "\\G(?<!:):\\p{L}\\w*[^\\s{(,;&|)}]?"
 								},
 								{
+									"match": "\\G`\\[",
+									"name": "constant.character.escape.powershell"
+								},
+								{
 									"include": "#functionName"
 								}
 							]
