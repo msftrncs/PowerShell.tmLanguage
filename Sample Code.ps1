@@ -363,7 +363,7 @@ function r@$%^*[]<>my#crazy`nfunction.com {}
 
 function :local:me {}
 
-[xml.xml.xml-test]
+[xml.xml.xml-test] hello there # test
 
 $src = @'
     aGVsbG9oZWxsb2hlbGxvaGVsbG9oZWxsb2hlbGxvaGVs
@@ -1050,3 +1050,8 @@ $true ?1:0
 
 $i = $i++
 if ($true) {;}
+
+['hello']  # type construct is invalid
+`[hello]  # backtick escapes a type reference
+
+function `[hello] () {} # backtick doesn't escape anything here
