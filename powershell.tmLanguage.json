@@ -3204,6 +3204,16 @@
 						},
 						{
 							"include": "#type_SubType"
+						},
+						{
+							"begin": "(?![\\]\\s])",
+							"end": "(?=\\S|$)",
+							"applyEndPatternLast": true,
+							"patterns": [
+								{
+									"include": "#notCode"
+								}
+							]
 						}
 					]
 				},
@@ -3319,10 +3329,6 @@
 						{
 							"match": ",",
 							"name": "punctuation.separator.comma.powershell"
-						},
-						{
-							"match": "(?<!])[^\\s\\[\\]\\(+,]+",
-							"name": "invalid.character.powershell"
 						}
 					]
 				},
