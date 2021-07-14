@@ -3232,8 +3232,8 @@
 							"include": "#accessors"
 						},
 						{
-							"begin": "(?!\\G)(?![\\n;)}\\]])",
-							"end": "(?=[\\n;)}\\]])",
+							"begin": "(?!\\G)(?![\\n:;)}\\]])",
+							"end": "(?=[\\n:;)}\\]])",
 							"patterns": [
 								{
 									"include": "#expression_mode"
