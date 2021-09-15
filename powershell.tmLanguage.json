@@ -1789,7 +1789,7 @@
 				},
 				{
 					"comment": "could be a numeric constant or a limited list of unary operators, that we should switch to expression mode",
-					"begin": "(?=[.,+\\x{2013}-\\x{2015}-]|\\d(?!>&[12])|!(?!\\p{L}))",
+					"begin": "(?=[.,+\\x{2013}-\\x{2015}-]|[0-9](?!(?<=[1-6])>&[12])|!(?!\\p{L}))",
 					"end": "(?=[\\n;)}\\]])",
 					"patterns": [
 						{
@@ -1798,12 +1798,21 @@
 							"end": "(?=[\\n;)}\\]])",
 							"patterns": [
 								{
+									"include": "#advanceToArgument"
+								},
+								{
+									"include": "#operators"
+								},
+								{
 									"include": "#expression_mode"
 								}
 							]
 						},
 						{
 							"include": "#numericConstant"
+						},
+						{
+							"include": "#operators_preUnary_Comma"
 						},
 						{
 							"include": "#operators_preUnary"
@@ -2116,6 +2125,9 @@
 		"expression_mode": {
 			"patterns": [
 				{
+					"include": "#operators_preUnary_Comma"
+				},
+				{
 					"include": "#redirection"
 				},
 				{
@@ -2136,12 +2148,12 @@
 		},
 		"subexpression": {
 			"comment": "patterns that indicate an operand, we only want to capture one, then check operators, then recurse.",
-			"begin": "(?=[$@][{(\\w:$^?]|[({\\[,]|@?['\"\\x{2018}-\\x{201E}]|[\\x{2013}-\\x{2015}-][\\s{(,;|)}#<>.!+%*/='\"\\x{2018}-\\x{201E}\\x{2013}-\\x{2015}-]|[.,+\\x{2013}-\\x{2015}-]|\\d(?!>&[12])|!(?!\\p{L}))",
+			"begin": "(?=[$@][{(\\w:$^?]|[({\\[,]|@?['\"\\x{2018}-\\x{201E}]|[\\x{2013}-\\x{2015}-][\\s{(,;|)}#<>.!+%*/='\"\\x{2018}-\\x{201E}\\x{2013}-\\x{2015}-]|[.,+\\x{2013}-\\x{2015}-]|[0-9](?!(?<=[1-6])>&[12])|!(?!\\p{L}))",
 			"end": "(?!\\G)",
 			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\G",
+					"begin": "\\G(?![\\n,;:&|)}\\]])",
 					"end": "(?!\\G)",
 					"patterns": [
 						{
@@ -2149,8 +2161,8 @@
 						},
 						{
 							"comment": "if nothing matches, its not valid code",
-							"begin": "(?![\\n:;&|)}\\]])",
-							"end": "(?=[\\n:;&|)}\\]])",
+							"begin": "(?![\\n,;:&|)}\\]])",
+							"end": "(?=[\\n,;:&|)}\\]])",
 							"patterns": [
 								{
 									"include": "#notCode"
@@ -2928,9 +2940,13 @@
 		"numericConstant": {
 			"patterns": [
 				{
-					"begin": "(?>(?i:[+\\x{2013}-\\x{2015}-]?(?:0(?:x\\h+|b[01]+)|(?:\\d+(?:\\.(?!\\.)\\d*)?|\\.\\d+)(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?))(?=[\\s{(:,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
+					"comment": "\\d should be avoided as it will match digits in all scripts, but PowrShell seems to only support [0-9]",
+					"begin": "(?>(!)?((?i:[+\\x{2013}-\\x{2015}-]?(?:0(?:x\\h+|b[01]+)|(?:[0-9]+(?:\\.(?!\\.)[0-9]*)?|\\.[0-9]+)(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?)))(?=[\\s{(:,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])",
 					"beginCaptures": {
-						"0": {
+						"1": {
+							"name": "keyword.operator.logical.unary.not.powershell"
+						},
+						"2": {
 							"patterns": [
 								{
 									"include": "#numericConstant_capture"
@@ -2952,17 +2968,17 @@
 							]
 						},
 						{
-							"include": "#advanceToArgument"
+							"xinclude": "#advanceToArgument"
 						},
 						{
-							"include": "#operators"
+							"xinclude": "#operators"
 						}
 					]
 				},
 				{
 					"comment": "capture negative invalid constant construct",
 					"name": "invalid.numeric-constant.powershell",
-					"match": "([\\x{2013}-\\x{2015}-]\\.(?i:(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(?:[dlsyn]|u[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(:,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])"
+					"match": "([\\x{2013}-\\x{2015}-]\\.(?i:(?:e[+\\x{2013}-\\x{2015}-]?\\d[0-9]*)?(?:[dlsyn]|u[lsy]?)?))((?i:[kmgtp]b))?(?=[\\s{(:,;&|)}#\\]<>.!+%*/=\\x{2013}-\\x{2015}-])"
 				}
 			]
 		},
@@ -3008,7 +3024,7 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "([+\\x{2013}-\\x{2015}-]?(?i:\\d+(?:(?:(d)|(?:(e[+\\x{2013}-\\x{2015}-]?\\d+)\\g<2>?))|\\.\\d*(\\g<3>?\\g<2>?))|\\.\\d+\\g<4>))((?i:[kmgtp]b))?$"
+					"match": "([+\\x{2013}-\\x{2015}-]?(?i:[0-9]+(?:(?:(d)|(?:(e[+\\x{2013}-\\x{2015}-]?[0-9]+)\\g<2>?))|\\.[0-9]*(\\g<3>?\\g<2>?))|\\.[0-9]+\\g<4>))((?i:[kmgtp]b))?$"
 				},
 				{
 					"captures": {
@@ -3022,12 +3038,12 @@
 							"name": "constant.language.powershell"
 						}
 					},
-					"match": "([+\\x{2013}-\\x{2015}-]?(?:\\d+(?i:(?:\\.\\d*)?((?:e[+\\x{2013}-\\x{2015}-]?\\d+)?(u?[lsy]|[un])))?|(?:\\.\\d+)\\g<2>))((?i:[kmgtp]b))?$"
+					"match": "([+\\x{2013}-\\x{2015}-]?(?:[0-9]+(?i:(?:\\.[0-9]*)?((?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?(u?[lsy]|[un])))?|(?:\\.[0-9]+)\\g<2>))((?i:[kmgtp]b))?$"
 				}
 			]
 		},
 		"numericConstant_argumentMode": {
-			"match": "(?>(?i:(?:0(?:x\\h+|b[01]+)|(?:\\d+(?:\\.(?!\\.)\\d*)?|\\.\\d+)(?:e[+\\x{2013}-\\x{2015}-]?\\d+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?))(?=[\\s{(,;&|)}])",
+			"match": "(?>(?i:(?:0(?:x\\h+|b[01]+)|(?:[0-9]+(?:\\.(?!\\.)[0-9]*)?|\\.[0-9]+)(?:e[+\\x{2013}-\\x{2015}-]?[0-9]+)?)(?:u?[lsy]|[dnu])?(?:[kmgtp]b)?))(?=[\\s{(,;&|)}])",
 			"captures": {
 				"0": {
 					"patterns": [
@@ -3155,7 +3171,7 @@
 															"end": "(?=$|[,;|)}\\]])",
 															"patterns": [
 																{
-																	"include": "#expression_mode"
+																	"include": "#subexpression"
 																}
 															]
 														},
@@ -4106,7 +4122,7 @@
 						},
 						{
 							"comment": "needs custom argument handler, single line quoted or unquoted arguments",
-							"match": "(?<!\\x{2013}-\\x{2015}-)\\b\\p{L}+|\\d+(?:\\.\\d+)*",
+							"match": "(?<!\\x{2013}-\\x{2015}-)\\b\\p{L}+|[0-9]+(?:\\.[0-9]+)*",
 							"name": "variable.parameter.powershell"
 						},
 						{
@@ -4515,12 +4531,11 @@
 					"include": "#advanceToToken"
 				},
 				{
-					"xinclude": "#expression_mode"
+					"include": "#subexpression"
 				}
 			]
 		},
-		"operators_preUnary": {
-			"comment": "expression mode unary operators that precede operands.",
+		"operators_preUnary_Comma": {
 			"patterns": [
 				{
 					"comment": "`,` just continues current mode, after advancing to next token",
@@ -4535,6 +4550,27 @@
 					"patterns": [
 						{
 							"include": "#advanceToOperand"
+						}
+					]
+				}
+			]
+		},
+		"operators_preUnary": {
+			"comment": "expression mode unary operators that precede operands.",
+			"patterns": [
+				{
+					"xcomment": "`,` just continues current mode, after advancing to next token",
+					"xbegin": ",",
+					"xbeginCaptures": {
+						"0": {
+							"name": "keyword.operator.unary.array-element-separator.comma.powershell"
+						}
+					},
+					"xend": "(?=.|$)",
+					"xapplyEndPatternLast": true,
+					"xpatterns": [
+						{
+							"xinclude": "#advanceToOperand"
 						}
 					]
 				},
@@ -4572,7 +4608,23 @@
 					]
 				},
 				{
-					"begin": "(?:(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot)|(.)(?![\\d.]))|(!))(?!\\p{L})|(\\+)(?![\\d.])",
+					"begin": "[\\x{2013}-\\x{2015}-](?![\\p{L}\\p{N}.])",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.arithmetic.unary.negate.powershell"
+						}
+					},
+					"end": "(?=.|$)",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#advanceToOperand"
+						}
+					]
+				},
+				{
+					"comment": "see numeric constant for `!` preceeding valid numeric constants",
+					"begin": "(?=[\\x{2013}-\\x{2015}-])(?i:(.not)|(.bnot))(?!\\p{L})|(!)(?!\\w)|(\\+)(?![0-9.])",
 					"beginCaptures": {
 						"1": {
 							"name": "keyword.operator.logical.unary.not.powershell"
@@ -4581,12 +4633,9 @@
 							"name": "keyword.operator.bitwise.unary.bnot.powershell"
 						},
 						"3": {
-							"name": "keyword.operator.arithmetic.unary.negate.powershell"
-						},
-						"4": {
 							"name": "keyword.operator.logical.unary.not.powershell"
 						},
-						"5": {
+						"4": {
 							"name": "keyword.operator.arithmetic.unary.positive.powershell"
 						}
 					},
