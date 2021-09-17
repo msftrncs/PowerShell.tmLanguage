@@ -2252,14 +2252,7 @@
 					]
 				},
 				{
-					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#accessors"
-						}
-					]
+					"include": "#accessors"
 				}
 			]
 		},
@@ -2756,14 +2749,7 @@
 					]
 				},
 				{
-					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#accessors"
-						}
-					]
+					"include": "#accessors"
 				}
 			]
 		},
@@ -2903,14 +2889,7 @@
 					]
 				},
 				{
-					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#accessors"
-						}
-					]
+					"include": "#accessors"
 				}
 			]
 		},
@@ -2958,20 +2937,7 @@
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\G(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"include": "#accessors"
-								}
-							]
-						},
-						{
-							"xinclude": "#advanceToArgument"
-						},
-						{
-							"xinclude": "#operators"
+							"include": "#accessors"
 						}
 					]
 				},
@@ -3080,14 +3046,7 @@
 					]
 				},
 				{
-					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#accessors"
-						}
-					]
+					"include": "#accessors"
 				}
 			]
 		},
@@ -3241,7 +3200,7 @@
 				},
 				{
 					"comment": "index access is not permitted here",
-					"begin": "(?=\\.(?!\\.)|::)",
+					"begin": "(?=\\??\\.(?!\\.)|::)",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.section.bracket.end.powershell"
@@ -3427,11 +3386,17 @@
 			]
 		},
 		"accessors": {
+			"begin": "(?=\\??\\.(?!\\.)|::|\\??\\[)",
+			"end": "(?=.|$)",
+			"applyEndPatternLast": true,
 			"patterns": [
 				{
-					"begin": "\\G(?:\\.(?!\\.))",
+					"begin": "\\G(\\?)?(\\.)",
 					"beginCaptures": {
-						"0": {
+						"1": {
+							"name": "keyword.operator.null-conditional-accessor.powershell"
+						},
+						"2": {
 							"name": "punctuation.accessor.instance.powershell"
 						}
 					},
@@ -3505,14 +3470,17 @@
 					]
 				},
 				{
-					"begin": "\\G(?=\\[)",
+					"begin": "\\G(?=\\??\\[)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
 						{
-							"begin": "\\[",
+							"begin": "(\\?)?(\\[)",
 							"beginCaptures": {
-								"0": {
+								"1": {
+									"name": "keyword.operator.null-conditional.accessor.powershell"
+								},
+								"2": {
 									"name": "punctuation.section.bracket.begin.powershell"
 								}
 							},
@@ -3531,14 +3499,7 @@
 							]
 						},
 						{
-							"begin": "(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"include": "#accessors"
-								}
-							]
+							"include": "#accessors"
 						}
 					]
 				},
@@ -3582,14 +3543,7 @@
 							]
 						},
 						{
-							"begin": "(?=\\.(?!\\.)|::|\\[)",
-							"end": "(?=.|$)",
-							"applyEndPatternLast": true,
-							"patterns": [
-								{
-									"include": "#accessors"
-								}
-							]
+							"include": "#accessors"
 						}
 					]
 				},
@@ -3621,7 +3575,7 @@
 					]
 				},
 				{
-					"begin": "(?<![\\])])[\\p{L}_]\\w*(?=\\.(?!\\.)|::|\\[)",
+					"begin": "(?<![\\])])[\\p{L}_]\\w*(?=\\??\\.(?!\\.)|::|\\??\\[)",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"beginCaptures": {
@@ -3954,7 +3908,7 @@
 					"end": "(?!\\G)",
 					"patterns": [
 						{
-							"begin": "\\G\\$(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?]|:(?!:))+)(?=\\.(?!\\.)|::|\\[)",
+							"begin": "\\G\\$(?:[$^?]|(?>[\\w][\\w?]*:(?!:)|:)?(?:[\\w?]|:(?!:))+)(?=\\??\\.(?!\\.)|::|\\??\\[)",
 							"beginCaptures": {
 								"0": {
 									"patterns": [
@@ -4017,14 +3971,7 @@
 									]
 								},
 								{
-									"begin": "(?=\\.(?!\\.)|::|\\[)",
-									"end": "(?=.|$)",
-									"applyEndPatternLast": true,
-									"patterns": [
-										{
-											"include": "#accessors"
-										}
-									]
+									"include": "#accessors"
 								}
 							]
 						}
@@ -4170,14 +4117,7 @@
 					]
 				},
 				{
-					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#accessors"
-						}
-					]
+					"include": "#accessors"
 				}
 			]
 		},
@@ -4312,14 +4252,7 @@
 					"include": "#doubleQuotedStrings"
 				},
 				{
-					"begin": "(?=\\.(?!\\.)|::|\\[)",
-					"end": "(?=.|$)",
-					"applyEndPatternLast": true,
-					"patterns": [
-						{
-							"include": "#accessors"
-						}
-					]
+					"include": "#accessors"
 				}
 			]
 		},
