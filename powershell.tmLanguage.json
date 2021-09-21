@@ -298,7 +298,7 @@
 									"end": "(?!\\G)",
 									"patterns": [
 										{
-											"include": "#expression_mode"
+											"include": "#operators_post"
 										}
 									]
 								},
