@@ -1900,7 +1900,7 @@
 									"match": "\\G(?<!:):\\p{L}\\w*[^\\s{(,;&|)}]?"
 								},
 								{
-									"match": "\\G`\\[",
+									"match": "\\G`[\\[+\\]]",
 									"name": "constant.character.escape.powershell"
 								},
 								{
