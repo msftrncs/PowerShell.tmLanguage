@@ -3189,12 +3189,7 @@
 															"include": "#advanceToToken"
 														},
 														{
-															"include": "#subexpression",
-															"xcomment": "begin at the first token in the expression, to test for numeric and unary operators",
-															"xbegin": "(?!$|[,;|)}\\]])",
-															"xend": "(?=$|[,;|)}\\]])",
-															"xpatterns": [
-															]
+															"include": "#subexpression"
 														},
 														{
 															"include": "#notCode"
@@ -4829,10 +4824,6 @@
 							]
 						}
 					]
-				},
-				{
-					"comment": "included last only because preunary also includes the negate `!` and `-b?not` operators, but we didn't want the `-` negate operator replacing `-` subtract.",
-					"old include": "#operators_preUnary"
 				}
 			]
 		},
@@ -4855,7 +4846,6 @@
 					"contentName": "invalid.unexpected.source.powershell",
 					"patterns": [
 						{
-							"ignore_include": "#unquotedStrings_text",
 							"include": "#functionName"
 						}
 					]
