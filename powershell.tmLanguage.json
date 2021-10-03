@@ -2856,7 +2856,7 @@
 											]
 										},
 										{
-											"begin": "(?<=})(?=[\\s#]|<#|`\\s)",
+											"begin": "(?<=})(?=(?i:elseif)[\\s{(,;&|)}]|[\\s#]|<#|`\\s)",
 											"end": "(?=.|$)",
 											"applyEndPatternLast": true,
 											"patterns": [
@@ -2864,7 +2864,7 @@
 													"include": "#advanceToToken"
 												},
 												{
-													"begin": "(?i)(?=elseif[\\s{(,;&|)}])",
+													"begin": "(?=(?i:elseif)[\\s{(,;&|)}])",
 													"end": "(?!\\G)",
 													"patterns": [
 														{
