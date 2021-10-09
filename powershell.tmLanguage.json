@@ -3754,17 +3754,26 @@
 							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "storage.modifier.scope.powershell"
+							"name": "keyword.other.special-method.using-scope.powershell"
 						},
 						"3": {
 							"name": "invalid.character.escape.powershell"
 						},
 						"4": {
 							"name": "punctuation.separator.colon.powershell"
+						},
+						"5": {
+							"name": "storage.modifier.scope.powershell"
+						},
+						"6": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"7": {
+							"name": "punctuation.separator.colon.powershell"
 						}
 					},
 					"comment": "These are special constants.",
-					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:False|Null|True))$",
+					"match": "(?:\\G|([$@]))(?i:(using(`)?(:))?(?:(global|local|private|script|workflow)?(`)?(:))?(?:False|Null|True))$",
 					"name": "constant.language.powershell"
 				},
 				{
@@ -3773,17 +3782,26 @@
 							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "storage.modifier.scope.powershell"
+							"name": "keyword.other.special-method.using-scope.powershell"
 						},
 						"3": {
 							"name": "invalid.character.escape.powershell"
 						},
 						"4": {
+							"name": "punctuation.separator.colon.powershell"
+						},
+						"5": {
+							"name": "storage.modifier.scope.powershell"
+						},
+						"6": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"7": {
 							"name": "punctuation.separator.colon.powershell"
 						}
 					},
 					"comment": "These are the other built-in constants.",
-					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:Error|ExecutionContext|Is(?:CoreCLR|Linux|MacOS|Windows)|Host|Home|PID|PSHome|PSVersionTable|ShellID)$)",
+					"match": "(?:\\G|([$@]))(?i:(using(`)?(:))?(?:(global|local|private|script|workflow)?(`)?(:))?(?:Error|ExecutionContext|Is(?:CoreCLR|Linux|MacOS|Windows)|Host|Home|PID|PSHome|PSVersionTable|ShellID)$)",
 					"name": "variable.language.builtin.powershell"
 				},
 				{
@@ -3792,16 +3810,25 @@
 							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "storage.modifier.scope.powershell"
+							"name": "keyword.other.special-method.using-scope.powershell"
 						},
 						"3": {
 							"name": "invalid.character.escape.powershell"
 						},
 						"4": {
 							"name": "punctuation.separator.colon.powershell"
+						},
+						"5": {
+							"name": "storage.modifier.scope.powershell"
+						},
+						"6": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"7": {
+							"name": "punctuation.separator.colon.powershell"
 						}
 					},
-					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:[$^?_]|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PSCmdlet|PSCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PSUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)",
+					"match": "(?:\\G|([$@]))(?i:(using(`)?(:))?(?:(global|local|private|script|workflow)?(`)?(:))?(?:[$^?_]|Args|ConsoleFileName|Event|EventArgs|EventSubscriber|ForEach|Input|LastExitCode|Matches|MyInvocation|NestedPromptLevel|Profile|PSBoundParameters|PSCmdlet|PSCulture|PSDebugContext|PSItem|PSCommandPath|PSScriptRoot|PSUICulture|Pwd|Sender|SourceArgs|SourceEventArgs|StackTrace|Switch|This)$)",
 					"name": "variable.language.builtin.powershell"
 				},
 				{
@@ -3810,17 +3837,26 @@
 							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
-							"name": "storage.modifier.scope.powershell"
+							"name": "keyword.other.special-method.using-scope.powershell"
 						},
 						"3": {
 							"name": "invalid.character.escape.powershell"
 						},
 						"4": {
+							"name": "punctuation.separator.colon.powershell"
+						},
+						"5": {
+							"name": "storage.modifier.scope.powershell"
+						},
+						"6": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"7": {
 							"name": "punctuation.separator.colon.powershell"
 						}
 					},
 					"comment": "Style preference variables as language variables so that they stand out.",
-					"match": "(?:\\G|([$@]))(?i:(?:(global|local|private|script|using|workflow)?(`)?(:))?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|InformationPreference|Log(?:Command|Engine|Provider)(?:HealthEvent|LifecycleEvent)|Maximum(?:AliasCount|DriveCount|ErrorCount|FunctionCount|HistoryCount|VariableCount)|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoLoadingPreference|PSSenderInfo|PSSession(?:ApplicationName|ConfigurationName|Option)|VerbosePreference|WarningPreference|WhatIfPreference)$)",
+					"match": "(?:\\G|([$@]))(?i:(using(`)?(:))?(?:(global|local|private|script|workflow)?(`)?(:))?(?:ConfirmPreference|DebugPreference|ErrorActionPreference|ErrorView|FormatEnumerationLimit|InformationPreference|Log(?:Command|Engine|Provider)(?:HealthEvent|LifecycleEvent)|Maximum(?:AliasCount|DriveCount|ErrorCount|FunctionCount|HistoryCount|VariableCount)|OFS|OutputEncoding|ProgressPreference|PsCulture|PSDebugContext|PSDefaultParameterValues|PSEmailServer|PSItem|PSModuleAutoLoadingPreference|PSSenderInfo|PSSession(?:ApplicationName|ConfigurationName|Option)|VerbosePreference|WarningPreference|WhatIfPreference)$)",
 					"name": "variable.language.powershell"
 				},
 				{
@@ -3829,13 +3865,22 @@
 							"name": "punctuation.definition.variable.powershell"
 						},
 						"2": {
+							"name": "keyword.other.special-method.using-scope.powershell"
+						},
+						"3": {
+							"name": "invalid.character.escape.powershell"
+						},
+						"4": {
+							"name": "punctuation.separator.colon.powershell"
+						},
+						"5": {
 							"patterns": [
 								{
 									"include": "#variable_scopeOrDrive"
 								}
 							]
 						},
-						"3": {
+						"6": {
 							"patterns": [
 								{
 									"include": "#variable_escapes"
@@ -3844,7 +3889,7 @@
 						}
 					},
 					"comment": "capture all other seemingly valid normal variables",
-					"match": "(?:\\G|([$@]))(?:([^:]*`?:))?(.*)",
+					"match": "(?:\\G|([$@]))(?i:(using(`)?(:))?)(?:([^:]*`?:))?(.*)",
 					"name": "variable.other.readwrite.powershell"
 				}
 			]
@@ -3853,7 +3898,7 @@
 			"patterns": [
 				{
 					"comment": "workflow scope only available in workflow",
-					"match": "((?i:global|local|private|script|using|workflow))(`)?(:)",
+					"match": "((?i:global|local|private|script|workflow))(`)?(:)",
 					"captures": {
 						"1": {
 							"name": "storage.modifier.scope.powershell"
