@@ -745,8 +745,8 @@
 							"patterns": [
 								{
 									"comment": "-parallel parameter can only be used in a workflow, consider using meta scopes, and an injection to properly catch this",
-									"match": "(?i:([\\x{2013}-\\x{2015}-])parallel)(?:(:)|(?=[\\s\\[{(,;&|)}]))",
-									"beginCaptures": {
+									"match": "((?i:([\\x{2013}-\\x{2015}-])parallel))(?:(:)|(?=[\\s\\[{(,;&|)}]))",
+									"captures": {
 										"1": {
 											"name": "variable.parameter.foreach-parallel.powershell"
 										},
