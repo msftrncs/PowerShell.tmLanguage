@@ -1199,7 +1199,7 @@
 												{
 													"comment": "`;` not permitted here",
 													"match": ";",
-													"name": "invalid.source.powershell"
+													"name": "invalid.unexpected.source.powershell"
 												},
 												{
 													"include": "#command_mode"
@@ -1219,11 +1219,6 @@
 												},
 												{
 													"include": "#notCode"
-												},
-												{
-													"comment": "very limited what is permitted here",
-													"ignore": "[^\\s{]",
-													"name": "invalid.source.powershell"
 												}
 											]
 										}
@@ -1300,7 +1295,7 @@
 						{
 							"comment": "`,`, `<` and `>` not permitted here",
 							"match": "[,<>]",
-							"name": "invalid.source.powershell"
+							"name": "invalid.unexpected.source.powershell"
 						},
 						{
 							"include": "#notCode"
@@ -1379,7 +1374,7 @@
 												{
 													"comment": "`,`, `<` and `>` not permitted here",
 													"match": "[,\\(\\[\\]<>]",
-													"name": "invalid.source.powershell"
+													"name": "invalid.unexpected.source.powershell"
 												}
 											]
 										},
@@ -1387,9 +1382,6 @@
 											"include": "#type"
 										}
 									]
-								},
-								{
-									"ignore": "#notCode"
 								}
 							]
 						},
@@ -1433,7 +1425,7 @@
 						{
 							"comment": "`,`, `<` and `>` not permitted here",
 							"match": "[,\\(\\[\\]<>]",
-							"name": "invalid.source.powershell"
+							"name": "invalid.unexpected.source.powershell"
 						},
 						{
 							"include": "#notCode"
@@ -1599,18 +1591,13 @@
 											"include": "$self"
 										}
 									]
-								},
-								{
-									"comment": "very limited what is permitted here",
-									"ignore": "[^\\s{}]",
-									"name": "invalid.source.powershell"
 								}
 							]
 						},
 						{
 							"comment": "`,`, `<` and `>` not permitted here",
 							"match": "[,\\[\\]<>]",
-							"name": "invalid.source.powershell"
+							"name": "invalid.unexpected.source.powershell"
 						},
 						{
 							"include": "#notCode"
@@ -1619,7 +1606,7 @@
 				},
 				{
 					"comment": "inlinescript,parallel,sequence: only in workflow; ",
-					"begin": "(?=(?i:begin|dispose|dynamicparam|end|inlinescript|parallel|process|sequence)[\\s{(,;&|)}])",
+					"begin": "(?=(?i:begin|clean|dispose|dynamicparam|end|inlinescript|parallel|process|sequence)[\\s{(,;&|)}])",
 					"end": "(?=.|$)",
 					"applyEndPatternLast": true,
 					"patterns": [
@@ -1664,7 +1651,7 @@
 		},
 		"process_blocks":{
 			"comment": "inlinescript,parallel,sequence: only in workflow; ",
-			"begin": "(?i:begin|dispose|dynamicparam|end|inlinescript|parallel|process|sequence)(?=[\\s{(,;&|)}])",
+			"begin": "(?i:begin|clean|dispose|dynamicparam|end|inlinescript|parallel|process|sequence)(?=[\\s{(,;&|)}])",
 			"beginCaptures": {
 				"0": {
 					"name": "keyword.control.${0:/downcase}.powershell"
@@ -1716,18 +1703,13 @@
 									"include": "$self"
 								}
 							]
-						},
-						{
-							"comment": "very limited what is permitted here",
-							"ignore": "[^\\s{}]",
-							"name": "invalid.source.powershell"
 						}
 					]
 				},
 				{
 					"comment": "`,`, `<` and `>` not permitted here",
 					"match": "[,\\[\\]<>]",
-					"name": "invalid.source.powershell"
+					"name": "invalid.unexpected.source.powershell"
 				},
 				{
 					"include": "#notCode"
@@ -2327,11 +2309,6 @@
 											"include": "#catchClause"
 										}
 									]
-								},
-								{
-									"comment": "very limited what is permitted here",
-									"ignore": "[^\\s{}]",
-									"name": "invalid.source.powershell"
 								}
 							]
 						},
@@ -2368,7 +2345,7 @@
 						{
 							"comment": "`,`, `<` and `>` not permitted here",
 							"match": "[,<>]",
-							"name": "invalid.source.powershell"
+							"name": "invalid.unexpected.source.powershell"
 						},
 						{
 							"include": "#notCode"
@@ -2422,11 +2399,6 @@
 											"include": "$self"
 										}
 									]
-								},
-								{
-									"comment": "very limited what is permitted here",
-									"ignore": "[^\\s{}]",
-									"name": "invalid.source.powershell"
 								}
 							]
 						}
@@ -2815,7 +2787,7 @@
 								{
 									"comment": "`;` not permitted here",
 									"match": ";",
-									"name": "invalid.source.powershell"
+									"name": "invalid.unexpected.source.powershell"
 								},
 								{
 									"include": "#command_mode"
@@ -3725,7 +3697,7 @@
 						{
 							"comment": "very limited what is permitted here",
 							"match": "[^\\s{()}]",
-							"name": "invalid.source.powershell"
+							"name": "invalid.unexpected.source.powershell"
 						}
 					]
 				},
@@ -3746,7 +3718,7 @@
 			"patterns": [
 				{
 					"match": "(?:\\G|[$@])(?:[^`:]|`[^:])*`?:$",
-					"name": "invalid.variable.powershell"
+					"name": "invalid.identifier.variable.powershell"
 				},
 				{
 					"captures": {
@@ -3997,7 +3969,7 @@
 				},
 				{
 					"match": "{",
-					"name": "invalid.character.powershell"
+					"name": "invalid.unescaped.character.powershell"
 				}
 			]
 		},
