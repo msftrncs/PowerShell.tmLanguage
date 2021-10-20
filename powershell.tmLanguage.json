@@ -482,6 +482,11 @@
 							"include": "#notCode"
 						}
 					]
+				},
+				{
+					"comment": "param: only in main body or a function main body, and only if followed by parameter declaration",
+					"match": "(?i:param)(?=[\\s{(,;&|)}])",
+					"name": "keyword.control.${0:/downcase}.powershell"
 				}
 			]
 		},
@@ -1616,8 +1621,8 @@
 					]
 				},
 				{
-					"comment": "the argument is permitted to be quoted; TODO",
-					"match": "(?i:(using))\\s+(?i:(assembly|namespace|module))\\s+((?>[\\p{L}_][\\w#]*(?:\\.#*)?)+(?=[<>.,+\\s\\[\\]]))",
+					"comment": "the argument is permitted to be quoted and statement may be extended to next line(s) with backtick; TODO",
+					"match": "(?i:(using))\\s+(?i:(assembly|namespace|module))\\s+((?>[\\p{L}_][\\w#]*(?:\\.#*)?)+(?=[<>.,;+\\s\\[\\]\\)}]))",
 					"captures": {
 						"1": {
 							"name": "keyword.control.using.powershell"
@@ -1638,11 +1643,6 @@
 					"comment": "from,var,define are reserved; configuration is TODO, needs significant syntax structure work.",
 					"match": "(?i:configuration|define|from|var)(?=[\\s{(,;&|)}])",
 					"name": "invalid.reserved.keyword.control.${0:/downcase}.powershell"
-				},
-				{
-					"comment": "param: only in main body or a function main body, and only if followed by parameter declaration",
-					"match": "(?i:param)(?=[\\s{(,;&|)}])",
-					"name": "keyword.control.${0:/downcase}.powershell"
 				},
 				{
 					"include": "#command_mode"
@@ -1841,7 +1841,7 @@
 				{
 					"comment": "catch that which didn't match elsewhere",
 					"match": "[^\\s]",
-					"name": "invalid.source.powershell"
+					"name": "invalid.unexpected.powershell"
 				}
 			]
 		},
