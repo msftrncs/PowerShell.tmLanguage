@@ -415,38 +415,7 @@
 											"end": "(?=[#;&|}\\n])",
 											"patterns": [
 												{
-													"comment": "begin at the first token in the expression, to test for numeric and unary operators",
-													"begin": "(?![\\s#]|<#|`\\n)(?![\\n;&|)}\\]])",
-													"end": "(?=.|$)",
-													"applyEndPatternLast": true,
-													"patterns": [
-														{
-															"comment": "allow for possibility that numeric value or unary operators match first, before resuming in expression mode",
-															"begin": "(?!\\G)(?![\\n;&|)}\\]])",
-															"end": "(?=[\\n;)}\\]])",
-															"patterns": [
-																{
-																	"include": "#expression_mode"
-																}
-															]
-														},
-														{
-															"include": "#numericConstant"
-														},
-														{
-															"include": "#operators_preUnary"
-														},
-														{
-															"comment": "if neither numeric or a pre-unary operator, just finish in expression mode",
-															"begin": "(?![\\n;&|)}\\]])",
-															"end": "(?=[\\n;)}\\]])",
-															"patterns": [
-																{
-																	"include": "#expression_mode"
-																}
-															]
-														}
-													]
+													"include": "#subexpression"
 												},
 												{
 													"include": "#commentBlock"
@@ -455,6 +424,9 @@
 													"comment": "normally provided by command mode, but thats not available here",
 													"match": "`\\n",
 													"name": "constant.character.escape.powershell"
+												},
+												{
+													"include": "#notCode"
 												}
 											]
 										},

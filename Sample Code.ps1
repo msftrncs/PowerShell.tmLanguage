@@ -753,9 +753,12 @@ configuration Name {
 [Parameter(ValueFromPipeline <# hello #> = -not 1 + 2)]$a
 [Parameter( <# hello #> -not 1 + 2)]$a
 
+@(if(2){3}, 3,
+ if(2){7})
+
 Param(
     # Specifies a path to one or more locations to search for ResX files. Wildcards are permitted.
-    [Parameter(Position = 0, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+    [Parameter(Position = 0 + -3, ValueFromPipeline, ValueFromPipelineByPropertyName)]
     [Alias('Path')]
     [SupportsWildCards()]
     [string[]] $SearchPath = '.',
@@ -1029,7 +1032,7 @@ function $a = {1}
 $x ??= 'new value'
 ${x}??='new value'
 
-$x? ??= 'new value'
+$x? ??= 'new value'?.Length
 ${x?}??='new value'
 
 $x = $null
@@ -1040,6 +1043,19 @@ $x ?? 100
 
 $x? = 'some value'
 ${x?}??100
+
+${x}?.Method();
+${x}?[$index]
+
+[xml]?.Module
+
+echo ${a}?.tostring # `?.tostring` is literal, not a member access
+echo @()?.ToString()
+echo ${a}?[0]; echo ${a}[0]; echo ($a)?[0]
+echo "test"?.Length
+echo test${a}?.Length
+echo hello$({a})?.Length
+echo $({a})?.Length
 
 "" hello &&
 
