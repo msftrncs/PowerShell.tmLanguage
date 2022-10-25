@@ -1976,9 +1976,25 @@
 					"include": "#redirection"
 				},
 				{
-					"include": "#operator_Comma"
+					"comment": "`,` just continues current mode, after advancing to next token",
+					"begin": ",",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.operator.array-element-separator.comma.powershell"
+						}
+					},
+					"end": "(?=.|$)(?!=[\\x{2013}-\\x{2015}-])",
+					"applyEndPatternLast": true,
+					"patterns": [
+						{
+							"include": "#argument"
+						},
+						{
+							"include": "#advanceToToken"
+						}
+					]
 				},
-				{
+						{
 					"comment": "argument mode line continuation",
 					"match": "`\\n",
 					"name": "constant.character.escape.powershell"
@@ -4623,22 +4639,6 @@
 			"comment": "post unary operators that are not valid at this time",
 			"match": "(?=[\\x{2013}-\\x{2015}-])(?i:.not|.bnot)(?!\\p{L})|!",
 			"name": "invalid.unexpected.source.powershell"
-		},
-		"operator_Comma": {
-			"comment": "`,` just continues current mode, after advancing to next token",
-			"begin": ",",
-			"beginCaptures": {
-				"0": {
-					"name": "keyword.operator.array-element-separator.comma.powershell"
-				}
-			},
-			"end": "(?=.|$)",
-			"applyEndPatternLast": true,
-			"patterns": [
-				{
-					"include": "#advanceToToken"
-				}
-			]
 		},
 		"operators": {
 			"patterns": [
