@@ -3318,7 +3318,7 @@
 			"patterns": [
 				{
 					"comment:": "[short], [ushort], [uint], [ulong] added PowerShell Core 6.2;",
-					"match": "(?<![.\\w-])(?i:(?:value)?type|void|switch|(?:ps(?:custom)?)?object|pscredential|psmoduleinfo|hashtable|scriptblock|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|datetime|timespan|array|bigint|u?int(?:32|16|64)?|u?long|u?short)(?![.\\w#+`-])",
+					"match": "(?<![.\\w-])(?i:(?:value)?type|void|switch|(?:ps(?:custom)?)?object|pscredential|psmoduleinfo|hashtable|scriptblock|string|single|float|double|decimal|s?byte|bool(?:ean)?|char|datetime|timespan|array|bigint|u?int(?:32|16|64)?|u?long|u?short|uri)(?![.\\w#+`-])",
 					"name": "keyword.type.powershell"
 				},
 				{
