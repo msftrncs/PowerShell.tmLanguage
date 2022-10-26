@@ -2127,7 +2127,7 @@
 				{
 					"comment": "if nothing matches, its not valid code",
 					"begin": "(?![\\s,;:&|)}\\]]|[1-6]?>|$)",
-					"end": "(?=[\\n,;:&|)}\\]]|[1-6]?>)",
+					"end": "(?=[\\n{(,;:&|)}\\]]|[1-6]?>)",
 					"patterns": [
 						{
 							"include": "#notCode"
@@ -2154,7 +2154,7 @@
 								{
 									"comment": "if nothing matches, its not valid code",
 									"begin": "(?![\\s,;:&|)}\\]]|[1-6]?>|$)",
-									"end": "(?=[\\n,;:&|)}\\]]|[1-6]?>)",
+									"end": "(?=[\\n{(,;:&|)}\\]]|[1-6]?>)",
 									"patterns": [
 										{
 											"include": "#notCode"

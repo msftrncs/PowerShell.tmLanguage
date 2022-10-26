@@ -505,7 +505,7 @@ hello |
 "Hello`
 Hello"
 
-& -hello -there
+& -hello -there not, -another -parameter #must be argument after argument mode comma
 
 [int]::@'
 minvalue
