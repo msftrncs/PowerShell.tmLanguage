@@ -3056,8 +3056,8 @@
 							"include": "#accessors"
 						},
 						{
-							"begin": "(?!\\G)(?![\\n:;)}\\]])",
-							"end": "(?=[\\n:;)}\\]])",
+							"begin": "(?!\\G)(?![\\n,:;)}\\]])",
+							"end": "(?=[\\n,:;)}\\]])",
 							"patterns": [
 								{
 									"include": "#operators"
@@ -3070,7 +3070,8 @@
 					]
 				},
 				{
-					"include": "#expression_mode"
+					"comment": "maybe this is not needed?",
+					"includex": "#expression_mode"
 				}
 			]
 		},
@@ -4792,7 +4793,7 @@
 							]
 						},
 						{
-							"comment": "this will inadvertantly detect successive `:` without an operand between them",
+							"comment": "this will inadvertently detect successive `:` without an operand between them",
 							"begin": ":(?!:)",
 							"beginCaptures": {
 								"0": {
