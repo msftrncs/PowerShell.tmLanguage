@@ -701,7 +701,7 @@
 												},
 												{
 													"comment": "next statement, return when safe to exit",
-													"begin": "(?<=})(?![,)}\\]])",
+													"begin": "(?<=})(?![\\n,)}\\]])",
 													"end": "(?<![})])(?=[\\n,})\\]])",
 													"patterns": [
 														{
@@ -1338,7 +1338,7 @@
 														},
 														{
 															"comment": "next statement, return when safe to exit",
-															"begin": "(?<=})(?![,)}\\]])",
+															"begin": "(?<=})(?![\\n,)}\\]])",
 															"end": "(?<![}\\]])(?=[\\n,})\\]])",
 															"patterns": [
 																{
@@ -1389,7 +1389,7 @@
 								},
 								{
 									"comment": "next statement, return when safe to exit",
-									"begin": "(?<=})(?![,)}\\]])",
+									"begin": "(?<=})(?![\\n,)}\\]])",
 									"end": "(?<![}\\]])(?=[\\n,})\\]])",
 									"patterns": [
 										{
@@ -2380,7 +2380,7 @@
 								},
 								{
 									"comment": "next statement, return when safe to exit",
-									"begin": "(?<=})(?![,)}\\]])",
+									"begin": "(?<=})(?![\\n,)}\\]])",
 									"end": "(?<![}\\]])(?=[\\n,})\\]])",
 									"patterns": [
 										{
