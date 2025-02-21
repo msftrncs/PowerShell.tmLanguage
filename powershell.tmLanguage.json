@@ -3292,10 +3292,9 @@
 									"name": "keyword.operator.assignment.powershell"
 								},
 								"3": {
-									"name": "constant.character.powershell"
+									"name": "string.unquoted.type-property-value.powershell"
 								}
-							},
-							"name": "invalid.character.powershell"
+							}
 						},
 						{
 							"include": "#type_SubType"
