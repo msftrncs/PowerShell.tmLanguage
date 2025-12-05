@@ -245,9 +245,37 @@
 																		}
 																	},
 																	"end": "(?=[;{])",
+																	"name": "meta.base-constructor-call.powershell",
 																	"patterns": [
 																		{
-																			"include": "#declarationParameterSet"
+																			"begin": "\\(",
+																			"beginCaptures": {
+																				"0": {
+																					"name": "punctuation.section.group.begin.powershell"
+																				}
+																			},
+																			"name": "meta.method-arguments.powershell",
+																			"end": "\\)",
+																			"endCaptures": {
+																				"0": {
+																					"name": "punctuation.section.group.end.powershell"
+																				}
+																			},
+																			"patterns": [
+																				{
+																					"match": ",",
+																					"name": "punctuation.separator.method-argument-list.comma.powershell"
+																				},
+																				{
+																					"include": "#subexpression"
+																				},
+																				{
+																					"include": "#notCode"
+																				}
+																			]
+																		},
+																		{
+																			"include": "#notCode"
 																		}
 																	]
 																}
