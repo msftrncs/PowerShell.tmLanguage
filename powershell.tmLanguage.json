@@ -217,7 +217,7 @@
 											"begin": "\\G([\\p{L}_]\\w*)",
 											"beginCaptures": {
 												"1": {
-													"name": "entity.name.function.powershell"
+													"name": "entity.name.function.method.powershell"
 												}
 											},
 											"end": "(?=[\\S\\n])",
@@ -3966,7 +3966,16 @@
 					}
 				},
 				{
-					"include": "#variable_escapes"
+					"comment": "capture everything else as just a generic variable",
+					"begin": "(?!})",
+					"end": "(?=})",
+					"applyEndPatternLast": true,
+					"name": "variable.other.readwrite.powershell",
+					"patterns": [
+						{
+							"include": "#variable_escapes"
+						}
+					]
 				}
 			]
 		},
@@ -4051,7 +4060,7 @@
 											"name": "punctuation.definition.variable.braces.end.powershell"
 										}
 									},
-									"name": "variable.other.readwrite.powershell",
+									"contentName": "meta.variable.quoted.powershell",
 									"patterns": [
 										{
 											"include": "#variable_bracketed_inside"
@@ -4110,7 +4119,7 @@
 									"name": "punctuation.definition.variable.braces.end.powershell"
 								}
 							},
-							"name": "variable.other.readwrite.powershell",
+							"contentName": "meta.variable.quoted.powershell",
 							"patterns": [
 								{
 									"include": "#variable_bracketed_inside"
